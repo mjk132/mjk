@@ -1,0 +1,55 @@
+{
+  "masterCode": "ADMIN-70-VIP-MEMBERSHIP",
+  "keys": [
+    {
+      "key": "LIFETIME-MASTER-PAPY615",
+      "duration": "Lifetime",
+      "status": "used",
+      "createdAt": "2026-05-31T20:18:13.621Z",
+      "note": "Master Custom Lifetime Key",
+      "activatedAt": "2026-05-31T20:18:13.647Z",
+      "clientId": null,
+      "expiresAt": "lifetime"
+    },
+    {
+      "key": "DISCORD-30DAYS-TEST",
+      "duration": "30 Days",
+      "status": "used",
+      "createdAt": "2026-05-31T20:18:13.621Z",
+      "note": "Trial Starter Key",
+      "activatedAt": "2026-06-01T06:39:30.518Z",
+      "clientId": null,
+      "expiresAt": "2026-07-01T06:39:30.518Z"
+    },
+    {
+      "key": "LIC-ZP81-3TIA-BOVB",
+      "duration": "30 Days",
+      "status": "used",
+      "createdAt": "2026-06-01T11:55:29.158Z",
+      "note": "Generated Key",
+      "allowedModules": [
+        "welcome",
+        "auto-roles",
+        "ticket",
+        "staff",
+        "security",
+        "auto-responses",
+        "embed-formatter",
+        "suggestions",
+        "reports",
+        "warnings",
+        "mod-logs",
+        "levels",
+        "staff-management",
+        "giveaways",
+        "rules-bot",
+        "leave-resignation",
+        "reaction-roles",
+        "voice-stats"
+      ],
+      "activatedAt": "2026-06-01T11:55:37.726Z",
+      "clientId": null,
+      "expiresAt": "2026-07-01T11:55:37.726Z"
+    }
+  ]
+}

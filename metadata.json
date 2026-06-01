@@ -1,0 +1,6 @@
+{
+  "name": "MJK System",
+  "description": "An interactive studio to design commands, build custom rich embeds, live-simulate a Discord bot with AI personality integration, and export ready-for-deployment Node.js code.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

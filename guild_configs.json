@@ -1,0 +1,3122 @@
+{
+  "1091176017420365834": {
+    "config": {
+      "name": "System",
+      "avatar": "🤖",
+      "status": "dnd",
+      "customStatus": "Developing amazing things!",
+      "activityType": "STREAMING",
+      "activityName": "by mjk",
+      "prefix": "/",
+      "embedColor": "#ff4d00"
+    },
+    "commands": [
+      {
+        "id": "cmd-default-1",
+        "trigger": "/help",
+        "type": "slash",
+        "description": "Lists active triggers and commands of SystemAI bot.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "SystemAI commands checklist 🤖",
+        "embedDescription": "You can execute the following custom commands inside this sandbox server:\n\n• **`!ping`** — Check system API roundtrip latencies.\n• **`/ai-chat`** — Commences real-time natural dialogues with my cognitive Gemini subroutines.\n• **`!welcome`** — Plays a beautiful custom embedded greeting illustration.",
+        "embedColor": "#5865F2",
+        "embedFooter": "Designed with Discord Bot Builder",
+        "embedThumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80",
+        "embedFields": []
+      },
+      {
+        "id": "cmd-default-2",
+        "trigger": "ping",
+        "type": "prefix",
+        "description": "Outputs bot latency statistics.",
+        "responseType": "text",
+        "responseText": "Pong! 🏓 Active system API latency is **14ms**. Simulated roundtrip complete."
+      },
+      {
+        "id": "cmd-default-3",
+        "trigger": "/ai-chat",
+        "type": "slash",
+        "description": "Cognitive AI module powered by Gemini API.",
+        "responseType": "ai",
+        "responseText": "Act as a super friendly, helpful computer assistant bot. Speak directly, keep responses funny, and use simple Discord markdown styling occasionally."
+      },
+      {
+        "id": "cmd-default-4",
+        "trigger": "welcome",
+        "type": "prefix",
+        "description": "Welcomes a user with a rich embedded layout.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "A Wild {username} Appeared! ✨",
+        "embedDescription": "Welcome {user} to the Server! We are thrilled to have you here.\n\nMake sure to check `#bot-testing` to interact with our integrations, join `🔊 voice-lounge` for voice playbacks, or test more tools.",
+        "embedColor": "#57F287",
+        "embedFooter": "Guild Member Count: {memberCount}",
+        "embedImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60"
+      }
+    ],
+    "welcome": {
+      "enabled": true,
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "avatarEmoji": "👑",
+      "welcomeTitle": "A Wild {username} Appeared! ✨",
+      "welcomeMessage": "مرحباً بك في BLACK SITE ‏👋\n\n‏أهلاً بك @{@user} في سيرفرنا! أسفرت وأنورت بتواجدك معنا.\n\n‏ نرجو منك قراءة القوانين في ⁠1506219349143457884 لتجنب أي مشاكل.\n\n‏💬 يمكنك البدء بالدردشة والتفاعل مع الأعضاء في ⁠📃〡𝖦eneral-𝖢hat.\n\n‏نتمنى لك وقتاً ممتعاً! ✨",
+      "channelId": "1500628365005164554",
+      "botName": "WelcomeBot 👋",
+      "botAvatar": "✨",
+      "dmGreeting": true,
+      "dmMessage": "🎉 Hey {username}, glad you landed in our server! Be sure to read the rules and introduce yourself.",
+      "embedColor": "#ff7300"
+    },
+    "ticket": {
+      "enabled": true,
+      "panelTitle": "🎫 نظام فتح التذاكر (Support Ticket Portal)",
+      "panelDescription": "قوانين التذاكر:\n• الاحترام واجب وعدم التهجم في التكت.\n• يمنع النقاش معاً.\n• في حال قمت بفتح تكت أدخل بالموضوع مباشرة.\n• يمنع السب والشتم والإهانة.\n\nملاحظة:\nيجب عليك تعبئة البيانات قبل فتح التذكرة بشكل كامل، وخلاف ذلك يحق للإدارة إغلاق التذكرة مباشرة.",
+      "buttonLabel": "فتح تذكرة | Open Ticket 📩",
+      "welcomeMessage": "مرحباً بك في تذكرة الدعم الخاصة بك! سيتواصل معك أحد المسؤولين قريباً.\nلإغلاق التذكرة، اضغط على **إغلاق التذكرة 🔒**",
+      "botName": "SupportBot 🎫",
+      "botAvatar": "🛡️",
+      "showFeedbackOnClose": true,
+      "ticketCategoryName": "💼 • تذاكر الدعم المفتوحة",
+      "activeTickets": [],
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fe2?w=1200&auto=format&fit=crop&q=80",
+      "ticketTypes": [
+        {
+          "id": "type-inquiry",
+          "name": "استفسار وعام (Inquiries)",
+          "emoji": "💬",
+          "description": "للاستفسارات العامة والمساعدة والأسئلة الخاصة بالسيرفر",
+          "welcomeMessage": "مرحباً بك في تكنك الاستفسارات! يرجى توضيح سؤالك بالتفصيل، وسيجيبك الدعم الفني قريباً.",
+          "ticketCategoryName": "💬 • استفسارات عامة"
+        },
+        {
+          "id": "type-complaint",
+          "name": "شات شكاوى وبلاغات (Complaints)",
+          "emoji": "⚠️",
+          "description": "لتقديم شكوى ضد لاعب أو إبلاغ عن مشكلة فنية أو سلوكية",
+          "welcomeMessage": "مرحباً بك في تذكرة الشكاوى والبلاغات! يرجى تقديم تفاصيل الشكوى مع الإثباتات لتتم معالجتها سريعاً.",
+          "ticketCategoryName": "⚠️ • شكاوى وبلاغات"
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "staffApp": {
+      "enabled": true,
+      "questions": [
+        "كم عمرك؟ (What is your age?)",
+        "لماذا تريد الانضمام لطاقمنا الإداري؟ (Why should we choose you?)",
+        "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)"
+      ],
+      "botName": "RecruiterBot 🛡️",
+      "botAvatar": "💼",
+      "autoMessageOnApprove": "🎉 تهانينا {user}! تم قبول طلب انضمامك لطاقم الإدارة بعد المراجعة الشاملة لخبراتك وسيرتك الإدارية المميزة. يرجى التواصل مع الإدارة العليا لترتيب مقابلة الترقية والتدريب الفوري. بالتوفيق لك!",
+      "autoMessageOnReject": "مرحباً {user}. نشكرك جزيل الشكر على اهتمامك ووقتك في تقديم طلب الإشراف. للأسف، بعد مراجعة دقيقة لطلبك، لم نتمكن من قبول الطلب في الوقت الحالي. ندعوك للمشاركة بنشاط والتقديم مجدداً في المراحل القادمة. أطيب التمنيات!",
+      "approvedRoleId": "123456789012345678",
+      "bannerUrl": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&auto=format&fit=crop&q=80",
+      "submissions": [
+        {
+          "id": "sub-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "answers": [
+            {
+              "question": "كم عمرك؟ (What is your age?)",
+              "answer": "19 years old"
+            },
+            {
+              "question": "لماذا تريد الانضمام لطاقمنا الإداري? (Why should we choose you?)",
+              "answer": "I love helping people and keeping the community friendly and clean!"
+            },
+            {
+              "question": "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)",
+              "answer": "I moderated two larger gaming servers and know standard discord setups."
+            }
+          ],
+          "status": "pending",
+          "timestamp": "Today at 07:11 AM"
+        }
+      ]
+    },
+    "security": {
+      "enabled": true,
+      "botName": "GuardBot 🛡️",
+      "botAvatar": "⚡",
+      "verificationEnabled": true,
+      "verificationChannelId": "chan-1",
+      "verificationButtonLabel": "تفعيل الحساب (Verify Profile) ✅",
+      "verificationSuccessMessage": "تهانينا! لقد رصد نظام الحماية هويتك البشرية وتم منحك رتبة العضو وتفعيل الحساب بنجاح. 🔓",
+      "spamProtectionEnabled": true,
+      "maxMessagesPerMinute": 6,
+      "wordFilterEnabled": true,
+      "badWordsList": [
+        "كلب",
+        "حمار",
+        "Spam",
+        "scam",
+        "hack",
+        "virus"
+      ],
+      "linkFilterEnabled": true,
+      "antiRaidEnabled": true,
+      "logsChannelId": "chan-2",
+      "securityLevel": "medium",
+      "bannerUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80"
+    },
+    "rulesBot": {
+      "enabled": true,
+      "botName": "LawyerBot 📜",
+      "botAvatar": "⚖️",
+      "bannerUrl": "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=1200&auto=format&fit=crop&q=80",
+      "categories": [
+        {
+          "id": "cat-general",
+          "name": "القوانين العامة 📜",
+          "icon": "🛡️",
+          "rules": [
+            "احترام جميع الأعضاء في السيرفر وعدم الإساءة لأي شخص بالقول أو المنشن.",
+            "يمنع منعاً باتاً نشر محتوى خارج عن الذوق العام أو الصور الفاضحة والمخلة بالآداب.",
+            "الالتزام بالذوق والحديث الراقي وتجنب الخوض في النزاعات العرقية أو السياسية الطائفية."
+          ]
+        },
+        {
+          "id": "cat-chat",
+          "name": "قوانين الدردشة 💬",
+          "icon": "💬",
+          "rules": [
+            "يمنع السبام أو التكرار العالي للرسائل وتخريب متعة الشات العام.",
+            "منشن الإدارة بدون داعي قد يعرضك للعقوبة، استخدم التكت أو تواصل بأدب."
+          ]
+        },
+        {
+          "id": "cat-staff",
+          "name": "قوانين الإشراف 👔",
+          "icon": "👔",
+          "rules": [
+            "يُمنع على المشرف استخدام صلاحيات السجن أو الميوت كأداة شخصية بل لتطبيق القانون فقط.",
+            "يجب على كل إداري توثيق جميع الإجراءات في الشات المخصص للوجوهات فوراً.",
+            "تحلى بالهدوء التام والامتناع التام عن الرد على حركات الاستفزاز الطفولية."
+          ]
+        }
+      ]
+    },
+    "leaveConfig": {
+      "enabled": true,
+      "botName": "OfficeBot 📁",
+      "botAvatar": "📇",
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "leaveRoleId": "1508178322129948793",
+      "resignationRemoveRoleIds": "111111111111111111, 222222222222222222",
+      "requests": [
+        {
+          "id": "req-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "type": "leave",
+          "reason": "أرغب بطلب إجازة قصيرة لمدة 10 أيام ابتداءً من الغد لدواعي الامتحانات الدراسية والمهام الشاقة.",
+          "status": "pending",
+          "timestamp": "Today at 08:30 AM"
+        }
+      ],
+      "embedColor": "#ff5900",
+      "reviewChannelId": "1507796630856929350"
+    },
+    "suggestion": {
+      "enabled": true,
+      "botName": "SuggestBot 💡",
+      "botAvatar": "💡",
+      "channelId": "1507796630856929350",
+      "autoReact": true,
+      "anonymous": false,
+      "bannerUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+      "suggestionsList": [
+        {
+          "id": "sug-1",
+          "username": "papy615",
+          "avatar": "🎮",
+          "content": "اقترح إضافة روم خاص للفعاليات والمسابقات الأسبوعية لزيادة تفاعل الأعضاء في السيرفر وتوزيع الجوائز.",
+          "status": "pending",
+          "timestamp": "Today at 08:31 AM",
+          "upvotes": 8,
+          "downvotes": 1,
+          "votedUsers": [
+            "m-2",
+            "m-4"
+          ]
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "report": {
+      "enabled": true,
+      "botName": "ReportBot ⚠️",
+      "botAvatar": "⚠️",
+      "logsChannelId": "chan-staff-logs",
+      "bannerUrl": "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=1200&auto=format&fit=crop&q=80",
+      "reportsList": [
+        {
+          "id": "rep-1",
+          "reporter": "GamerPro",
+          "reportedUser": "LoungeQueen",
+          "reason": "إرسال روابط دعوات سيرفرات أخرى في الخاص بدون إذن (سبام دايركت).",
+          "status": "pending",
+          "timestamp": "Today at 08:32 AM",
+          "proof": "https://i.imgur.com/screenshot.png"
+        }
+      ]
+    },
+    "warning": {
+      "enabled": true,
+      "botName": "PunishBot 🔨",
+      "botAvatar": "🔨",
+      "maxWarningsBeforeBan": 3,
+      "bannerUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80",
+      "warningsList": [
+        {
+          "id": "warn-1",
+          "username": "LoungeQueen",
+          "adminName": "Moderator",
+          "reason": "تخريب في الشات وسبام رسائل متكررة بعد التنبيه الشفهي.",
+          "timestamp": "Today at 08:28 AM"
+        }
+      ]
+    },
+    "autoResponse": {
+      "enabled": true,
+      "botName": "ResponderBot 💬",
+      "botAvatar": "🤖",
+      "responses": [
+        {
+          "id": "ar-1",
+          "trigger": "السلام عليكم",
+          "response": "وعليكم السلام ورحمة الله وبركاته يا هلا بك نورت السيرفر! ❤️👋",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-2",
+          "trigger": "كيف افعل حسابي",
+          "response": "أهلاً بك! يمكنك تفعيل حسابك من خلال الذهاب لقناة تفعيل الحساب والضغط على زر التفعيل الأخضر. ✅",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-1779801664964",
+          "trigger": "h",
+          "response": "dhdhfdh",
+          "matchType": "contains"
+        }
+      ]
+    },
+    "giveaway": {
+      "enabled": true,
+      "botName": "GiveawayBot 🎉",
+      "botAvatar": "🎁",
+      "channelId": "1507796630856929350",
+      "bannerUrl": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=1200&auto=format&fit=crop&q=80",
+      "giveawaysList": [
+        {
+          "id": "gw-1",
+          "prize": "رتبة VIP خاصة + 50,000 كاش 🪙",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "3:38:53 PM",
+          "endsAt": "4:38:53 PM"
+        },
+        {
+          "id": "gw-1779801723344",
+          "prize": "thfht",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "4:22:03 PM",
+          "endsAt": "5:22:03 PM"
+        }
+      ]
+    },
+    "levelConfig": {
+      "enabled": false,
+      "botName": "LevelBot 🏆",
+      "botAvatar": "⭐",
+      "xpPerMessage": 15,
+      "levelUpMessage": "🎉 تهانينا {user}! لقد غادرت للمستوى الفارق {level}! استمر في تفاعلك الرائع! 🚀⭐",
+      "levelUpChannelId": "chan-general",
+      "leaderboard": [
+        {
+          "id": "xp-1",
+          "username": "papy615",
+          "avatar": "👑",
+          "xp": 1250,
+          "level": 8
+        },
+        {
+          "id": "xp-2",
+          "username": "GamerPro",
+          "avatar": "🎮",
+          "xp": 850,
+          "level": 5
+        },
+        {
+          "id": "xp-3",
+          "username": "LoungeQueen",
+          "avatar": "💅",
+          "xp": 430,
+          "level": 3
+        }
+      ],
+      "roleRewards": [
+        {
+          "id": "rr-1",
+          "level": 5,
+          "roleName": "متفاعل فضي 🥈"
+        },
+        {
+          "id": "rr-2",
+          "level": 10,
+          "roleName": "متفاعل ذهبي 🥇"
+        }
+      ]
+    },
+    "reactionRoles": {
+      "enabled": true,
+      "botName": "RoleBot 🏷️",
+      "botAvatar": "🏷️",
+      "panelTitle": "🎭 نظام اختيار الرتب تلقائياً (Reaction & Button Roles Portal)",
+      "panelDescription": "فضلاً اضغط على الأزرار أدناه للحصول على الرتب التي تناسب اهتماماتك وتخصص سلفاً:\n\n• 🎮 **رتبة الألعاب** -> لتلقي إشعارات فعاليات الأسطورية.\n• 🔔 **أخبار وتحديثات** -> لمعرفة أخبار السيرفر أولاً بأول.\n• 🎁 **منشن فعاليات** -> لتنبيهك عند حدوث قيف_اواي جديد.",
+      "channelId": "chan-roles",
+      "bannerUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&auto=format&fit=crop&q=80",
+      "rolesList": [
+        {
+          "id": "rrole-1",
+          "label": "العاب وبثث 🎮",
+          "roleName": "العاب وبثث",
+          "emoji": "🎮",
+          "color": "blue"
+        },
+        {
+          "id": "rrole-2",
+          "label": "إشعار التحديثات 🔔",
+          "roleName": "إشعار التحديثات",
+          "emoji": "🔔",
+          "color": "green"
+        },
+        {
+          "id": "rrole-3",
+          "label": "منشن فعاليات 🎁",
+          "roleName": "منشن الفعاليات",
+          "emoji": "🎁",
+          "color": "yellow"
+        }
+      ]
+    },
+    "voiceStats": {
+      "enabled": true,
+      "botName": "StatsBot 📊",
+      "botAvatar": "📊",
+      "totalMembersName": "📊 إجمالي الأعضاء: {count}",
+      "activeMembersName": "🟢 المتصلين: {count}",
+      "voiceUsersName": "🔊 بالقرية الصوتية: {count}"
+    },
+    "_updatedAt": "2026-05-31T20:45:05.465Z"
+  },
+  "1506160730934743204": {
+    "config": {
+      "name": "System",
+      "avatar": "🤖",
+      "status": "dnd",
+      "customStatus": "Developing amazing things!",
+      "activityType": "STREAMING",
+      "activityName": "by mjk",
+      "prefix": "/",
+      "embedColor": "#ff4d00"
+    },
+    "commands": [
+      {
+        "id": "cmd-default-1",
+        "trigger": "/help",
+        "type": "slash",
+        "description": "Lists active triggers and commands of SystemAI bot.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "SystemAI commands checklist 🤖",
+        "embedDescription": "You can execute the following custom commands inside this sandbox server:\n\n• **`!ping`** — Check system API roundtrip latencies.\n• **`/ai-chat`** — Commences real-time natural dialogues with my cognitive Gemini subroutines.\n• **`!welcome`** — Plays a beautiful custom embedded greeting illustration.",
+        "embedColor": "#5865F2",
+        "embedFooter": "Designed with Discord Bot Builder",
+        "embedThumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80",
+        "embedFields": []
+      },
+      {
+        "id": "cmd-default-2",
+        "trigger": "ping",
+        "type": "prefix",
+        "description": "Outputs bot latency statistics.",
+        "responseType": "text",
+        "responseText": "Pong! 🏓 Active system API latency is **14ms**. Simulated roundtrip complete."
+      },
+      {
+        "id": "cmd-default-3",
+        "trigger": "/ai-chat",
+        "type": "slash",
+        "description": "Cognitive AI module powered by Gemini API.",
+        "responseType": "ai",
+        "responseText": "Act as a super friendly, helpful computer assistant bot. Speak directly, keep responses funny, and use simple Discord markdown styling occasionally."
+      },
+      {
+        "id": "cmd-default-4",
+        "trigger": "welcome",
+        "type": "prefix",
+        "description": "Welcomes a user with a rich embedded layout.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "A Wild {username} Appeared! ✨",
+        "embedDescription": "Welcome {user} to the Server! We are thrilled to have you here.\n\nMake sure to check `#bot-testing` to interact with our integrations, join `🔊 voice-lounge` for voice playbacks, or test more tools.",
+        "embedColor": "#57F287",
+        "embedFooter": "Guild Member Count: {memberCount}",
+        "embedImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60"
+      }
+    ],
+    "welcome": {
+      "enabled": true,
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "avatarEmoji": "👑",
+      "welcomeTitle": "A Wild {username} Appeared! ✨",
+      "welcomeMessage": "مرحباً بك في BLACK SITE ‏👋\n\n‏أهلاً بك @{@user} في سيرفرنا! أسفرت وأنورت بتواجدك معنا.\n\n‏ نرجو منك قراءة القوانين في ⁠1506219349143457884 لتجنب أي مشاكل.\n\n‏💬 يمكنك البدء بالدردشة والتفاعل مع الأعضاء في ⁠📃〡𝖦eneral-𝖢hat.\n\n‏نتمنى لك وقتاً ممتعاً! ✨",
+      "channelId": "1500628365005164554",
+      "botName": "WelcomeBot 👋",
+      "botAvatar": "✨",
+      "dmGreeting": true,
+      "dmMessage": "🎉 Hey {username}, glad you landed in our server! Be sure to read the rules and introduce yourself.",
+      "embedColor": "#ff7300"
+    },
+    "ticket": {
+      "enabled": true,
+      "panelTitle": "🎫 نظام فتح التذاكر (Support Ticket Portal)",
+      "panelDescription": "قوانين التذاكر:\n• الاحترام واجب وعدم التهجم في التكت.\n• يمنع النقاش معاً.\n• في حال قمت بفتح تكت أدخل بالموضوع مباشرة.\n• يمنع السب والشتم والإهانة.\n\nملاحظة:\nيجب عليك تعبئة البيانات قبل فتح التذكرة بشكل كامل، وخلاف ذلك يحق للإدارة إغلاق التذكرة مباشرة.",
+      "buttonLabel": "فتح تذكرة | Open Ticket 📩",
+      "welcomeMessage": "مرحباً بك في تذكرة الدعم الخاصة بك! سيتواصل معك أحد المسؤولين قريباً.\nلإغلاق التذكرة، اضغط على **إغلاق التذكرة 🔒**",
+      "botName": "SupportBot 🎫",
+      "botAvatar": "🛡️",
+      "showFeedbackOnClose": true,
+      "ticketCategoryName": "💼 • تذاكر الدعم المفتوحة",
+      "activeTickets": [],
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fe2?w=1200&auto=format&fit=crop&q=80",
+      "ticketTypes": [
+        {
+          "id": "type-inquiry",
+          "name": "استفسار وعام (Inquiries)",
+          "emoji": "💬",
+          "description": "للاستفسارات العامة والمساعدة والأسئلة الخاصة بالسيرفر",
+          "welcomeMessage": "مرحباً بك في تكنك الاستفسارات! يرجى توضيح سؤالك بالتفصيل، وسيجيبك الدعم الفني قريباً.",
+          "ticketCategoryName": "💬 • استفسارات عامة"
+        },
+        {
+          "id": "type-complaint",
+          "name": "شات شكاوى وبلاغات (Complaints)",
+          "emoji": "⚠️",
+          "description": "لتقديم شكوى ضد لاعب أو إبلاغ عن مشكلة فنية أو سلوكية",
+          "welcomeMessage": "مرحباً بك في تذكرة الشكاوى والبلاغات! يرجى تقديم تفاصيل الشكوى مع الإثباتات لتتم معالجتها سريعاً.",
+          "ticketCategoryName": "⚠️ • شكاوى وبلاغات"
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "staffApp": {
+      "enabled": true,
+      "questions": [
+        "كم عمرك؟ (What is your age?)",
+        "لماذا تريد الانضمام لطاقمنا الإداري؟ (Why should we choose you?)",
+        "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)"
+      ],
+      "botName": "RecruiterBot 🛡️",
+      "botAvatar": "💼",
+      "autoMessageOnApprove": "🎉 تهانينا {user}! تم قبول طلب انضمامك لطاقم الإدارة بعد المراجعة الشاملة لخبراتك وسيرتك الإدارية المميزة. يرجى التواصل مع الإدارة العليا لترتيب مقابلة الترقية والتدريب الفوري. بالتوفيق لك!",
+      "autoMessageOnReject": "مرحباً {user}. نشكرك جزيل الشكر على اهتمامك ووقتك في تقديم طلب الإشراف. للأسف، بعد مراجعة دقيقة لطلبك، لم نتمكن من قبول الطلب في الوقت الحالي. ندعوك للمشاركة بنشاط والتقديم مجدداً في المراحل القادمة. أطيب التمنيات!",
+      "approvedRoleId": "123456789012345678",
+      "bannerUrl": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&auto=format&fit=crop&q=80",
+      "submissions": [
+        {
+          "id": "sub-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "answers": [
+            {
+              "question": "كم عمرك؟ (What is your age?)",
+              "answer": "19 years old"
+            },
+            {
+              "question": "لماذا تريد الانضمام لطاقمنا الإداري? (Why should we choose you?)",
+              "answer": "I love helping people and keeping the community friendly and clean!"
+            },
+            {
+              "question": "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)",
+              "answer": "I moderated two larger gaming servers and know standard discord setups."
+            }
+          ],
+          "status": "pending",
+          "timestamp": "Today at 07:11 AM"
+        }
+      ]
+    },
+    "security": {
+      "enabled": true,
+      "botName": "GuardBot 🛡️",
+      "botAvatar": "⚡",
+      "verificationEnabled": true,
+      "verificationChannelId": "chan-1",
+      "verificationButtonLabel": "تفعيل الحساب (Verify Profile) ✅",
+      "verificationSuccessMessage": "تهانينا! لقد رصد نظام الحماية هويتك البشرية وتم منحك رتبة العضو وتفعيل الحساب بنجاح. 🔓",
+      "spamProtectionEnabled": true,
+      "maxMessagesPerMinute": 6,
+      "wordFilterEnabled": true,
+      "badWordsList": [
+        "كلب",
+        "حمار",
+        "Spam",
+        "scam",
+        "hack",
+        "virus"
+      ],
+      "linkFilterEnabled": true,
+      "antiRaidEnabled": true,
+      "logsChannelId": "chan-2",
+      "securityLevel": "medium",
+      "bannerUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80"
+    },
+    "rulesBot": {
+      "enabled": true,
+      "botName": "LawyerBot 📜",
+      "botAvatar": "⚖️",
+      "bannerUrl": "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=1200&auto=format&fit=crop&q=80",
+      "categories": [
+        {
+          "id": "cat-general",
+          "name": "القوانين العامة 📜",
+          "icon": "🛡️",
+          "rules": [
+            "احترام جميع الأعضاء في السيرفر وعدم الإساءة لأي شخص بالقول أو المنشن.",
+            "يمنع منعاً باتاً نشر محتوى خارج عن الذوق العام أو الصور الفاضحة والمخلة بالآداب.",
+            "الالتزام بالذوق والحديث الراقي وتجنب الخوض في النزاعات العرقية أو السياسية الطائفية."
+          ]
+        },
+        {
+          "id": "cat-chat",
+          "name": "قوانين الدردشة 💬",
+          "icon": "💬",
+          "rules": [
+            "يمنع السبام أو التكرار العالي للرسائل وتخريب متعة الشات العام.",
+            "منشن الإدارة بدون داعي قد يعرضك للعقوبة، استخدم التكت أو تواصل بأدب."
+          ]
+        },
+        {
+          "id": "cat-staff",
+          "name": "قوانين الإشراف 👔",
+          "icon": "👔",
+          "rules": [
+            "يُمنع على المشرف استخدام صلاحيات السجن أو الميوت كأداة شخصية بل لتطبيق القانون فقط.",
+            "يجب على كل إداري توثيق جميع الإجراءات في الشات المخصص للوجوهات فوراً.",
+            "تحلى بالهدوء التام والامتناع التام عن الرد على حركات الاستفزاز الطفولية."
+          ]
+        }
+      ]
+    },
+    "leaveConfig": {
+      "enabled": true,
+      "botName": "OfficeBot 📁",
+      "botAvatar": "📇",
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "leaveRoleId": "1508178322129948793",
+      "resignationRemoveRoleIds": "111111111111111111, 222222222222222222",
+      "requests": [
+        {
+          "id": "req-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "type": "leave",
+          "reason": "أرغب بطلب إجازة قصيرة لمدة 10 أيام ابتداءً من الغد لدواعي الامتحانات الدراسية والمهام الشاقة.",
+          "status": "pending",
+          "timestamp": "Today at 08:30 AM"
+        }
+      ],
+      "embedColor": "#ff5900",
+      "reviewChannelId": "1507796630856929350"
+    },
+    "suggestion": {
+      "enabled": true,
+      "botName": "SuggestBot 💡",
+      "botAvatar": "💡",
+      "channelId": "1507796630856929350",
+      "autoReact": true,
+      "anonymous": false,
+      "bannerUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+      "suggestionsList": [
+        {
+          "id": "sug-1",
+          "username": "papy615",
+          "avatar": "🎮",
+          "content": "اقترح إضافة روم خاص للفعاليات والمسابقات الأسبوعية لزيادة تفاعل الأعضاء في السيرفر وتوزيع الجوائز.",
+          "status": "pending",
+          "timestamp": "Today at 08:31 AM",
+          "upvotes": 8,
+          "downvotes": 1,
+          "votedUsers": [
+            "m-2",
+            "m-4"
+          ]
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "report": {
+      "enabled": true,
+      "botName": "ReportBot ⚠️",
+      "botAvatar": "⚠️",
+      "logsChannelId": "chan-staff-logs",
+      "bannerUrl": "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=1200&auto=format&fit=crop&q=80",
+      "reportsList": [
+        {
+          "id": "rep-1",
+          "reporter": "GamerPro",
+          "reportedUser": "LoungeQueen",
+          "reason": "إرسال روابط دعوات سيرفرات أخرى في الخاص بدون إذن (سبام دايركت).",
+          "status": "pending",
+          "timestamp": "Today at 08:32 AM",
+          "proof": "https://i.imgur.com/screenshot.png"
+        }
+      ]
+    },
+    "warning": {
+      "enabled": true,
+      "botName": "PunishBot 🔨",
+      "botAvatar": "🔨",
+      "maxWarningsBeforeBan": 3,
+      "bannerUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80",
+      "warningsList": [
+        {
+          "id": "warn-1",
+          "username": "LoungeQueen",
+          "adminName": "Moderator",
+          "reason": "تخريب في الشات وسبام رسائل متكررة بعد التنبيه الشفهي.",
+          "timestamp": "Today at 08:28 AM"
+        }
+      ]
+    },
+    "autoResponse": {
+      "enabled": true,
+      "botName": "ResponderBot 💬",
+      "botAvatar": "🤖",
+      "responses": [
+        {
+          "id": "ar-1",
+          "trigger": "السلام عليكم",
+          "response": "وعليكم السلام ورحمة الله وبركاته يا هلا بك نورت السيرفر! ❤️👋",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-2",
+          "trigger": "كيف افعل حسابي",
+          "response": "أهلاً بك! يمكنك تفعيل حسابك من خلال الذهاب لقناة تفعيل الحساب والضغط على زر التفعيل الأخضر. ✅",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-1779801664964",
+          "trigger": "h",
+          "response": "dhdhfdh",
+          "matchType": "contains"
+        }
+      ]
+    },
+    "giveaway": {
+      "enabled": true,
+      "botName": "GiveawayBot 🎉",
+      "botAvatar": "🎁",
+      "channelId": "1507796630856929350",
+      "bannerUrl": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=1200&auto=format&fit=crop&q=80",
+      "giveawaysList": [
+        {
+          "id": "gw-1",
+          "prize": "رتبة VIP خاصة + 50,000 كاش 🪙",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "3:38:53 PM",
+          "endsAt": "4:38:53 PM"
+        },
+        {
+          "id": "gw-1779801723344",
+          "prize": "thfht",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "4:22:03 PM",
+          "endsAt": "5:22:03 PM"
+        }
+      ]
+    },
+    "levelConfig": {
+      "enabled": false,
+      "botName": "LevelBot 🏆",
+      "botAvatar": "⭐",
+      "xpPerMessage": 15,
+      "levelUpMessage": "🎉 تهانينا {user}! لقد غادرت للمستوى الفارق {level}! استمر في تفاعلك الرائع! 🚀⭐",
+      "levelUpChannelId": "chan-general",
+      "leaderboard": [
+        {
+          "id": "xp-1",
+          "username": "papy615",
+          "avatar": "👑",
+          "xp": 1250,
+          "level": 8
+        },
+        {
+          "id": "xp-2",
+          "username": "GamerPro",
+          "avatar": "🎮",
+          "xp": 850,
+          "level": 5
+        },
+        {
+          "id": "xp-3",
+          "username": "LoungeQueen",
+          "avatar": "💅",
+          "xp": 430,
+          "level": 3
+        }
+      ],
+      "roleRewards": [
+        {
+          "id": "rr-1",
+          "level": 5,
+          "roleName": "متفاعل فضي 🥈"
+        },
+        {
+          "id": "rr-2",
+          "level": 10,
+          "roleName": "متفاعل ذهبي 🥇"
+        }
+      ]
+    },
+    "reactionRoles": {
+      "enabled": true,
+      "botName": "RoleBot 🏷️",
+      "botAvatar": "🏷️",
+      "panelTitle": "🎭 نظام اختيار الرتب تلقائياً (Reaction & Button Roles Portal)",
+      "panelDescription": "فضلاً اضغط على الأزرار أدناه للحصول على الرتب التي تناسب اهتماماتك وتخصص سلفاً:\n\n• 🎮 **رتبة الألعاب** -> لتلقي إشعارات فعاليات الأسطورية.\n• 🔔 **أخبار وتحديثات** -> لمعرفة أخبار السيرفر أولاً بأول.\n• 🎁 **منشن فعاليات** -> لتنبيهك عند حدوث قيف_اواي جديد.",
+      "channelId": "chan-roles",
+      "bannerUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&auto=format&fit=crop&q=80",
+      "rolesList": [
+        {
+          "id": "rrole-1",
+          "label": "العاب وبثث 🎮",
+          "roleName": "العاب وبثث",
+          "emoji": "🎮",
+          "color": "blue"
+        },
+        {
+          "id": "rrole-2",
+          "label": "إشعار التحديثات 🔔",
+          "roleName": "إشعار التحديثات",
+          "emoji": "🔔",
+          "color": "green"
+        },
+        {
+          "id": "rrole-3",
+          "label": "منشن فعاليات 🎁",
+          "roleName": "منشن الفعاليات",
+          "emoji": "🎁",
+          "color": "yellow"
+        }
+      ]
+    },
+    "voiceStats": {
+      "enabled": true,
+      "botName": "StatsBot 📊",
+      "botAvatar": "📊",
+      "totalMembersName": "📊 إجمالي الأعضاء: {count}",
+      "activeMembersName": "🟢 المتصلين: {count}",
+      "voiceUsersName": "🔊 بالقرية الصوتية: {count}"
+    },
+    "autoRoles": {
+      "enabled": false,
+      "botName": "AutoRoles",
+      "botAvatar": "🎖️",
+      "rolesList": []
+    },
+    "embedFormatter": {
+      "enabled": true,
+      "botName": "EmbedFormatter",
+      "botAvatar": "📝",
+      "title": "ASX",
+      "description": "xASXAs",
+      "color": "#5865F2",
+      "thumbnail": "",
+      "image": "",
+      "footer": "ASAsx",
+      "fields": []
+    },
+    "staffManagement": {
+      "enabled": false,
+      "botName": "StaffManager",
+      "botAvatar": "👥",
+      "members": [],
+      "rulesCategories": [],
+      "leaveRequests": []
+    },
+    "modLogs": {
+      "enabled": true,
+      "botName": "ModLogs",
+      "botAvatar": "📋",
+      "logChannelId": "1506161664725094540",
+      "logMessageDeletes": true,
+      "logMessageEdits": true,
+      "logMemberBans": true,
+      "logMemberKicks": true,
+      "logMemberTimeouts": true,
+      "logRoleChanges": true,
+      "logChannelChanges": true,
+      "logMemberJoins": false,
+      "logMemberLeaves": false,
+      "logs": []
+    },
+    "_updatedAt": "2026-06-01T11:31:52.447Z",
+    "_updatedBy": "757199055226142772"
+  },
+  "1077216051990892584": {
+    "config": {
+      "name": "System",
+      "avatar": "🤖",
+      "status": "dnd",
+      "customStatus": "Developing amazing things!",
+      "activityType": "STREAMING",
+      "activityName": "by mjk",
+      "prefix": "/",
+      "embedColor": "#ff4d00"
+    },
+    "commands": [
+      {
+        "id": "cmd-default-1",
+        "trigger": "/help",
+        "type": "slash",
+        "description": "Lists active triggers and commands of SystemAI bot.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "SystemAI commands checklist 🤖",
+        "embedDescription": "You can execute the following custom commands inside this sandbox server:\n\n• **`!ping`** — Check system API roundtrip latencies.\n• **`/ai-chat`** — Commences real-time natural dialogues with my cognitive Gemini subroutines.\n• **`!welcome`** — Plays a beautiful custom embedded greeting illustration.",
+        "embedColor": "#5865F2",
+        "embedFooter": "Designed with Discord Bot Builder",
+        "embedThumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80",
+        "embedFields": []
+      },
+      {
+        "id": "cmd-default-2",
+        "trigger": "ping",
+        "type": "prefix",
+        "description": "Outputs bot latency statistics.",
+        "responseType": "text",
+        "responseText": "Pong! 🏓 Active system API latency is **14ms**. Simulated roundtrip complete."
+      },
+      {
+        "id": "cmd-default-3",
+        "trigger": "/ai-chat",
+        "type": "slash",
+        "description": "Cognitive AI module powered by Gemini API.",
+        "responseType": "ai",
+        "responseText": "Act as a super friendly, helpful computer assistant bot. Speak directly, keep responses funny, and use simple Discord markdown styling occasionally."
+      },
+      {
+        "id": "cmd-default-4",
+        "trigger": "welcome",
+        "type": "prefix",
+        "description": "Welcomes a user with a rich embedded layout.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "A Wild {username} Appeared! ✨",
+        "embedDescription": "Welcome {user} to the Server! We are thrilled to have you here.\n\nMake sure to check `#bot-testing` to interact with our integrations, join `🔊 voice-lounge` for voice playbacks, or test more tools.",
+        "embedColor": "#57F287",
+        "embedFooter": "Guild Member Count: {memberCount}",
+        "embedImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60"
+      }
+    ],
+    "welcome": {
+      "enabled": true,
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "avatarEmoji": "👑",
+      "welcomeTitle": "A Wild {username} Appeared! ✨",
+      "welcomeMessage": "مرحباً بك في BLACK SITE ‏👋\n\n‏أهلاً بك @{@user} في سيرفرنا! أسفرت وأنورت بتواجدك معنا.\n\n‏ نرجو منك قراءة القوانين في ⁠1506219349143457884 لتجنب أي مشاكل.\n\n‏💬 يمكنك البدء بالدردشة والتفاعل مع الأعضاء في ⁠📃〡𝖦eneral-𝖢hat.\n\n‏نتمنى لك وقتاً ممتعاً! ✨",
+      "channelId": "1500628365005164554",
+      "botName": "WelcomeBot 👋",
+      "botAvatar": "✨",
+      "dmGreeting": true,
+      "dmMessage": "🎉 Hey {username}, glad you landed in our server! Be sure to read the rules and introduce yourself.",
+      "embedColor": "#ff7300"
+    },
+    "ticket": {
+      "enabled": true,
+      "panelTitle": "🎫 نظام فتح التذاكر (Support Ticket Portal)",
+      "panelDescription": "قوانين التذاكر:\n• الاحترام واجب وعدم التهجم في التكت.\n• يمنع النقاش معاً.\n• في حال قمت بفتح تكت أدخل بالموضوع مباشرة.\n• يمنع السب والشتم والإهانة.\n\nملاحظة:\nيجب عليك تعبئة البيانات قبل فتح التذكرة بشكل كامل، وخلاف ذلك يحق للإدارة إغلاق التذكرة مباشرة.",
+      "buttonLabel": "فتح تذكرة | Open Ticket 📩",
+      "welcomeMessage": "مرحباً بك في تذكرة الدعم الخاصة بك! سيتواصل معك أحد المسؤولين قريباً.\nلإغلاق التذكرة، اضغط على **إغلاق التذكرة 🔒**",
+      "botName": "SupportBot 🎫",
+      "botAvatar": "🛡️",
+      "showFeedbackOnClose": true,
+      "ticketCategoryName": "💼 • تذاكر الدعم المفتوحة",
+      "activeTickets": [],
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fe2?w=1200&auto=format&fit=crop&q=80",
+      "ticketTypes": [
+        {
+          "id": "type-inquiry",
+          "name": "استفسار وعام (Inquiries)",
+          "emoji": "💬",
+          "description": "للاستفسارات العامة والمساعدة والأسئلة الخاصة بالسيرفر",
+          "welcomeMessage": "مرحباً بك في تكنك الاستفسارات! يرجى توضيح سؤالك بالتفصيل، وسيجيبك الدعم الفني قريباً.",
+          "ticketCategoryName": "💬 • استفسارات عامة"
+        },
+        {
+          "id": "type-complaint",
+          "name": "شات شكاوى وبلاغات (Complaints)",
+          "emoji": "⚠️",
+          "description": "لتقديم شكوى ضد لاعب أو إبلاغ عن مشكلة فنية أو سلوكية",
+          "welcomeMessage": "مرحباً بك في تذكرة الشكاوى والبلاغات! يرجى تقديم تفاصيل الشكوى مع الإثباتات لتتم معالجتها سريعاً.",
+          "ticketCategoryName": "⚠️ • شكاوى وبلاغات"
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "staffApp": {
+      "enabled": true,
+      "questions": [
+        "كم عمرك؟ (What is your age?)",
+        "لماذا تريد الانضمام لطاقمنا الإداري؟ (Why should we choose you?)",
+        "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)"
+      ],
+      "botName": "RecruiterBot 🛡️",
+      "botAvatar": "💼",
+      "autoMessageOnApprove": "🎉 تهانينا {user}! تم قبول طلب انضمامك لطاقم الإدارة بعد المراجعة الشاملة لخبراتك وسيرتك الإدارية المميزة. يرجى التواصل مع الإدارة العليا لترتيب مقابلة الترقية والتدريب الفوري. بالتوفيق لك!",
+      "autoMessageOnReject": "مرحباً {user}. نشكرك جزيل الشكر على اهتمامك ووقتك في تقديم طلب الإشراف. للأسف، بعد مراجعة دقيقة لطلبك، لم نتمكن من قبول الطلب في الوقت الحالي. ندعوك للمشاركة بنشاط والتقديم مجدداً في المراحل القادمة. أطيب التمنيات!",
+      "approvedRoleId": "123456789012345678",
+      "bannerUrl": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&auto=format&fit=crop&q=80",
+      "submissions": [
+        {
+          "id": "sub-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "answers": [
+            {
+              "question": "كم عمرك؟ (What is your age?)",
+              "answer": "19 years old"
+            },
+            {
+              "question": "لماذا تريد الانضمام لطاقمنا الإداري? (Why should we choose you?)",
+              "answer": "I love helping people and keeping the community friendly and clean!"
+            },
+            {
+              "question": "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)",
+              "answer": "I moderated two larger gaming servers and know standard discord setups."
+            }
+          ],
+          "status": "pending",
+          "timestamp": "Today at 07:11 AM"
+        }
+      ]
+    },
+    "security": {
+      "enabled": true,
+      "botName": "GuardBot 🛡️",
+      "botAvatar": "⚡",
+      "verificationEnabled": true,
+      "verificationChannelId": "chan-1",
+      "verificationButtonLabel": "تفعيل الحساب (Verify Profile) ✅",
+      "verificationSuccessMessage": "تهانينا! لقد رصد نظام الحماية هويتك البشرية وتم منحك رتبة العضو وتفعيل الحساب بنجاح. 🔓",
+      "spamProtectionEnabled": true,
+      "maxMessagesPerMinute": 6,
+      "wordFilterEnabled": true,
+      "badWordsList": [
+        "كلب",
+        "حمار",
+        "Spam",
+        "scam",
+        "hack",
+        "virus"
+      ],
+      "linkFilterEnabled": true,
+      "antiRaidEnabled": true,
+      "logsChannelId": "chan-2",
+      "securityLevel": "medium",
+      "bannerUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80"
+    },
+    "rulesBot": {
+      "enabled": true,
+      "botName": "LawyerBot 📜",
+      "botAvatar": "⚖️",
+      "bannerUrl": "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=1200&auto=format&fit=crop&q=80",
+      "categories": [
+        {
+          "id": "cat-general",
+          "name": "القوانين العامة 📜",
+          "icon": "🛡️",
+          "rules": [
+            "احترام جميع الأعضاء في السيرفر وعدم الإساءة لأي شخص بالقول أو المنشن.",
+            "يمنع منعاً باتاً نشر محتوى خارج عن الذوق العام أو الصور الفاضحة والمخلة بالآداب.",
+            "الالتزام بالذوق والحديث الراقي وتجنب الخوض في النزاعات العرقية أو السياسية الطائفية."
+          ]
+        },
+        {
+          "id": "cat-chat",
+          "name": "قوانين الدردشة 💬",
+          "icon": "💬",
+          "rules": [
+            "يمنع السبام أو التكرار العالي للرسائل وتخريب متعة الشات العام.",
+            "منشن الإدارة بدون داعي قد يعرضك للعقوبة، استخدم التكت أو تواصل بأدب."
+          ]
+        },
+        {
+          "id": "cat-staff",
+          "name": "قوانين الإشراف 👔",
+          "icon": "👔",
+          "rules": [
+            "يُمنع على المشرف استخدام صلاحيات السجن أو الميوت كأداة شخصية بل لتطبيق القانون فقط.",
+            "يجب على كل إداري توثيق جميع الإجراءات في الشات المخصص للوجوهات فوراً.",
+            "تحلى بالهدوء التام والامتناع التام عن الرد على حركات الاستفزاز الطفولية."
+          ]
+        }
+      ]
+    },
+    "leaveConfig": {
+      "enabled": true,
+      "botName": "OfficeBot 📁",
+      "botAvatar": "📇",
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "leaveRoleId": "1508178322129948793",
+      "resignationRemoveRoleIds": "111111111111111111, 222222222222222222",
+      "requests": [
+        {
+          "id": "req-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "type": "leave",
+          "reason": "أرغب بطلب إجازة قصيرة لمدة 10 أيام ابتداءً من الغد لدواعي الامتحانات الدراسية والمهام الشاقة.",
+          "status": "pending",
+          "timestamp": "Today at 08:30 AM"
+        }
+      ],
+      "embedColor": "#ff5900",
+      "reviewChannelId": "1507796630856929350"
+    },
+    "suggestion": {
+      "enabled": true,
+      "botName": "SuggestBot 💡",
+      "botAvatar": "💡",
+      "channelId": "1507796630856929350",
+      "autoReact": true,
+      "anonymous": false,
+      "bannerUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+      "suggestionsList": [
+        {
+          "id": "sug-1",
+          "username": "papy615",
+          "avatar": "🎮",
+          "content": "اقترح إضافة روم خاص للفعاليات والمسابقات الأسبوعية لزيادة تفاعل الأعضاء في السيرفر وتوزيع الجوائز.",
+          "status": "pending",
+          "timestamp": "Today at 08:31 AM",
+          "upvotes": 8,
+          "downvotes": 1,
+          "votedUsers": [
+            "m-2",
+            "m-4"
+          ]
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "report": {
+      "enabled": true,
+      "botName": "ReportBot ⚠️",
+      "botAvatar": "⚠️",
+      "logsChannelId": "chan-staff-logs",
+      "bannerUrl": "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=1200&auto=format&fit=crop&q=80",
+      "reportsList": [
+        {
+          "id": "rep-1",
+          "reporter": "GamerPro",
+          "reportedUser": "LoungeQueen",
+          "reason": "إرسال روابط دعوات سيرفرات أخرى في الخاص بدون إذن (سبام دايركت).",
+          "status": "pending",
+          "timestamp": "Today at 08:32 AM",
+          "proof": "https://i.imgur.com/screenshot.png"
+        }
+      ]
+    },
+    "warning": {
+      "enabled": true,
+      "botName": "PunishBot 🔨",
+      "botAvatar": "🔨",
+      "maxWarningsBeforeBan": 3,
+      "bannerUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80",
+      "warningsList": [
+        {
+          "id": "warn-1",
+          "username": "LoungeQueen",
+          "adminName": "Moderator",
+          "reason": "تخريب في الشات وسبام رسائل متكررة بعد التنبيه الشفهي.",
+          "timestamp": "Today at 08:28 AM"
+        }
+      ]
+    },
+    "autoResponse": {
+      "enabled": true,
+      "botName": "ResponderBot 💬",
+      "botAvatar": "🤖",
+      "responses": [
+        {
+          "id": "ar-1",
+          "trigger": "السلام عليكم",
+          "response": "وعليكم السلام ورحمة الله وبركاته يا هلا بك نورت السيرفر! ❤️👋",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-2",
+          "trigger": "كيف افعل حسابي",
+          "response": "أهلاً بك! يمكنك تفعيل حسابك من خلال الذهاب لقناة تفعيل الحساب والضغط على زر التفعيل الأخضر. ✅",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-1779801664964",
+          "trigger": "h",
+          "response": "dhdhfdh",
+          "matchType": "contains"
+        }
+      ]
+    },
+    "giveaway": {
+      "enabled": true,
+      "botName": "GiveawayBot 🎉",
+      "botAvatar": "🎁",
+      "channelId": "1507796630856929350",
+      "bannerUrl": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=1200&auto=format&fit=crop&q=80",
+      "giveawaysList": [
+        {
+          "id": "gw-1",
+          "prize": "رتبة VIP خاصة + 50,000 كاش 🪙",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "3:38:53 PM",
+          "endsAt": "4:38:53 PM"
+        },
+        {
+          "id": "gw-1779801723344",
+          "prize": "thfht",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "4:22:03 PM",
+          "endsAt": "5:22:03 PM"
+        }
+      ]
+    },
+    "levelConfig": {
+      "enabled": false,
+      "botName": "LevelBot 🏆",
+      "botAvatar": "⭐",
+      "xpPerMessage": 15,
+      "levelUpMessage": "🎉 تهانينا {user}! لقد غادرت للمستوى الفارق {level}! استمر في تفاعلك الرائع! 🚀⭐",
+      "levelUpChannelId": "chan-general",
+      "leaderboard": [
+        {
+          "id": "xp-1",
+          "username": "papy615",
+          "avatar": "👑",
+          "xp": 1250,
+          "level": 8
+        },
+        {
+          "id": "xp-2",
+          "username": "GamerPro",
+          "avatar": "🎮",
+          "xp": 850,
+          "level": 5
+        },
+        {
+          "id": "xp-3",
+          "username": "LoungeQueen",
+          "avatar": "💅",
+          "xp": 430,
+          "level": 3
+        }
+      ],
+      "roleRewards": [
+        {
+          "id": "rr-1",
+          "level": 5,
+          "roleName": "متفاعل فضي 🥈"
+        },
+        {
+          "id": "rr-2",
+          "level": 10,
+          "roleName": "متفاعل ذهبي 🥇"
+        }
+      ]
+    },
+    "reactionRoles": {
+      "enabled": true,
+      "botName": "RoleBot 🏷️",
+      "botAvatar": "🏷️",
+      "panelTitle": "🎭 نظام اختيار الرتب تلقائياً (Reaction & Button Roles Portal)",
+      "panelDescription": "فضلاً اضغط على الأزرار أدناه للحصول على الرتب التي تناسب اهتماماتك وتخصص سلفاً:\n\n• 🎮 **رتبة الألعاب** -> لتلقي إشعارات فعاليات الأسطورية.\n• 🔔 **أخبار وتحديثات** -> لمعرفة أخبار السيرفر أولاً بأول.\n• 🎁 **منشن فعاليات** -> لتنبيهك عند حدوث قيف_اواي جديد.",
+      "channelId": "chan-roles",
+      "bannerUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&auto=format&fit=crop&q=80",
+      "rolesList": [
+        {
+          "id": "rrole-1",
+          "label": "العاب وبثث 🎮",
+          "roleName": "العاب وبثث",
+          "emoji": "🎮",
+          "color": "blue"
+        },
+        {
+          "id": "rrole-2",
+          "label": "إشعار التحديثات 🔔",
+          "roleName": "إشعار التحديثات",
+          "emoji": "🔔",
+          "color": "green"
+        },
+        {
+          "id": "rrole-3",
+          "label": "منشن فعاليات 🎁",
+          "roleName": "منشن الفعاليات",
+          "emoji": "🎁",
+          "color": "yellow"
+        }
+      ]
+    },
+    "voiceStats": {
+      "enabled": true,
+      "botName": "StatsBot 📊",
+      "botAvatar": "📊",
+      "totalMembersName": "📊 إجمالي الأعضاء: {count}",
+      "activeMembersName": "🟢 المتصلين: {count}",
+      "voiceUsersName": "🔊 بالقرية الصوتية: {count}"
+    },
+    "_updatedAt": "2026-05-31T20:53:56.461Z"
+  },
+  "1030882751873826837": {
+    "config": {
+      "name": "System",
+      "avatar": "🤖",
+      "status": "dnd",
+      "customStatus": "Developing amazing things!",
+      "activityType": "STREAMING",
+      "activityName": "by mjk",
+      "prefix": "/",
+      "embedColor": "#ff4d00"
+    },
+    "commands": [
+      {
+        "id": "cmd-default-1",
+        "trigger": "/help",
+        "type": "slash",
+        "description": "Lists active triggers and commands of SystemAI bot.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "SystemAI commands checklist 🤖",
+        "embedDescription": "You can execute the following custom commands inside this sandbox server:\n\n• **`!ping`** — Check system API roundtrip latencies.\n• **`/ai-chat`** — Commences real-time natural dialogues with my cognitive Gemini subroutines.\n• **`!welcome`** — Plays a beautiful custom embedded greeting illustration.",
+        "embedColor": "#5865F2",
+        "embedFooter": "Designed with Discord Bot Builder",
+        "embedThumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80",
+        "embedFields": []
+      },
+      {
+        "id": "cmd-default-2",
+        "trigger": "ping",
+        "type": "prefix",
+        "description": "Outputs bot latency statistics.",
+        "responseType": "text",
+        "responseText": "Pong! 🏓 Active system API latency is **14ms**. Simulated roundtrip complete."
+      },
+      {
+        "id": "cmd-default-3",
+        "trigger": "/ai-chat",
+        "type": "slash",
+        "description": "Cognitive AI module powered by Gemini API.",
+        "responseType": "ai",
+        "responseText": "Act as a super friendly, helpful computer assistant bot. Speak directly, keep responses funny, and use simple Discord markdown styling occasionally."
+      },
+      {
+        "id": "cmd-default-4",
+        "trigger": "welcome",
+        "type": "prefix",
+        "description": "Welcomes a user with a rich embedded layout.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "A Wild {username} Appeared! ✨",
+        "embedDescription": "Welcome {user} to the Server! We are thrilled to have you here.\n\nMake sure to check `#bot-testing` to interact with our integrations, join `🔊 voice-lounge` for voice playbacks, or test more tools.",
+        "embedColor": "#57F287",
+        "embedFooter": "Guild Member Count: {memberCount}",
+        "embedImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60"
+      }
+    ],
+    "welcome": {
+      "enabled": true,
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "avatarEmoji": "👑",
+      "welcomeTitle": "A Wild {username} Appeared! ✨",
+      "welcomeMessage": "مرحباً بك في BLACK SITE ‏👋\n\n‏أهلاً بك @{@user} في سيرفرنا! أسفرت وأنورت بتواجدك معنا.\n\n‏ نرجو منك قراءة القوانين في ⁠1506219349143457884 لتجنب أي مشاكل.\n\n‏💬 يمكنك البدء بالدردشة والتفاعل مع الأعضاء في ⁠📃〡𝖦eneral-𝖢hat.\n\n‏نتمنى لك وقتاً ممتعاً! ✨",
+      "channelId": "1500628365005164554",
+      "botName": "WelcomeBot 👋",
+      "botAvatar": "✨",
+      "dmGreeting": true,
+      "dmMessage": "🎉 Hey {username}, glad you landed in our server! Be sure to read the rules and introduce yourself.",
+      "embedColor": "#ff7300"
+    },
+    "ticket": {
+      "enabled": true,
+      "panelTitle": "🎫 نظام فتح التذاكر (Support Ticket Portal)",
+      "panelDescription": "قوانين التذاكر:\n• الاحترام واجب وعدم التهجم في التكت.\n• يمنع النقاش معاً.\n• في حال قمت بفتح تكت أدخل بالموضوع مباشرة.\n• يمنع السب والشتم والإهانة.\n\nملاحظة:\nيجب عليك تعبئة البيانات قبل فتح التذكرة بشكل كامل، وخلاف ذلك يحق للإدارة إغلاق التذكرة مباشرة.",
+      "buttonLabel": "فتح تذكرة | Open Ticket 📩",
+      "welcomeMessage": "مرحباً بك في تذكرة الدعم الخاصة بك! سيتواصل معك أحد المسؤولين قريباً.\nلإغلاق التذكرة، اضغط على **إغلاق التذكرة 🔒**",
+      "botName": "SupportBot 🎫",
+      "botAvatar": "🛡️",
+      "showFeedbackOnClose": true,
+      "ticketCategoryName": "💼 • تذاكر الدعم المفتوحة",
+      "activeTickets": [],
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fe2?w=1200&auto=format&fit=crop&q=80",
+      "ticketTypes": [
+        {
+          "id": "type-inquiry",
+          "name": "استفسار وعام (Inquiries)",
+          "emoji": "💬",
+          "description": "للاستفسارات العامة والمساعدة والأسئلة الخاصة بالسيرفر",
+          "welcomeMessage": "مرحباً بك في تكنك الاستفسارات! يرجى توضيح سؤالك بالتفصيل، وسيجيبك الدعم الفني قريباً.",
+          "ticketCategoryName": "💬 • استفسارات عامة"
+        },
+        {
+          "id": "type-complaint",
+          "name": "شات شكاوى وبلاغات (Complaints)",
+          "emoji": "⚠️",
+          "description": "لتقديم شكوى ضد لاعب أو إبلاغ عن مشكلة فنية أو سلوكية",
+          "welcomeMessage": "مرحباً بك في تذكرة الشكاوى والبلاغات! يرجى تقديم تفاصيل الشكوى مع الإثباتات لتتم معالجتها سريعاً.",
+          "ticketCategoryName": "⚠️ • شكاوى وبلاغات"
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "staffApp": {
+      "enabled": true,
+      "questions": [
+        "كم عمرك؟ (What is your age?)",
+        "لماذا تريد الانضمام لطاقمنا الإداري؟ (Why should we choose you?)",
+        "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)"
+      ],
+      "botName": "RecruiterBot 🛡️",
+      "botAvatar": "💼",
+      "autoMessageOnApprove": "🎉 تهانينا {user}! تم قبول طلب انضمامك لطاقم الإدارة بعد المراجعة الشاملة لخبراتك وسيرتك الإدارية المميزة. يرجى التواصل مع الإدارة العليا لترتيب مقابلة الترقية والتدريب الفوري. بالتوفيق لك!",
+      "autoMessageOnReject": "مرحباً {user}. نشكرك جزيل الشكر على اهتمامك ووقتك في تقديم طلب الإشراف. للأسف، بعد مراجعة دقيقة لطلبك، لم نتمكن من قبول الطلب في الوقت الحالي. ندعوك للمشاركة بنشاط والتقديم مجدداً في المراحل القادمة. أطيب التمنيات!",
+      "approvedRoleId": "123456789012345678",
+      "bannerUrl": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&auto=format&fit=crop&q=80",
+      "submissions": [
+        {
+          "id": "sub-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "answers": [
+            {
+              "question": "كم عمرك؟ (What is your age?)",
+              "answer": "19 years old"
+            },
+            {
+              "question": "لماذا تريد الانضمام لطاقمنا الإداري? (Why should we choose you?)",
+              "answer": "I love helping people and keeping the community friendly and clean!"
+            },
+            {
+              "question": "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)",
+              "answer": "I moderated two larger gaming servers and know standard discord setups."
+            }
+          ],
+          "status": "pending",
+          "timestamp": "Today at 07:11 AM"
+        }
+      ]
+    },
+    "security": {
+      "enabled": true,
+      "botName": "GuardBot 🛡️",
+      "botAvatar": "⚡",
+      "verificationEnabled": true,
+      "verificationChannelId": "chan-1",
+      "verificationButtonLabel": "تفعيل الحساب (Verify Profile) ✅",
+      "verificationSuccessMessage": "تهانينا! لقد رصد نظام الحماية هويتك البشرية وتم منحك رتبة العضو وتفعيل الحساب بنجاح. 🔓",
+      "spamProtectionEnabled": true,
+      "maxMessagesPerMinute": 6,
+      "wordFilterEnabled": true,
+      "badWordsList": [
+        "كلب",
+        "حمار",
+        "Spam",
+        "scam",
+        "hack",
+        "virus"
+      ],
+      "linkFilterEnabled": true,
+      "antiRaidEnabled": true,
+      "logsChannelId": "chan-2",
+      "securityLevel": "medium",
+      "bannerUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80"
+    },
+    "rulesBot": {
+      "enabled": true,
+      "botName": "LawyerBot 📜",
+      "botAvatar": "⚖️",
+      "bannerUrl": "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=1200&auto=format&fit=crop&q=80",
+      "categories": [
+        {
+          "id": "cat-general",
+          "name": "القوانين العامة 📜",
+          "icon": "🛡️",
+          "rules": [
+            "احترام جميع الأعضاء في السيرفر وعدم الإساءة لأي شخص بالقول أو المنشن.",
+            "يمنع منعاً باتاً نشر محتوى خارج عن الذوق العام أو الصور الفاضحة والمخلة بالآداب.",
+            "الالتزام بالذوق والحديث الراقي وتجنب الخوض في النزاعات العرقية أو السياسية الطائفية."
+          ]
+        },
+        {
+          "id": "cat-chat",
+          "name": "قوانين الدردشة 💬",
+          "icon": "💬",
+          "rules": [
+            "يمنع السبام أو التكرار العالي للرسائل وتخريب متعة الشات العام.",
+            "منشن الإدارة بدون داعي قد يعرضك للعقوبة، استخدم التكت أو تواصل بأدب."
+          ]
+        },
+        {
+          "id": "cat-staff",
+          "name": "قوانين الإشراف 👔",
+          "icon": "👔",
+          "rules": [
+            "يُمنع على المشرف استخدام صلاحيات السجن أو الميوت كأداة شخصية بل لتطبيق القانون فقط.",
+            "يجب على كل إداري توثيق جميع الإجراءات في الشات المخصص للوجوهات فوراً.",
+            "تحلى بالهدوء التام والامتناع التام عن الرد على حركات الاستفزاز الطفولية."
+          ]
+        }
+      ]
+    },
+    "leaveConfig": {
+      "enabled": true,
+      "botName": "OfficeBot 📁",
+      "botAvatar": "📇",
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "leaveRoleId": "1508178322129948793",
+      "resignationRemoveRoleIds": "111111111111111111, 222222222222222222",
+      "requests": [
+        {
+          "id": "req-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "type": "leave",
+          "reason": "أرغب بطلب إجازة قصيرة لمدة 10 أيام ابتداءً من الغد لدواعي الامتحانات الدراسية والمهام الشاقة.",
+          "status": "pending",
+          "timestamp": "Today at 08:30 AM"
+        }
+      ],
+      "embedColor": "#ff5900",
+      "reviewChannelId": "1507796630856929350"
+    },
+    "suggestion": {
+      "enabled": true,
+      "botName": "SuggestBot 💡",
+      "botAvatar": "💡",
+      "channelId": "1507796630856929350",
+      "autoReact": true,
+      "anonymous": false,
+      "bannerUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+      "suggestionsList": [
+        {
+          "id": "sug-1",
+          "username": "papy615",
+          "avatar": "🎮",
+          "content": "اقترح إضافة روم خاص للفعاليات والمسابقات الأسبوعية لزيادة تفاعل الأعضاء في السيرفر وتوزيع الجوائز.",
+          "status": "pending",
+          "timestamp": "Today at 08:31 AM",
+          "upvotes": 8,
+          "downvotes": 1,
+          "votedUsers": [
+            "m-2",
+            "m-4"
+          ]
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "report": {
+      "enabled": true,
+      "botName": "ReportBot ⚠️",
+      "botAvatar": "⚠️",
+      "logsChannelId": "chan-staff-logs",
+      "bannerUrl": "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=1200&auto=format&fit=crop&q=80",
+      "reportsList": [
+        {
+          "id": "rep-1",
+          "reporter": "GamerPro",
+          "reportedUser": "LoungeQueen",
+          "reason": "إرسال روابط دعوات سيرفرات أخرى في الخاص بدون إذن (سبام دايركت).",
+          "status": "pending",
+          "timestamp": "Today at 08:32 AM",
+          "proof": "https://i.imgur.com/screenshot.png"
+        }
+      ]
+    },
+    "warning": {
+      "enabled": true,
+      "botName": "PunishBot 🔨",
+      "botAvatar": "🔨",
+      "maxWarningsBeforeBan": 3,
+      "bannerUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80",
+      "warningsList": [
+        {
+          "id": "warn-1",
+          "username": "LoungeQueen",
+          "adminName": "Moderator",
+          "reason": "تخريب في الشات وسبام رسائل متكررة بعد التنبيه الشفهي.",
+          "timestamp": "Today at 08:28 AM"
+        }
+      ]
+    },
+    "autoResponse": {
+      "enabled": true,
+      "botName": "ResponderBot 💬",
+      "botAvatar": "🤖",
+      "responses": [
+        {
+          "id": "ar-1",
+          "trigger": "السلام عليكم",
+          "response": "وعليكم السلام ورحمة الله وبركاته يا هلا بك نورت السيرفر! ❤️👋",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-2",
+          "trigger": "كيف افعل حسابي",
+          "response": "أهلاً بك! يمكنك تفعيل حسابك من خلال الذهاب لقناة تفعيل الحساب والضغط على زر التفعيل الأخضر. ✅",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-1779801664964",
+          "trigger": "h",
+          "response": "dhdhfdh",
+          "matchType": "contains"
+        }
+      ]
+    },
+    "giveaway": {
+      "enabled": true,
+      "botName": "GiveawayBot 🎉",
+      "botAvatar": "🎁",
+      "channelId": "1507796630856929350",
+      "bannerUrl": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=1200&auto=format&fit=crop&q=80",
+      "giveawaysList": [
+        {
+          "id": "gw-1",
+          "prize": "رتبة VIP خاصة + 50,000 كاش 🪙",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "3:38:53 PM",
+          "endsAt": "4:38:53 PM"
+        },
+        {
+          "id": "gw-1779801723344",
+          "prize": "thfht",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "4:22:03 PM",
+          "endsAt": "5:22:03 PM"
+        }
+      ]
+    },
+    "levelConfig": {
+      "enabled": false,
+      "botName": "LevelBot 🏆",
+      "botAvatar": "⭐",
+      "xpPerMessage": 15,
+      "levelUpMessage": "🎉 تهانينا {user}! لقد غادرت للمستوى الفارق {level}! استمر في تفاعلك الرائع! 🚀⭐",
+      "levelUpChannelId": "chan-general",
+      "leaderboard": [
+        {
+          "id": "xp-1",
+          "username": "papy615",
+          "avatar": "👑",
+          "xp": 1250,
+          "level": 8
+        },
+        {
+          "id": "xp-2",
+          "username": "GamerPro",
+          "avatar": "🎮",
+          "xp": 850,
+          "level": 5
+        },
+        {
+          "id": "xp-3",
+          "username": "LoungeQueen",
+          "avatar": "💅",
+          "xp": 430,
+          "level": 3
+        }
+      ],
+      "roleRewards": [
+        {
+          "id": "rr-1",
+          "level": 5,
+          "roleName": "متفاعل فضي 🥈"
+        },
+        {
+          "id": "rr-2",
+          "level": 10,
+          "roleName": "متفاعل ذهبي 🥇"
+        }
+      ]
+    },
+    "reactionRoles": {
+      "enabled": true,
+      "botName": "RoleBot 🏷️",
+      "botAvatar": "🏷️",
+      "panelTitle": "🎭 نظام اختيار الرتب تلقائياً (Reaction & Button Roles Portal)",
+      "panelDescription": "فضلاً اضغط على الأزرار أدناه للحصول على الرتب التي تناسب اهتماماتك وتخصص سلفاً:\n\n• 🎮 **رتبة الألعاب** -> لتلقي إشعارات فعاليات الأسطورية.\n• 🔔 **أخبار وتحديثات** -> لمعرفة أخبار السيرفر أولاً بأول.\n• 🎁 **منشن فعاليات** -> لتنبيهك عند حدوث قيف_اواي جديد.",
+      "channelId": "chan-roles",
+      "bannerUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&auto=format&fit=crop&q=80",
+      "rolesList": [
+        {
+          "id": "rrole-1",
+          "label": "العاب وبثث 🎮",
+          "roleName": "العاب وبثث",
+          "emoji": "🎮",
+          "color": "blue"
+        },
+        {
+          "id": "rrole-2",
+          "label": "إشعار التحديثات 🔔",
+          "roleName": "إشعار التحديثات",
+          "emoji": "🔔",
+          "color": "green"
+        },
+        {
+          "id": "rrole-3",
+          "label": "منشن فعاليات 🎁",
+          "roleName": "منشن الفعاليات",
+          "emoji": "🎁",
+          "color": "yellow"
+        }
+      ]
+    },
+    "voiceStats": {
+      "enabled": true,
+      "botName": "StatsBot 📊",
+      "botAvatar": "📊",
+      "totalMembersName": "📊 إجمالي الأعضاء: {count}",
+      "activeMembersName": "🟢 المتصلين: {count}",
+      "voiceUsersName": "🔊 بالقرية الصوتية: {count}"
+    },
+    "_updatedAt": "2026-06-01T07:01:04.557Z"
+  },
+  "1193594235920842883": {
+    "config": {
+      "name": "System",
+      "avatar": "🤖",
+      "status": "dnd",
+      "customStatus": "Developing amazing things!",
+      "activityType": "STREAMING",
+      "activityName": "by mjk",
+      "prefix": "/",
+      "embedColor": "#ff4d00"
+    },
+    "commands": [
+      {
+        "id": "cmd-default-1",
+        "trigger": "/help",
+        "type": "slash",
+        "description": "Lists active triggers and commands of SystemAI bot.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "SystemAI commands checklist 🤖",
+        "embedDescription": "You can execute the following custom commands inside this sandbox server:\n\n• **`!ping`** — Check system API roundtrip latencies.\n• **`/ai-chat`** — Commences real-time natural dialogues with my cognitive Gemini subroutines.\n• **`!welcome`** — Plays a beautiful custom embedded greeting illustration.",
+        "embedColor": "#5865F2",
+        "embedFooter": "Designed with Discord Bot Builder",
+        "embedThumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80",
+        "embedFields": []
+      },
+      {
+        "id": "cmd-default-2",
+        "trigger": "ping",
+        "type": "prefix",
+        "description": "Outputs bot latency statistics.",
+        "responseType": "text",
+        "responseText": "Pong! 🏓 Active system API latency is **14ms**. Simulated roundtrip complete."
+      },
+      {
+        "id": "cmd-default-3",
+        "trigger": "/ai-chat",
+        "type": "slash",
+        "description": "Cognitive AI module powered by Gemini API.",
+        "responseType": "ai",
+        "responseText": "Act as a super friendly, helpful computer assistant bot. Speak directly, keep responses funny, and use simple Discord markdown styling occasionally."
+      },
+      {
+        "id": "cmd-default-4",
+        "trigger": "welcome",
+        "type": "prefix",
+        "description": "Welcomes a user with a rich embedded layout.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "A Wild {username} Appeared! ✨",
+        "embedDescription": "Welcome {user} to the Server! We are thrilled to have you here.\n\nMake sure to check `#bot-testing` to interact with our integrations, join `🔊 voice-lounge` for voice playbacks, or test more tools.",
+        "embedColor": "#57F287",
+        "embedFooter": "Guild Member Count: {memberCount}",
+        "embedImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60"
+      }
+    ],
+    "welcome": {
+      "enabled": true,
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "avatarEmoji": "👑",
+      "welcomeTitle": "A Wild {username} Appeared! ✨",
+      "welcomeMessage": "مرحباً بك في BLACK SITE ‏👋\n\n‏أهلاً بك @{@user} في سيرفرنا! أسفرت وأنورت بتواجدك معنا.\n\n‏ نرجو منك قراءة القوانين في ⁠1506219349143457884 لتجنب أي مشاكل.\n\n‏💬 يمكنك البدء بالدردشة والتفاعل مع الأعضاء في ⁠📃〡𝖦eneral-𝖢hat.\n\n‏نتمنى لك وقتاً ممتعاً! ✨",
+      "channelId": "1500628365005164554",
+      "botName": "WelcomeBot 👋",
+      "botAvatar": "✨",
+      "dmGreeting": true,
+      "dmMessage": "🎉 Hey {username}, glad you landed in our server! Be sure to read the rules and introduce yourself.",
+      "embedColor": "#ff7300"
+    },
+    "ticket": {
+      "enabled": true,
+      "panelTitle": "🎫 نظام فتح التذاكر (Support Ticket Portal)",
+      "panelDescription": "قوانين التذاكر:\n• الاحترام واجب وعدم التهجم في التكت.\n• يمنع النقاش معاً.\n• في حال قمت بفتح تكت أدخل بالموضوع مباشرة.\n• يمنع السب والشتم والإهانة.\n\nملاحظة:\nيجب عليك تعبئة البيانات قبل فتح التذكرة بشكل كامل، وخلاف ذلك يحق للإدارة إغلاق التذكرة مباشرة.",
+      "buttonLabel": "فتح تذكرة | Open Ticket 📩",
+      "welcomeMessage": "مرحباً بك في تذكرة الدعم الخاصة بك! سيتواصل معك أحد المسؤولين قريباً.\nلإغلاق التذكرة، اضغط على **إغلاق التذكرة 🔒**",
+      "botName": "SupportBot 🎫",
+      "botAvatar": "🛡️",
+      "showFeedbackOnClose": true,
+      "ticketCategoryName": "💼 • تذاكر الدعم المفتوحة",
+      "activeTickets": [],
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fe2?w=1200&auto=format&fit=crop&q=80",
+      "ticketTypes": [
+        {
+          "id": "type-inquiry",
+          "name": "استفسار وعام (Inquiries)",
+          "emoji": "💬",
+          "description": "للاستفسارات العامة والمساعدة والأسئلة الخاصة بالسيرفر",
+          "welcomeMessage": "مرحباً بك في تكنك الاستفسارات! يرجى توضيح سؤالك بالتفصيل، وسيجيبك الدعم الفني قريباً.",
+          "ticketCategoryName": "💬 • استفسارات عامة"
+        },
+        {
+          "id": "type-complaint",
+          "name": "شات شكاوى وبلاغات (Complaints)",
+          "emoji": "⚠️",
+          "description": "لتقديم شكوى ضد لاعب أو إبلاغ عن مشكلة فنية أو سلوكية",
+          "welcomeMessage": "مرحباً بك في تذكرة الشكاوى والبلاغات! يرجى تقديم تفاصيل الشكوى مع الإثباتات لتتم معالجتها سريعاً.",
+          "ticketCategoryName": "⚠️ • شكاوى وبلاغات"
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "staffApp": {
+      "enabled": true,
+      "questions": [
+        "كم عمرك؟ (What is your age?)",
+        "لماذا تريد الانضمام لطاقمنا الإداري؟ (Why should we choose you?)",
+        "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)"
+      ],
+      "botName": "RecruiterBot 🛡️",
+      "botAvatar": "💼",
+      "autoMessageOnApprove": "🎉 تهانينا {user}! تم قبول طلب انضمامك لطاقم الإدارة بعد المراجعة الشاملة لخبراتك وسيرتك الإدارية المميزة. يرجى التواصل مع الإدارة العليا لترتيب مقابلة الترقية والتدريب الفوري. بالتوفيق لك!",
+      "autoMessageOnReject": "مرحباً {user}. نشكرك جزيل الشكر على اهتمامك ووقتك في تقديم طلب الإشراف. للأسف، بعد مراجعة دقيقة لطلبك، لم نتمكن من قبول الطلب في الوقت الحالي. ندعوك للمشاركة بنشاط والتقديم مجدداً في المراحل القادمة. أطيب التمنيات!",
+      "approvedRoleId": "123456789012345678",
+      "bannerUrl": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&auto=format&fit=crop&q=80",
+      "submissions": [
+        {
+          "id": "sub-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "answers": [
+            {
+              "question": "كم عمرك؟ (What is your age?)",
+              "answer": "19 years old"
+            },
+            {
+              "question": "لماذا تريد الانضمام لطاقمنا الإداري? (Why should we choose you?)",
+              "answer": "I love helping people and keeping the community friendly and clean!"
+            },
+            {
+              "question": "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)",
+              "answer": "I moderated two larger gaming servers and know standard discord setups."
+            }
+          ],
+          "status": "pending",
+          "timestamp": "Today at 07:11 AM"
+        }
+      ]
+    },
+    "security": {
+      "enabled": true,
+      "botName": "GuardBot 🛡️",
+      "botAvatar": "⚡",
+      "verificationEnabled": true,
+      "verificationChannelId": "chan-1",
+      "verificationButtonLabel": "تفعيل الحساب (Verify Profile) ✅",
+      "verificationSuccessMessage": "تهانينا! لقد رصد نظام الحماية هويتك البشرية وتم منحك رتبة العضو وتفعيل الحساب بنجاح. 🔓",
+      "spamProtectionEnabled": true,
+      "maxMessagesPerMinute": 6,
+      "wordFilterEnabled": true,
+      "badWordsList": [
+        "كلب",
+        "حمار",
+        "Spam",
+        "scam",
+        "hack",
+        "virus"
+      ],
+      "linkFilterEnabled": true,
+      "antiRaidEnabled": true,
+      "logsChannelId": "chan-2",
+      "securityLevel": "medium",
+      "bannerUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80"
+    },
+    "rulesBot": {
+      "enabled": true,
+      "botName": "LawyerBot 📜",
+      "botAvatar": "⚖️",
+      "bannerUrl": "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=1200&auto=format&fit=crop&q=80",
+      "categories": [
+        {
+          "id": "cat-general",
+          "name": "القوانين العامة 📜",
+          "icon": "🛡️",
+          "rules": [
+            "احترام جميع الأعضاء في السيرفر وعدم الإساءة لأي شخص بالقول أو المنشن.",
+            "يمنع منعاً باتاً نشر محتوى خارج عن الذوق العام أو الصور الفاضحة والمخلة بالآداب.",
+            "الالتزام بالذوق والحديث الراقي وتجنب الخوض في النزاعات العرقية أو السياسية الطائفية."
+          ]
+        },
+        {
+          "id": "cat-chat",
+          "name": "قوانين الدردشة 💬",
+          "icon": "💬",
+          "rules": [
+            "يمنع السبام أو التكرار العالي للرسائل وتخريب متعة الشات العام.",
+            "منشن الإدارة بدون داعي قد يعرضك للعقوبة، استخدم التكت أو تواصل بأدب."
+          ]
+        },
+        {
+          "id": "cat-staff",
+          "name": "قوانين الإشراف 👔",
+          "icon": "👔",
+          "rules": [
+            "يُمنع على المشرف استخدام صلاحيات السجن أو الميوت كأداة شخصية بل لتطبيق القانون فقط.",
+            "يجب على كل إداري توثيق جميع الإجراءات في الشات المخصص للوجوهات فوراً.",
+            "تحلى بالهدوء التام والامتناع التام عن الرد على حركات الاستفزاز الطفولية."
+          ]
+        }
+      ]
+    },
+    "leaveConfig": {
+      "enabled": true,
+      "botName": "OfficeBot 📁",
+      "botAvatar": "📇",
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "leaveRoleId": "1508178322129948793",
+      "resignationRemoveRoleIds": "111111111111111111, 222222222222222222",
+      "requests": [
+        {
+          "id": "req-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "type": "leave",
+          "reason": "أرغب بطلب إجازة قصيرة لمدة 10 أيام ابتداءً من الغد لدواعي الامتحانات الدراسية والمهام الشاقة.",
+          "status": "pending",
+          "timestamp": "Today at 08:30 AM"
+        }
+      ],
+      "embedColor": "#ff5900",
+      "reviewChannelId": "1507796630856929350"
+    },
+    "suggestion": {
+      "enabled": true,
+      "botName": "SuggestBot 💡",
+      "botAvatar": "💡",
+      "channelId": "1507796630856929350",
+      "autoReact": true,
+      "anonymous": false,
+      "bannerUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+      "suggestionsList": [
+        {
+          "id": "sug-1",
+          "username": "papy615",
+          "avatar": "🎮",
+          "content": "اقترح إضافة روم خاص للفعاليات والمسابقات الأسبوعية لزيادة تفاعل الأعضاء في السيرفر وتوزيع الجوائز.",
+          "status": "pending",
+          "timestamp": "Today at 08:31 AM",
+          "upvotes": 8,
+          "downvotes": 1,
+          "votedUsers": [
+            "m-2",
+            "m-4"
+          ]
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "report": {
+      "enabled": true,
+      "botName": "ReportBot ⚠️",
+      "botAvatar": "⚠️",
+      "logsChannelId": "chan-staff-logs",
+      "bannerUrl": "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=1200&auto=format&fit=crop&q=80",
+      "reportsList": [
+        {
+          "id": "rep-1",
+          "reporter": "GamerPro",
+          "reportedUser": "LoungeQueen",
+          "reason": "إرسال روابط دعوات سيرفرات أخرى في الخاص بدون إذن (سبام دايركت).",
+          "status": "pending",
+          "timestamp": "Today at 08:32 AM",
+          "proof": "https://i.imgur.com/screenshot.png"
+        }
+      ]
+    },
+    "warning": {
+      "enabled": true,
+      "botName": "PunishBot 🔨",
+      "botAvatar": "🔨",
+      "maxWarningsBeforeBan": 3,
+      "bannerUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80",
+      "warningsList": [
+        {
+          "id": "warn-1",
+          "username": "LoungeQueen",
+          "adminName": "Moderator",
+          "reason": "تخريب في الشات وسبام رسائل متكررة بعد التنبيه الشفهي.",
+          "timestamp": "Today at 08:28 AM"
+        }
+      ]
+    },
+    "autoResponse": {
+      "enabled": true,
+      "botName": "ResponderBot 💬",
+      "botAvatar": "🤖",
+      "responses": [
+        {
+          "id": "ar-1",
+          "trigger": "السلام عليكم",
+          "response": "وعليكم السلام ورحمة الله وبركاته يا هلا بك نورت السيرفر! ❤️👋",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-2",
+          "trigger": "كيف افعل حسابي",
+          "response": "أهلاً بك! يمكنك تفعيل حسابك من خلال الذهاب لقناة تفعيل الحساب والضغط على زر التفعيل الأخضر. ✅",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-1779801664964",
+          "trigger": "h",
+          "response": "dhdhfdh",
+          "matchType": "contains"
+        }
+      ]
+    },
+    "giveaway": {
+      "enabled": true,
+      "botName": "GiveawayBot 🎉",
+      "botAvatar": "🎁",
+      "channelId": "1507796630856929350",
+      "bannerUrl": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=1200&auto=format&fit=crop&q=80",
+      "giveawaysList": [
+        {
+          "id": "gw-1",
+          "prize": "رتبة VIP خاصة + 50,000 كاش 🪙",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "3:38:53 PM",
+          "endsAt": "4:38:53 PM"
+        },
+        {
+          "id": "gw-1779801723344",
+          "prize": "thfht",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "4:22:03 PM",
+          "endsAt": "5:22:03 PM"
+        }
+      ]
+    },
+    "levelConfig": {
+      "enabled": false,
+      "botName": "LevelBot 🏆",
+      "botAvatar": "⭐",
+      "xpPerMessage": 15,
+      "levelUpMessage": "🎉 تهانينا {user}! لقد غادرت للمستوى الفارق {level}! استمر في تفاعلك الرائع! 🚀⭐",
+      "levelUpChannelId": "chan-general",
+      "leaderboard": [
+        {
+          "id": "xp-1",
+          "username": "papy615",
+          "avatar": "👑",
+          "xp": 1250,
+          "level": 8
+        },
+        {
+          "id": "xp-2",
+          "username": "GamerPro",
+          "avatar": "🎮",
+          "xp": 850,
+          "level": 5
+        },
+        {
+          "id": "xp-3",
+          "username": "LoungeQueen",
+          "avatar": "💅",
+          "xp": 430,
+          "level": 3
+        }
+      ],
+      "roleRewards": [
+        {
+          "id": "rr-1",
+          "level": 5,
+          "roleName": "متفاعل فضي 🥈"
+        },
+        {
+          "id": "rr-2",
+          "level": 10,
+          "roleName": "متفاعل ذهبي 🥇"
+        }
+      ]
+    },
+    "reactionRoles": {
+      "enabled": true,
+      "botName": "RoleBot 🏷️",
+      "botAvatar": "🏷️",
+      "panelTitle": "🎭 نظام اختيار الرتب تلقائياً (Reaction & Button Roles Portal)",
+      "panelDescription": "فضلاً اضغط على الأزرار أدناه للحصول على الرتب التي تناسب اهتماماتك وتخصص سلفاً:\n\n• 🎮 **رتبة الألعاب** -> لتلقي إشعارات فعاليات الأسطورية.\n• 🔔 **أخبار وتحديثات** -> لمعرفة أخبار السيرفر أولاً بأول.\n• 🎁 **منشن فعاليات** -> لتنبيهك عند حدوث قيف_اواي جديد.",
+      "channelId": "chan-roles",
+      "bannerUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&auto=format&fit=crop&q=80",
+      "rolesList": [
+        {
+          "id": "rrole-1",
+          "label": "العاب وبثث 🎮",
+          "roleName": "العاب وبثث",
+          "emoji": "🎮",
+          "color": "blue"
+        },
+        {
+          "id": "rrole-2",
+          "label": "إشعار التحديثات 🔔",
+          "roleName": "إشعار التحديثات",
+          "emoji": "🔔",
+          "color": "green"
+        },
+        {
+          "id": "rrole-3",
+          "label": "منشن فعاليات 🎁",
+          "roleName": "منشن الفعاليات",
+          "emoji": "🎁",
+          "color": "yellow"
+        }
+      ]
+    },
+    "voiceStats": {
+      "enabled": true,
+      "botName": "StatsBot 📊",
+      "botAvatar": "📊",
+      "totalMembersName": "📊 إجمالي الأعضاء: {count}",
+      "activeMembersName": "🟢 المتصلين: {count}",
+      "voiceUsersName": "🔊 بالقرية الصوتية: {count}"
+    },
+    "_updatedAt": "2026-06-01T07:01:14.072Z"
+  },
+  "1084573354293473374": {
+    "config": {
+      "name": "System",
+      "avatar": "🤖",
+      "status": "dnd",
+      "customStatus": "Developing amazing things!",
+      "activityType": "STREAMING",
+      "activityName": "by mjk",
+      "prefix": "/",
+      "embedColor": "#ff4d00"
+    },
+    "commands": [
+      {
+        "id": "cmd-default-1",
+        "trigger": "/help",
+        "type": "slash",
+        "description": "Lists active triggers and commands of SystemAI bot.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "SystemAI commands checklist 🤖",
+        "embedDescription": "You can execute the following custom commands inside this sandbox server:\n\n• **`!ping`** — Check system API roundtrip latencies.\n• **`/ai-chat`** — Commences real-time natural dialogues with my cognitive Gemini subroutines.\n• **`!welcome`** — Plays a beautiful custom embedded greeting illustration.",
+        "embedColor": "#5865F2",
+        "embedFooter": "Designed with Discord Bot Builder",
+        "embedThumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80",
+        "embedFields": []
+      },
+      {
+        "id": "cmd-default-2",
+        "trigger": "ping",
+        "type": "prefix",
+        "description": "Outputs bot latency statistics.",
+        "responseType": "text",
+        "responseText": "Pong! 🏓 Active system API latency is **14ms**. Simulated roundtrip complete."
+      },
+      {
+        "id": "cmd-default-3",
+        "trigger": "/ai-chat",
+        "type": "slash",
+        "description": "Cognitive AI module powered by Gemini API.",
+        "responseType": "ai",
+        "responseText": "Act as a super friendly, helpful computer assistant bot. Speak directly, keep responses funny, and use simple Discord markdown styling occasionally."
+      },
+      {
+        "id": "cmd-default-4",
+        "trigger": "welcome",
+        "type": "prefix",
+        "description": "Welcomes a user with a rich embedded layout.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "A Wild {username} Appeared! ✨",
+        "embedDescription": "Welcome {user} to the Server! We are thrilled to have you here.\n\nMake sure to check `#bot-testing` to interact with our integrations, join `🔊 voice-lounge` for voice playbacks, or test more tools.",
+        "embedColor": "#57F287",
+        "embedFooter": "Guild Member Count: {memberCount}",
+        "embedImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60"
+      }
+    ],
+    "welcome": {
+      "enabled": true,
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",
+      "avatarEmoji": "👑",
+      "welcomeTitle": "A Wild {username} Appeared! ✨",
+      "welcomeMessage": "مرحباً بك في BLACK SITE ‏👋\n\n‏أهلاً بك @{@user} في سيرفرنا! أسفرت وأنورت بتواجدك معنا.\n\n‏ نرجو منك قراءة القوانين في ⁠1506219349143457884 لتجنب أي مشاكل.\n\n‏💬 يمكنك البدء بالدردشة والتفاعل مع الأعضاء في ⁠📃〡𝖦eneral-𝖢hat.\n\n‏نتمنى لك وقتاً ممتعاً! ✨",
+      "channelId": "1500628365005164554",
+      "botName": "WelcomeBot 👋",
+      "botAvatar": "✨",
+      "dmGreeting": true,
+      "dmMessage": "🎉 Hey {username}, glad you landed in our server! Be sure to read the rules and introduce yourself.",
+      "embedColor": "#ff7300"
+    },
+    "ticket": {
+      "enabled": true,
+      "panelTitle": "🎫 نظام فتح التذاكر (Support Ticket Portal)",
+      "panelDescription": "قوانين التذاكر:\n• الاحترام واجب وعدم التهجم في التكت.\n• يمنع النقاش معاً.\n• في حال قمت بفتح تكت أدخل بالموضوع مباشرة.\n• يمنع السب والشتم والإهانة.\n\nملاحظة:\nيجب عليك تعبئة البيانات قبل فتح التذكرة بشكل كامل، وخلاف ذلك يحق للإدارة إغلاق التذكرة مباشرة.",
+      "buttonLabel": "فتح تذكرة | Open Ticket 📩",
+      "welcomeMessage": "مرحباً بك في تذكرة الدعم الخاصة بك! سيتواصل معك أحد المسؤولين قريباً.\nلإغلاق التذكرة، اضغط على **إغلاق التذكرة 🔒**",
+      "botName": "SupportBot 🎫",
+      "botAvatar": "🛡️",
+      "showFeedbackOnClose": true,
+      "ticketCategoryName": "💼 • تذاكر الدعم المفتوحة",
+      "activeTickets": [],
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fe2?w=1200&auto=format&fit=crop&q=80",
+      "ticketTypes": [
+        {
+          "id": "type-inquiry",
+          "name": "استفسار وعام (Inquiries)",
+          "emoji": "💬",
+          "description": "للاستفسارات العامة والمساعدة والأسئلة الخاصة بالسيرفر",
+          "welcomeMessage": "مرحباً بك في تكنك الاستفسارات! يرجى توضيح سؤالك بالتفصيل، وسيجيبك الدعم الفني قريباً.",
+          "ticketCategoryName": "💬 • استفسارات عامة"
+        },
+        {
+          "id": "type-complaint",
+          "name": "شات شكاوى وبلاغات (Complaints)",
+          "emoji": "⚠️",
+          "description": "لتقديم شكوى ضد لاعب أو إبلاغ عن مشكلة فنية أو سلوكية",
+          "welcomeMessage": "مرحباً بك في تذكرة الشكاوى والبلاغات! يرجى تقديم تفاصيل الشكوى مع الإثباتات لتتم معالجتها سريعاً.",
+          "ticketCategoryName": "⚠️ • شكاوى وبلاغات"
+        }
+      ],
+      "embedColor": "#ffffff",
+      "logChannelId": "1499558454782853191"
+    },
+    "staffApp": {
+      "enabled": true,
+      "questions": [
+        "كم عمرك؟ (What is your age?)",
+        "لماذا تريد الانضمام لطاقمنا الإداري؟ (Why should we choose you?)",
+        "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)"
+      ],
+      "botName": "RecruiterBot 🛡️",
+      "botAvatar": "💼",
+      "autoMessageOnApprove": "🎉 تهانينا {user}! تم قبول طلب انضمامك لطاقم الإدارة بعد المراجعة الشاملة لخبراتك وسيرتك الإدارية المميزة. يرجى التواصل مع الإدارة العليا لترتيب مقابلة الترقية والتدريب الفوري. بالتوفيق لك!",
+      "autoMessageOnReject": "مرحباً {user}. نشكرك جزيل الشكر على اهتمامك ووقتك في تقديم طلب الإشراف. للأسف، بعد مراجعة دقيقة لطلبك، لم نتمكن من قبول الطلب في الوقت الحالي. ندعوك للمشاركة بنشاط والتقديم مجدداً في المراحل القادمة. أطيب التمنيات!",
+      "approvedRoleId": "123456789012345678",
+      "bannerUrl": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&auto=format&fit=crop&q=80",
+      "submissions": [
+        {
+          "id": "sub-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "answers": [
+            {
+              "question": "كم عمرك؟ (What is your age?)",
+              "answer": "19 years old"
+            },
+            {
+              "question": "لماذا تريد الانضمام لطاقمنا الإداري? (Why should we choose you?)",
+              "answer": "I love helping people and keeping the community friendly and clean!"
+            },
+            {
+              "question": "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)",
+              "answer": "I moderated two larger gaming servers and know standard discord setups."
+            }
+          ],
+          "status": "pending",
+          "timestamp": "Today at 07:11 AM"
+        }
+      ]
+    },
+    "security": {
+      "enabled": true,
+      "botName": "GuardBot 🛡️",
+      "botAvatar": "⚡",
+      "verificationEnabled": true,
+      "verificationChannelId": "chan-1",
+      "verificationButtonLabel": "تفعيل الحساب (Verify Profile) ✅",
+      "verificationSuccessMessage": "تهانينا! لقد رصد نظام الحماية هويتك البشرية وتم منحك رتبة العضو وتفعيل الحساب بنجاح. 🔓",
+      "spamProtectionEnabled": true,
+      "maxMessagesPerMinute": 6,
+      "wordFilterEnabled": true,
+      "badWordsList": [
+        "كلب",
+        "حمار",
+        "Spam",
+        "scam",
+        "hack",
+        "virus",
+        "كس"
+      ],
+      "linkFilterEnabled": true,
+      "antiRaidEnabled": true,
+      "logsChannelId": "chan-2",
+      "securityLevel": "medium",
+      "bannerUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80"
+    },
+    "rulesBot": {
+      "enabled": true,
+      "botName": "LawyerBot 📜",
+      "botAvatar": "⚖️",
+      "bannerUrl": "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=1200&auto=format&fit=crop&q=80",
+      "categories": [
+        {
+          "id": "cat-general",
+          "name": "القوانين العامة 📜",
+          "icon": "🛡️",
+          "rules": [
+            "احترام جميع الأعضاء في السيرفر وعدم الإساءة لأي شخص بالقول أو المنشن.",
+            "يمنع منعاً باتاً نشر محتوى خارج عن الذوق العام أو الصور الفاضحة والمخلة بالآداب.",
+            "الالتزام بالذوق والحديث الراقي وتجنب الخوض في النزاعات العرقية أو السياسية الطائفية."
+          ]
+        },
+        {
+          "id": "cat-chat",
+          "name": "قوانين الدردشة 💬",
+          "icon": "💬",
+          "rules": [
+            "يمنع السبام أو التكرار العالي للرسائل وتخريب متعة الشات العام.",
+            "منشن الإدارة بدون داعي قد يعرضك للعقوبة، استخدم التكت أو تواصل بأدب."
+          ]
+        },
+        {
+          "id": "cat-staff",
+          "name": "قوانين الإشراف 👔",
+          "icon": "👔",
+          "rules": [
+            "يُمنع على المشرف استخدام صلاحيات السجن أو الميوت كأداة شخصية بل لتطبيق القانون فقط.",
+            "يجب على كل إداري توثيق جميع الإجراءات في الشات المخصص للوجوهات فوراً.",
+            "تحلى بالهدوء التام والامتناع التام عن الرد على حركات الاستفزاز الطفولية."
+          ]
+        }
+      ]
+    },
+    "leaveConfig": {
+      "enabled": true,
+      "botName": "OfficeBot 📁",
+      "botAvatar": "📇",
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "leaveRoleId": "1508178322129948793",
+      "resignationRemoveRoleIds": "111111111111111111, 222222222222222222",
+      "requests": [
+        {
+          "id": "req-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "type": "leave",
+          "reason": "أرغب بطلب إجازة قصيرة لمدة 10 أيام ابتداءً من الغد لدواعي الامتحانات الدراسية والمهام الشاقة.",
+          "status": "pending",
+          "timestamp": "Today at 08:30 AM"
+        }
+      ],
+      "embedColor": "#ff5900",
+      "reviewChannelId": "1507796630856929350"
+    },
+    "suggestion": {
+      "enabled": true,
+      "botName": "SuggestBot 💡",
+      "botAvatar": "💡",
+      "channelId": "1507796630856929350",
+      "autoReact": true,
+      "anonymous": false,
+      "bannerUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+      "suggestionsList": [
+        {
+          "id": "sug-1",
+          "username": "papy615",
+          "avatar": "🎮",
+          "content": "اقترح إضافة روم خاص للفعاليات والمسابقات الأسبوعية لزيادة تفاعل الأعضاء في السيرفر وتوزيع الجوائز.",
+          "status": "pending",
+          "timestamp": "Today at 08:31 AM",
+          "upvotes": 8,
+          "downvotes": 1,
+          "votedUsers": [
+            "m-2",
+            "m-4"
+          ]
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "report": {
+      "enabled": true,
+      "botName": "ReportBot ⚠️",
+      "botAvatar": "⚠️",
+      "logsChannelId": "chan-staff-logs",
+      "bannerUrl": "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=1200&auto=format&fit=crop&q=80",
+      "reportsList": [
+        {
+          "id": "rep-1",
+          "reporter": "GamerPro",
+          "reportedUser": "LoungeQueen",
+          "reason": "إرسال روابط دعوات سيرفرات أخرى في الخاص بدون إذن (سبام دايركت).",
+          "status": "pending",
+          "timestamp": "Today at 08:32 AM",
+          "proof": "https://i.imgur.com/screenshot.png"
+        }
+      ]
+    },
+    "warning": {
+      "enabled": true,
+      "botName": "PunishBot 🔨",
+      "botAvatar": "🔨",
+      "maxWarningsBeforeBan": 3,
+      "bannerUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80",
+      "warningsList": [
+        {
+          "id": "warn-1",
+          "username": "LoungeQueen",
+          "adminName": "Moderator",
+          "reason": "تخريب في الشات وسبام رسائل متكررة بعد التنبيه الشفهي.",
+          "timestamp": "Today at 08:28 AM"
+        }
+      ]
+    },
+    "autoResponse": {
+      "enabled": true,
+      "botName": "ResponderBot 💬",
+      "botAvatar": "🤖",
+      "responses": [
+        {
+          "id": "ar-1",
+          "trigger": "السلام عليكم",
+          "response": "وعليكم السلام ورحمة الله وبركاته يا هلا بك نورت السيرفر! ❤️👋",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-2",
+          "trigger": "كيف افعل حسابي",
+          "response": "أهلاً بك! يمكنك تفعيل حسابك من خلال الذهاب لقناة تفعيل الحساب والضغط على زر التفعيل الأخضر. ✅",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-1780306234025",
+          "trigger": ".",
+          "response": "وش تبي دز",
+          "matchType": "contains"
+        }
+      ]
+    },
+    "giveaway": {
+      "enabled": true,
+      "botName": "GiveawayBot 🎉",
+      "botAvatar": "🎁",
+      "channelId": "1507796630856929350",
+      "bannerUrl": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=1200&auto=format&fit=crop&q=80",
+      "giveawaysList": [
+        {
+          "id": "gw-1",
+          "prize": "رتبة VIP خاصة + 50,000 كاش 🪙",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "3:38:53 PM",
+          "endsAt": "4:38:53 PM"
+        },
+        {
+          "id": "gw-1779801723344",
+          "prize": "thfht",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "4:22:03 PM",
+          "endsAt": "5:22:03 PM"
+        }
+      ]
+    },
+    "levelConfig": {
+      "enabled": false,
+      "botName": "LevelBot 🏆",
+      "botAvatar": "⭐",
+      "xpPerMessage": 15,
+      "levelUpMessage": "🎉 تهانينا {user}! لقد غادرت للمستوى الفارق {level}! استمر في تفاعلك الرائع! 🚀⭐",
+      "levelUpChannelId": "chan-general",
+      "leaderboard": [
+        {
+          "id": "xp-1",
+          "username": "papy615",
+          "avatar": "👑",
+          "xp": 1250,
+          "level": 8
+        },
+        {
+          "id": "xp-2",
+          "username": "GamerPro",
+          "avatar": "🎮",
+          "xp": 850,
+          "level": 5
+        },
+        {
+          "id": "xp-3",
+          "username": "LoungeQueen",
+          "avatar": "💅",
+          "xp": 430,
+          "level": 3
+        }
+      ],
+      "roleRewards": [
+        {
+          "id": "rr-1",
+          "level": 5,
+          "roleName": "متفاعل فضي 🥈"
+        },
+        {
+          "id": "rr-2",
+          "level": 10,
+          "roleName": "متفاعل ذهبي 🥇"
+        }
+      ]
+    },
+    "reactionRoles": {
+      "enabled": true,
+      "botName": "RoleBot 🏷️",
+      "botAvatar": "🏷️",
+      "panelTitle": "🎭 نظام اختيار الرتب تلقائياً (Reaction & Button Roles Portal)",
+      "panelDescription": "فضلاً اضغط على الأزرار أدناه للحصول على الرتب التي تناسب اهتماماتك وتخصص سلفاً:\n\n• 🎮 **رتبة الألعاب** -> لتلقي إشعارات فعاليات الأسطورية.\n• 🔔 **أخبار وتحديثات** -> لمعرفة أخبار السيرفر أولاً بأول.\n• 🎁 **منشن فعاليات** -> لتنبيهك عند حدوث قيف_اواي جديد.",
+      "channelId": "chan-roles",
+      "bannerUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&auto=format&fit=crop&q=80",
+      "rolesList": [
+        {
+          "id": "rrole-1",
+          "label": "العاب وبثث 🎮",
+          "roleName": "العاب وبثث",
+          "emoji": "🎮",
+          "color": "blue"
+        },
+        {
+          "id": "rrole-2",
+          "label": "إشعار التحديثات 🔔",
+          "roleName": "إشعار التحديثات",
+          "emoji": "🔔",
+          "color": "green"
+        },
+        {
+          "id": "rrole-3",
+          "label": "منشن فعاليات 🎁",
+          "roleName": "منشن الفعاليات",
+          "emoji": "🎁",
+          "color": "yellow"
+        }
+      ]
+    },
+    "voiceStats": {
+      "enabled": true,
+      "botName": "StatsBot 📊",
+      "botAvatar": "📊",
+      "totalMembersName": "📊 إجمالي الأعضاء: {count}",
+      "activeMembersName": "🟢 المتصلين: {count}",
+      "voiceUsersName": "🔊 بالقرية الصوتية: {count}"
+    },
+    "autoRoles": {
+      "enabled": true,
+      "botName": "AutoRoles",
+      "botAvatar": "🎖️",
+      "rolesList": [
+        {
+          "id": "1223367174085804102",
+          "roleName": "𝐌𝐞𝐦𝐛𝐞𝐫"
+        }
+      ]
+    },
+    "embedFormatter": {
+      "enabled": false,
+      "botName": "EmbedFormatter",
+      "botAvatar": "📝",
+      "title": "",
+      "description": "",
+      "color": "#5865F2",
+      "thumbnail": "",
+      "image": "",
+      "footer": "",
+      "fields": []
+    },
+    "staffManagement": {
+      "enabled": false,
+      "botName": "StaffManager",
+      "botAvatar": "👥",
+      "members": [],
+      "rulesCategories": [],
+      "leaveRequests": []
+    },
+    "modLogs": {
+      "enabled": false,
+      "botName": "ModLogs",
+      "botAvatar": "📋",
+      "logChannelId": "",
+      "logMessageDeletes": true,
+      "logMessageEdits": true,
+      "logMemberBans": true,
+      "logMemberKicks": true,
+      "logMemberTimeouts": true,
+      "logRoleChanges": true,
+      "logChannelChanges": true,
+      "logMemberJoins": false,
+      "logMemberLeaves": false,
+      "logs": []
+    },
+    "_updatedAt": "2026-06-01T09:30:37.042Z",
+    "_updatedBy": "757199055226142772"
+  },
+  "1498726878146461747": {
+    "config": {
+      "name": "System",
+      "avatar": "🤖",
+      "status": "dnd",
+      "customStatus": "Developing amazing things!",
+      "activityType": "STREAMING",
+      "activityName": "by mjk",
+      "prefix": "/",
+      "embedColor": "#ff4d00"
+    },
+    "commands": [
+      {
+        "id": "cmd-default-1",
+        "trigger": "/help",
+        "type": "slash",
+        "description": "Lists active triggers and commands of SystemAI bot.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "SystemAI commands checklist 🤖",
+        "embedDescription": "You can execute the following custom commands inside this sandbox server:\n\n• **`!ping`** — Check system API roundtrip latencies.\n• **`/ai-chat`** — Commences real-time natural dialogues with my cognitive Gemini subroutines.\n• **`!welcome`** — Plays a beautiful custom embedded greeting illustration.",
+        "embedColor": "#5865F2",
+        "embedFooter": "Designed with Discord Bot Builder",
+        "embedThumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80",
+        "embedFields": []
+      },
+      {
+        "id": "cmd-default-2",
+        "trigger": "ping",
+        "type": "prefix",
+        "description": "Outputs bot latency statistics.",
+        "responseType": "text",
+        "responseText": "Pong! 🏓 Active system API latency is **14ms**. Simulated roundtrip complete."
+      },
+      {
+        "id": "cmd-default-3",
+        "trigger": "/ai-chat",
+        "type": "slash",
+        "description": "Cognitive AI module powered by Gemini API.",
+        "responseType": "ai",
+        "responseText": "Act as a super friendly, helpful computer assistant bot. Speak directly, keep responses funny, and use simple Discord markdown styling occasionally."
+      },
+      {
+        "id": "cmd-default-4",
+        "trigger": "welcome",
+        "type": "prefix",
+        "description": "Welcomes a user with a rich embedded layout.",
+        "responseType": "embed",
+        "responseText": "",
+        "embedTitle": "A Wild {username} Appeared! ✨",
+        "embedDescription": "Welcome {user} to the Server! We are thrilled to have you here.\n\nMake sure to check `#bot-testing` to interact with our integrations, join `🔊 voice-lounge` for voice playbacks, or test more tools.",
+        "embedColor": "#57F287",
+        "embedFooter": "Guild Member Count: {memberCount}",
+        "embedImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60"
+      }
+    ],
+    "welcome": {
+      "enabled": true,
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",
+      "avatarEmoji": "👑",
+      "welcomeTitle": "A Wild {username} Appeared! ✨",
+      "welcomeMessage": "مرحباً بك في BLACK SITE ‏👋\n\n‏أهلاً بك @{@user} في سيرفرنا! أسفرت وأنورت بتواجدك معنا.\n\n‏ نرجو منك قراءة القوانين في ⁠1506219349143457884 لتجنب أي مشاكل.\n\n‏💬 يمكنك البدء بالدردشة والتفاعل مع الأعضاء في ⁠📃〡𝖦eneral-𝖢hat.\n\n‏نتمنى لك وقتاً ممتعاً! ✨",
+      "channelId": "1500628365005164554",
+      "botName": "WelcomeBot 👋",
+      "botAvatar": "✨",
+      "dmGreeting": true,
+      "dmMessage": "🎉 Hey {username}, glad you landed in our server! Be sure to read the rules and introduce yourself.",
+      "embedColor": "#ff7300"
+    },
+    "ticket": {
+      "enabled": true,
+      "panelTitle": "🎫 نظام فتح التذاكر (Support Ticket Portal)",
+      "panelDescription": "قوانين التذاكر:\n• الاحترام واجب وعدم التهجم في التكت.\n• يمنع النقاش معاً.\n• في حال قمت بفتح تكت أدخل بالموضوع مباشرة.\n• يمنع السب والشتم والإهانة.\n\nملاحظة:\nيجب عليك تعبئة البيانات قبل فتح التذكرة بشكل كامل، وخلاف ذلك يحق للإدارة إغلاق التذكرة مباشرة.",
+      "buttonLabel": "فتح تذكرة | Open Ticket 📩",
+      "welcomeMessage": "مرحباً بك في تذكرة الدعم الخاصة بك! سيتواصل معك أحد المسؤولين قريباً.\nلإغلاق التذكرة، اضغط على **إغلاق التذكرة 🔒**",
+      "botName": "SupportBot 🎫",
+      "botAvatar": "🛡️",
+      "showFeedbackOnClose": true,
+      "ticketCategoryName": "💼 • تذاكر الدعم المفتوحة",
+      "activeTickets": [],
+      "bannerUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fe2?w=1200&auto=format&fit=crop&q=80",
+      "ticketTypes": [
+        {
+          "id": "type-inquiry",
+          "name": "استفسار وعام (Inquiries)",
+          "emoji": "💬",
+          "description": "للاستفسارات العامة والمساعدة والأسئلة الخاصة بالسيرفر",
+          "welcomeMessage": "مرحباً بك في تكنك الاستفسارات! يرجى توضيح سؤالك بالتفصيل، وسيجيبك الدعم الفني قريباً.",
+          "ticketCategoryName": "💬 • استفسارات عامة"
+        },
+        {
+          "id": "type-complaint",
+          "name": "شات شكاوى وبلاغات (Complaints)",
+          "emoji": "⚠️",
+          "description": "لتقديم شكوى ضد لاعب أو إبلاغ عن مشكلة فنية أو سلوكية",
+          "welcomeMessage": "مرحباً بك في تذكرة الشكاوى والبلاغات! يرجى تقديم تفاصيل الشكوى مع الإثباتات لتتم معالجتها سريعاً.",
+          "ticketCategoryName": "⚠️ • شكاوى وبلاغات"
+        }
+      ],
+      "embedColor": "#ffffff",
+      "logChannelId": "1499558454782853191"
+    },
+    "staffApp": {
+      "enabled": true,
+      "questions": [
+        "كم عمرك؟ (What is your age?)",
+        "لماذا تريد الانضمام لطاقمنا الإداري؟ (Why should we choose you?)",
+        "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)"
+      ],
+      "botName": "RecruiterBot 🛡️",
+      "botAvatar": "💼",
+      "autoMessageOnApprove": "🎉 تهانينا {user}! تم قبول طلب انضمامك لطاقم الإدارة بعد المراجعة الشاملة لخبراتك وسيرتك الإدارية المميزة. يرجى التواصل مع الإدارة العليا لترتيب مقابلة الترقية والتدريب الفوري. بالتوفيق لك!",
+      "autoMessageOnReject": "مرحباً {user}. نشكرك جزيل الشكر على اهتمامك ووقتك في تقديم طلب الإشراف. للأسف، بعد مراجعة دقيقة لطلبك، لم نتمكن من قبول الطلب في الوقت الحالي. ندعوك للمشاركة بنشاط والتقديم مجدداً في المراحل القادمة. أطيب التمنيات!",
+      "approvedRoleId": "123456789012345678",
+      "bannerUrl": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&auto=format&fit=crop&q=80",
+      "submissions": [
+        {
+          "id": "sub-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "answers": [
+            {
+              "question": "كم عمرك؟ (What is your age?)",
+              "answer": "19 years old"
+            },
+            {
+              "question": "لماذا تريد الانضمام لطاقمنا الإداري? (Why should we choose you?)",
+              "answer": "I love helping people and keeping the community friendly and clean!"
+            },
+            {
+              "question": "ما هي الخبرات التي تمتلكها في إدارة السيرفرات? (What experiences do you have?)",
+              "answer": "I moderated two larger gaming servers and know standard discord setups."
+            }
+          ],
+          "status": "pending",
+          "timestamp": "Today at 07:11 AM"
+        }
+      ]
+    },
+    "security": {
+      "enabled": true,
+      "botName": "GuardBot 🛡️",
+      "botAvatar": "⚡",
+      "verificationEnabled": true,
+      "verificationChannelId": "chan-1",
+      "verificationButtonLabel": "تفعيل الحساب (Verify Profile) ✅",
+      "verificationSuccessMessage": "تهانينا! لقد رصد نظام الحماية هويتك البشرية وتم منحك رتبة العضو وتفعيل الحساب بنجاح. 🔓",
+      "spamProtectionEnabled": true,
+      "maxMessagesPerMinute": 6,
+      "wordFilterEnabled": true,
+      "badWordsList": [
+        "كلب",
+        "حمار",
+        "Spam",
+        "scam",
+        "hack",
+        "virus",
+        "كس"
+      ],
+      "linkFilterEnabled": true,
+      "antiRaidEnabled": true,
+      "logsChannelId": "chan-2",
+      "securityLevel": "medium",
+      "bannerUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80"
+    },
+    "rulesBot": {
+      "enabled": true,
+      "botName": "LawyerBot 📜",
+      "botAvatar": "⚖️",
+      "bannerUrl": "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=1200&auto=format&fit=crop&q=80",
+      "categories": [
+        {
+          "id": "cat-general",
+          "name": "القوانين العامة 📜",
+          "icon": "🛡️",
+          "rules": [
+            "احترام جميع الأعضاء في السيرفر وعدم الإساءة لأي شخص بالقول أو المنشن.",
+            "يمنع منعاً باتاً نشر محتوى خارج عن الذوق العام أو الصور الفاضحة والمخلة بالآداب.",
+            "الالتزام بالذوق والحديث الراقي وتجنب الخوض في النزاعات العرقية أو السياسية الطائفية."
+          ]
+        },
+        {
+          "id": "cat-chat",
+          "name": "قوانين الدردشة 💬",
+          "icon": "💬",
+          "rules": [
+            "يمنع السبام أو التكرار العالي للرسائل وتخريب متعة الشات العام.",
+            "منشن الإدارة بدون داعي قد يعرضك للعقوبة، استخدم التكت أو تواصل بأدب."
+          ]
+        },
+        {
+          "id": "cat-staff",
+          "name": "قوانين الإشراف 👔",
+          "icon": "👔",
+          "rules": [
+            "يُمنع على المشرف استخدام صلاحيات السجن أو الميوت كأداة شخصية بل لتطبيق القانون فقط.",
+            "يجب على كل إداري توثيق جميع الإجراءات في الشات المخصص للوجوهات فوراً.",
+            "تحلى بالهدوء التام والامتناع التام عن الرد على حركات الاستفزاز الطفولية."
+          ]
+        }
+      ]
+    },
+    "leaveConfig": {
+      "enabled": true,
+      "botName": "OfficeBot 📁",
+      "botAvatar": "📇",
+      "bannerUrl": "https://cdn.discordapp.com/attachments/1387990432532922411/1506223940693921822/93247cb5-4f71-4f33-96dc-345d2e4baf89.png?ex=6a16b65b&is=6a1564db&hm=cba092326a358d2757512279b37caf66614c56d5faef17581072a28f7aaa67e3&",
+      "leaveRoleId": "1508178322129948793",
+      "resignationRemoveRoleIds": "111111111111111111, 222222222222222222",
+      "requests": [
+        {
+          "id": "req-1",
+          "username": "DiscordGamer",
+          "avatar": "🎮",
+          "type": "leave",
+          "reason": "أرغب بطلب إجازة قصيرة لمدة 10 أيام ابتداءً من الغد لدواعي الامتحانات الدراسية والمهام الشاقة.",
+          "status": "pending",
+          "timestamp": "Today at 08:30 AM"
+        }
+      ],
+      "embedColor": "#ff5900",
+      "reviewChannelId": "1507796630856929350"
+    },
+    "suggestion": {
+      "enabled": true,
+      "botName": "SuggestBot 💡",
+      "botAvatar": "💡",
+      "channelId": "1507796630856929350",
+      "autoReact": true,
+      "anonymous": false,
+      "bannerUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+      "suggestionsList": [
+        {
+          "id": "sug-1",
+          "username": "papy615",
+          "avatar": "🎮",
+          "content": "اقترح إضافة روم خاص للفعاليات والمسابقات الأسبوعية لزيادة تفاعل الأعضاء في السيرفر وتوزيع الجوائز.",
+          "status": "pending",
+          "timestamp": "Today at 08:31 AM",
+          "upvotes": 8,
+          "downvotes": 1,
+          "votedUsers": [
+            "m-2",
+            "m-4"
+          ]
+        }
+      ],
+      "embedColor": "#ff7300"
+    },
+    "report": {
+      "enabled": true,
+      "botName": "ReportBot ⚠️",
+      "botAvatar": "⚠️",
+      "logsChannelId": "chan-staff-logs",
+      "bannerUrl": "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=1200&auto=format&fit=crop&q=80",
+      "reportsList": [
+        {
+          "id": "rep-1",
+          "reporter": "GamerPro",
+          "reportedUser": "LoungeQueen",
+          "reason": "إرسال روابط دعوات سيرفرات أخرى في الخاص بدون إذن (سبام دايركت).",
+          "status": "pending",
+          "timestamp": "Today at 08:32 AM",
+          "proof": "https://i.imgur.com/screenshot.png"
+        }
+      ]
+    },
+    "warning": {
+      "enabled": true,
+      "botName": "PunishBot 🔨",
+      "botAvatar": "🔨",
+      "maxWarningsBeforeBan": 3,
+      "bannerUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80",
+      "warningsList": [
+        {
+          "id": "warn-1",
+          "username": "LoungeQueen",
+          "adminName": "Moderator",
+          "reason": "تخريب في الشات وسبام رسائل متكررة بعد التنبيه الشفهي.",
+          "timestamp": "Today at 08:28 AM"
+        }
+      ]
+    },
+    "autoResponse": {
+      "enabled": true,
+      "botName": "ResponderBot 💬",
+      "botAvatar": "🤖",
+      "responses": [
+        {
+          "id": "ar-1",
+          "trigger": "السلام عليكم",
+          "response": "وعليكم السلام ورحمة الله وبركاته يا هلا بك نورت السيرفر! ❤️👋",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-2",
+          "trigger": "كيف افعل حسابي",
+          "response": "أهلاً بك! يمكنك تفعيل حسابك من خلال الذهاب لقناة تفعيل الحساب والضغط على زر التفعيل الأخضر. ✅",
+          "matchType": "contains"
+        },
+        {
+          "id": "ar-1780306234025",
+          "trigger": ".",
+          "response": "وش تبي دز",
+          "matchType": "contains"
+        }
+      ]
+    },
+    "giveaway": {
+      "enabled": true,
+      "botName": "GiveawayBot 🎉",
+      "botAvatar": "🎁",
+      "channelId": "1507796630856929350",
+      "bannerUrl": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=1200&auto=format&fit=crop&q=80",
+      "giveawaysList": [
+        {
+          "id": "gw-1",
+          "prize": "رتبة VIP خاصة + 50,000 كاش 🪙",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "3:38:53 PM",
+          "endsAt": "4:38:53 PM"
+        },
+        {
+          "id": "gw-1779801723344",
+          "prize": "thfht",
+          "winnerCount": 1,
+          "durationMinutes": 60,
+          "status": "active",
+          "participants": [
+            "papy615",
+            "GamerPro"
+          ],
+          "openedAt": "4:22:03 PM",
+          "endsAt": "5:22:03 PM"
+        }
+      ]
+    },
+    "levelConfig": {
+      "enabled": false,
+      "botName": "LevelBot 🏆",
+      "botAvatar": "⭐",
+      "xpPerMessage": 15,
+      "levelUpMessage": "🎉 تهانينا {user}! لقد غادرت للمستوى الفارق {level}! استمر في تفاعلك الرائع! 🚀⭐",
+      "levelUpChannelId": "chan-general",
+      "leaderboard": [
+        {
+          "id": "xp-1",
+          "username": "papy615",
+          "avatar": "👑",
+          "xp": 1250,
+          "level": 8
+        },
+        {
+          "id": "xp-2",
+          "username": "GamerPro",
+          "avatar": "🎮",
+          "xp": 850,
+          "level": 5
+        },
+        {
+          "id": "xp-3",
+          "username": "LoungeQueen",
+          "avatar": "💅",
+          "xp": 430,
+          "level": 3
+        }
+      ],
+      "roleRewards": [
+        {
+          "id": "rr-1",
+          "level": 5,
+          "roleName": "متفاعل فضي 🥈"
+        },
+        {
+          "id": "rr-2",
+          "level": 10,
+          "roleName": "متفاعل ذهبي 🥇"
+        }
+      ]
+    },
+    "reactionRoles": {
+      "enabled": true,
+      "botName": "RoleBot 🏷️",
+      "botAvatar": "🏷️",
+      "panelTitle": "🎭 نظام اختيار الرتب تلقائياً (Reaction & Button Roles Portal)",
+      "panelDescription": "فضلاً اضغط على الأزرار أدناه للحصول على الرتب التي تناسب اهتماماتك وتخصص سلفاً:\n\n• 🎮 **رتبة الألعاب** -> لتلقي إشعارات فعاليات الأسطورية.\n• 🔔 **أخبار وتحديثات** -> لمعرفة أخبار السيرفر أولاً بأول.\n• 🎁 **منشن فعاليات** -> لتنبيهك عند حدوث قيف_اواي جديد.",
+      "channelId": "chan-roles",
+      "bannerUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&auto=format&fit=crop&q=80",
+      "rolesList": [
+        {
+          "id": "rrole-1",
+          "label": "العاب وبثث 🎮",
+          "roleName": "العاب وبثث",
+          "emoji": "🎮",
+          "color": "blue"
+        },
+        {
+          "id": "rrole-2",
+          "label": "إشعار التحديثات 🔔",
+          "roleName": "إشعار التحديثات",
+          "emoji": "🔔",
+          "color": "green"
+        },
+        {
+          "id": "rrole-3",
+          "label": "منشن فعاليات 🎁",
+          "roleName": "منشن الفعاليات",
+          "emoji": "🎁",
+          "color": "yellow"
+        }
+      ]
+    },
+    "voiceStats": {
+      "enabled": true,
+      "botName": "StatsBot 📊",
+      "botAvatar": "📊",
+      "totalMembersName": "📊 إجمالي الأعضاء: {count}",
+      "activeMembersName": "🟢 المتصلين: {count}",
+      "voiceUsersName": "🔊 بالقرية الصوتية: {count}"
+    },
+    "autoRoles": {
+      "enabled": true,
+      "botName": "AutoRoles",
+      "botAvatar": "🎖️",
+      "rolesList": []
+    },
+    "embedFormatter": {
+      "enabled": false,
+      "botName": "EmbedFormatter",
+      "botAvatar": "📝",
+      "title": "",
+      "description": "",
+      "color": "#5865F2",
+      "thumbnail": "",
+      "image": "",
+      "footer": "",
+      "fields": []
+    },
+    "staffManagement": {
+      "enabled": false,
+      "botName": "StaffManager",
+      "botAvatar": "👥",
+      "members": [],
+      "rulesCategories": [],
+      "leaveRequests": []
+    },
+    "modLogs": {
+      "enabled": true,
+      "botName": "ModLogs",
+      "botAvatar": "📋",
+      "logChannelId": "1501078076552118302",
+      "logMessageDeletes": true,
+      "logMessageEdits": true,
+      "logMemberBans": true,
+      "logMemberKicks": true,
+      "logMemberTimeouts": true,
+      "logRoleChanges": true,
+      "logChannelChanges": true,
+      "logMemberJoins": false,
+      "logMemberLeaves": false,
+      "logs": []
+    },
+    "_updatedAt": "2026-06-01T09:57:58.643Z",
+    "_updatedBy": "757199055226142772"
+  }
+}
