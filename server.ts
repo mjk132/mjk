@@ -3413,8 +3413,9 @@ const ALL_SYSTEM_MODULES = [
   // المرحلة 3: جلب قنوات السيرفر المحدد (Dynamic Channels Fetching)
   // ============================================
 
-  const RAW_APP_URL = process.env.APP_URL || "";
-  const APP_URL = (RAW_APP_URL && RAW_APP_URL !== "MY_APP_URL") ? RAW_APP_URL : `http://localhost:${PORT}`;
+  const RAW_APP_URL = process.env.APP_URL?.trim() || "";
+  const APP_URL = RAW_APP_URL && RAW_APP_URL !== "MY_APP_URL" ? RAW_APP_URL : "";
+  const DISCORD_REDIRECT_URI = process.env.DISCORD_REDIRECT_URI?.trim() || "";
 
   // OAuth credentials from .env أو من واجهة الإعدادات
   let oauthConfig = {
@@ -3483,7 +3484,7 @@ const ALL_SYSTEM_MODULES = [
         error: 'لم يتم إعداد Discord OAuth بعد. يرجى ضبط CLIENT_ID و CLIENT_SECRET في الإعدادات.'
       });
     }
-    const rawRedirect = `${APP_URL}/api/discord/callback`;
+    const rawRedirect = DISCORD_REDIRECT_URI || `${APP_URL}/api/discord/callback`;
     const encodedRedirect = encodeURIComponent(rawRedirect);
     const scopes = encodeURIComponent("identify guilds");
     const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodedRedirect}&response_type=code&scope=${scopes}&prompt=consent`;
@@ -3508,7 +3509,8 @@ const ALL_SYSTEM_MODULES = [
     if (!clientId) {
       return res.status(400).json({ error: 'DISCORD_CLIENT_ID غير مضبوط.' });
     }
-    const redirectUri = encodeURIComponent(`${APP_URL}/api/discord/callback`);
+    const rawRedirect = DISCORD_REDIRECT_URI || `${APP_URL}/api/discord/callback`;
+    const redirectUri = encodeURIComponent(rawRedirect);
     const scopes = encodeURIComponent("identify guilds");
     const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scopes}&prompt=consent`;
     res.redirect(oauthUrl);
@@ -3533,7 +3535,7 @@ const ALL_SYSTEM_MODULES = [
     if (!clientId || !clientSecret) return res.redirect('/?oauth_error=oauth_not_configured');
 
     try {
-      const redirectUri = `${APP_URL}/api/discord/callback`;
+      const redirectUri = DISCORD_REDIRECT_URI || `${APP_URL}/api/discord/callback`;
 
       // ── 1. تبادل الكود مع Access Token ──
       const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
