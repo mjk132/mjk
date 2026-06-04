@@ -1502,7 +1502,7 @@ async function startDiscordBot(token: string, clientId: string, botPayload: any)
               cat = interaction.guild?.channels.cache.find((c: any) => c.name.toLowerCase().includes(categoryPrefix.toLowerCase()) && c.type === 4);
             }
             if (cat && room) {
-              await (room as any).setParent(cat.id).catch(() => {});
+              await (room as any).setParent(cat.id, { lockPermissions: false }).catch(() => {});
             }
 
             const welcomeText = ticket?.welcomeMessage || "سيتواصل معك كابتن الإدارة قريباً بمجرد توفره. يرجى توضيح استفسارك.";
@@ -2152,7 +2152,7 @@ ${dialogue}
               cat = interaction.guild?.channels.cache.find((c: any) => c.name.toLowerCase().includes(categoryPrefix.toLowerCase()) && c.type === 4);
             }
             if (cat && room) {
-              await (room as any).setParent(cat.id).catch(() => {});
+              await (room as any).setParent(cat.id, { lockPermissions: false }).catch(() => {});
             }
 
             const welcomeText = selectedType.welcomeMessage || ticket?.welcomeMessage || "سيتواصل معك كابتن الإدارة قريباً بمجرد توفره. يرجى توضيح استفسارك.";
