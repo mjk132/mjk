@@ -1126,7 +1126,7 @@ ${handlerBody}
         const categoryPrefix = ticket.ticketCategoryName || "تذاكر الدعم Open Tickets";
         const category = interaction.guild.channels.cache.find(c => c.name.toLowerCase().includes(categoryPrefix.toLowerCase()) && c.type === 4);
         if (category) {
-          await ticketChannel.setParent(category.id).catch(() => {});
+          await ticketChannel.setParent(category.id, { lockPermissions: false }).catch(() => {});
         }
 
         const closeRow = new ActionRowBuilder().addComponents(

@@ -1509,7 +1509,7 @@ async function startDiscordBot(token: string, clientId: string, botPayload: any)
             const ticketEmbed = new EmbedBuilder()
               .setTitle(`طلب الدعم الفني 🖥️ • #${ticketId}`)
               .setDescription(`
-**Tribe City CFW — Premium Ticket System**
+**mjk system - premium ticket**
 
 ------------------------------------------
 💸 **رقم التذكرة:** \`#${ticketId}\`
@@ -2159,7 +2159,7 @@ ${dialogue}
             const ticketEmbed = new EmbedBuilder()
               .setTitle(`طلب الدعم الفني 🖥️ • #${ticketId}`)
               .setDescription(`
-**Tribe City CFW — Premium Ticket System**
+**mjk system - premium ticket**
 
 ------------------------------------------
 💸 **رقم التذكرة:** \`#${ticketId}\`
@@ -2604,7 +2604,7 @@ ${welcomeText}
             transcriptText += `نهاية ملف الأرشيف (End of Ticket Transcript)\n`;
             transcriptText += `==================================================\n`;
 
-            const buffer = Buffer.from(transcriptText, 'utf-8');
+            const buffer = Buffer.from('\uFEFF' + transcriptText, 'utf-8');
             const attachment = new AttachmentBuilder(buffer, { name: `premium-transcript-${(interaction.channel as any).name}.txt` });
 
             // Post nice logs embed with detailed stats
