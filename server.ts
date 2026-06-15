@@ -131,7 +131,6 @@ async function startDiscordBot(token: string, clientId: string, botPayload: any)
     voiceStats,
     autoRoles,
     embedFormatter,
-    staffManagement,
     modLogs
   } = botPayload;
 
@@ -233,6 +232,9 @@ async function startDiscordBot(token: string, clientId: string, botPayload: any)
     }
     if (leaveConfig && leaveConfig.enabled) {
       deployList.push({ name: "setup-hr", description: "Spawns the HR Leave request dashboard button." });
+    }
+    if (autoRoles && autoRoles.enabled) {
+      deployList.push({ name: "setup-auto-roles", description: "Spawns the Auto Roles panel for member join role assignment." });
     }
     if (suggestion && suggestion.enabled) {
       deployList.push({ name: "setup-suggestions", description: "Spawns the Suggestions interactive board with submit button." });
@@ -423,6 +425,22 @@ async function startDiscordBot(token: string, clientId: string, botPayload: any)
         }
       } catch (err: any) {
         addLiveBotLog(`Welcomer system logical fault: ${err.message}`, 'ERROR');
+      }
+    });
+
+    // Auto Roles Event Router — assign roles on member join
+    client.on('guildMemberAdd', async (member: any) => {
+      if (!autoRoles || !autoRoles.enabled || !autoRoles.rolesList || autoRoles.rolesList.length === 0) return;
+      try {
+        for (const roleEntry of autoRoles.rolesList) {
+          const role = member.guild.roles.cache.get(roleEntry.id);
+          if (role) {
+            await member.roles.add(role).catch(() => {});
+          }
+        }
+        addLiveBotLog(`Auto-roles assigned to new member: ${member.user.tag}`, 'EVENT');
+      } catch (err: any) {
+        addLiveBotLog(`Auto-roles assignment error: ${err.message}`, 'ERROR');
       }
     });
 
@@ -1288,6 +1306,19 @@ async function startDiscordBot(token: string, clientId: string, botPayload: any)
           }
 
           await interaction.reply({ embeds: [embed], components: [row] });
+          return;
+        }
+
+        if (commandName === 'setup-auto-roles' && autoRoles?.enabled) {
+          if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) return;
+          const roleList = (autoRoles.rolesList || []).map((r: any) => `<@&${r.id}>`).join('\n') || 'No roles configured';
+          const embed = new EmbedBuilder()
+            .setTitle("🎖️ نظام الرتب التلقائية")
+            .setDescription(`سيتم منح الرتب التالية تلقائياً للأعضاء الجدد عند دخولهم السيرفر:\n\n${roleList}`)
+            .setColor(parseColor(autoRoles.embedColor, 16748842));
+          if (autoRoles.bannerUrl) embed.setImage(autoRoles.bannerUrl);
+          if (autoRoles.botName) embed.setFooter({ text: autoRoles.botName });
+          await interaction.reply({ embeds: [embed], ephemeral: true });
           return;
         }
 
@@ -3146,7 +3177,7 @@ Respond in a friendly, conversational, authentic Discord user/bot tone. Use Disc
 const ALL_SYSTEM_MODULES = [
     "welcome", "auto-roles", "ticket", "staff", "security", "auto-responses",
     "embed-formatter", "suggestions", "reports", "warnings", "mod-logs",
-    "levels", "staff-management", "giveaways", "rules-bot",
+    "levels", "giveaways", "rules-bot",
     "leave-resignation", "reaction-roles", "voice-stats"
 ];
 
@@ -3414,7 +3445,7 @@ const ALL_SYSTEM_MODULES = [
   // ============================================
 
   const RAW_APP_URL = process.env.APP_URL?.trim() || "";
-  const APP_URL = RAW_APP_URL && RAW_APP_URL !== "MY_APP_URL" ? RAW_APP_URL : "";
+  const APP_URL = RAW_APP_URL && RAW_APP_URL !== "MY_APP_URL" ? RAW_APP_URL : "http://localhost:3000";
   const DISCORD_REDIRECT_URI = process.env.DISCORD_REDIRECT_URI?.trim() || "";
 
   // OAuth credentials from .env أو من واجهة الإعدادات
@@ -3677,10 +3708,14 @@ const ALL_SYSTEM_MODULES = [
     const guildId = req.params.id;
     const userBotToken = (req.query.botToken as string) || "";
     const userClientId = (req.query.clientId as string) || "";
+    const forceRefresh = req.query.refresh === "true";
 
-    // ── التخزين المؤقت ──
-    if (session.channelsCache.has(guildId)) {
+    // ── التخزين المؤقت (نتجاوزه إذا forceRefresh=true) ──
+    if (!forceRefresh && session.channelsCache.has(guildId)) {
       return res.json(session.channelsCache.get(guildId)!);
+    }
+    if (forceRefresh) {
+      session.channelsCache.delete(guildId);
     }
 
     /**

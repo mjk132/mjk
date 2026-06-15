@@ -450,22 +450,5 @@ export interface EmbedFormatterConfig {
   bannerUrl?: string;
 }
 
-export interface StaffMember {
-  id: string;
-  username: string;
-  avatar: string;
-  role: string;
-}
-
-export interface StaffManagementConfig {
-  enabled: boolean;
-  botName: string;
-  botAvatar: string;
-  members: StaffMember[];
-  rulesCategories: RuleCategory[];
-  leaveRequests: LeaveResignationRequest[];
-  bannerUrl?: string;
-  embedColor?: string;
-}
 
 

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { BotConfig, BotCommand, Channel, Member, ServerLog, WelcomeConfig, TicketConfig, StaffAppConfig, SecurityConfig, RulesConfig, LeaveResignationConfig, SuggestionConfig, ReportConfig, WarningConfig, AutoResponseConfig, GiveawayConfig, LevelConfig, ReactionRolesConfig, VoiceStatsConfig, AutoRolesConfig, EmbedFormatterConfig, StaffManagementConfig, ModLogsConfig } from "./types";
-import { Sparkles, Bot, Terminal, Download, Settings, RefreshCw, Layers, ShieldCheck, Globe, Database, Plus, Trash2, Save, Heart, Eye, EyeOff, ExternalLink, LogIn, Server } from "lucide-react";
+import { BotConfig, BotCommand, Channel, Member, ServerLog, WelcomeConfig, TicketConfig, StaffAppConfig, SecurityConfig, RulesConfig, LeaveResignationConfig, SuggestionConfig, ReportConfig, WarningConfig, AutoResponseConfig, GiveawayConfig, LevelConfig, ReactionRolesConfig, VoiceStatsConfig, AutoRolesConfig, EmbedFormatterConfig, ModLogsConfig } from "./types";
+import {
+  Sparkles, Bot, Terminal, Download, Settings, RefreshCw, Layers, ShieldCheck, Globe, Database, Plus, Trash2, Save, Heart, Eye, EyeOff, ExternalLink, LogIn, Server, LayoutDashboard, Cpu, Activity, Bell, Search, ChevronDown, Users, MessageSquare, FileCode, CreditCard, User, LogOut, Menu, X, Clock, CheckCircle, ArrowUpRight, Wifi, HardDrive, Play, Square, Key, HelpCircle, BookOpen, Copy, Check, AlertCircle, ChevronLeft, ChevronRight, Zap, Home, BarChart3, List, Archive, Puzzle, Gift, Vote, Shield, Flag, BookMarked, UserCheck, Calendar, Hash,
+} from "lucide-react";
 import CommandStudio from "./components/CommandStudio";
 import BotDashboard from "./components/BotDashboard";
 import CodeExporter from "./components/CodeExporter";
@@ -22,7 +24,6 @@ export const SYSTEM_MODULES_LIST = [
     { id: "warnings", label: "🔨 نظام التحذيرات والعقوبات" },
     { id: "mod-logs", label: "📋 نظام السجلات واللوقات" },
     { id: "levels", label: "🏆 نظام مستويات الخبرة" },
-    { id: "staff-management", label: "👥 إدارة طاقم العمل" },
     { id: "giveaways", label: "🎁 قيف اواي والفعاليات" },
     { id: "rules-bot", label: "⚖️ بوت القوانين" },
     { id: "leave-resignation", label: "🌴 الإجازات والاستقالات" },
@@ -64,6 +65,34 @@ export default function App() {
   const [genDuration, setGenDuration] = useState<string>("30 Days");
   const [genNote, setGenNote] = useState<string>("");
   const [genModules, setGenModules] = useState<string[]>(SYSTEM_MODULES_LIST.map(m => m.id));
+
+  // Sidebar navigation state
+  const [sidebarView, setSidebarView] = useState<string>('dashboard');
+
+  // Sync sidebar navigation with activeTab
+  const navigateTo = (view: string) => {
+    setSidebarView(view);
+    const tabMap: Record<string, string> = {
+      'dashboard': 'dashboard',
+      'bot-system': 'bot-system',
+      'hosting': 'hosting',
+      'servers': 'servers',
+      'logs': 'logs',
+      'analytics': 'analytics',
+      'command-studio': 'command-studio',
+      'modules': 'modules',
+      'exporter': 'exporter',
+      'subscription': 'subscription',
+      'settings': 'settings',
+      'profile': 'profile',
+    };
+    if (tabMap[view]) {
+      setActiveTab(tabMap[view]);
+    }
+  };
+
+  // Notifications panel
+  const [showNotifPanel, setShowNotifPanel] = useState(false);
 
   // Verify subscription on mount
   useEffect(() => {
@@ -613,15 +642,6 @@ export default function App() {
     fields: []
   });
 
-  const [staffManagement, setStaffManagement] = useState<StaffManagementConfig>({
-    enabled: false,
-    botName: "StaffManager",
-    botAvatar: "👥",
-    members: [],
-    rulesCategories: [],
-    leaveRequests: []
-  });
-
   const [modLogs, setModLogs] = useState<ModLogsConfig>({
     enabled: false,
     botName: "ModLogs",
@@ -1023,10 +1043,6 @@ export default function App() {
       title: "", description: "", color: "#5865F2",
       thumbnail: "", image: "", footer: "", fields: []
     });
-    setStaffManagement({
-      enabled: false, botName: "StaffManager", botAvatar: "👥",
-      members: [], rulesCategories: [], leaveRequests: []
-    });
     setModLogs({
       enabled: false, botName: "ModLogs", botAvatar: "📋",
       logChannelId: "", logMessageDeletes: true, logMessageEdits: true,
@@ -1037,7 +1053,7 @@ export default function App() {
     setCommands([]);
   };
 
-  const handleSelectGuild = async (guild: any, e?: React.MouseEvent) => {
+  const handleSelectGuild = async (guild: any, e?: React.MouseEvent, forceRefresh = false) => {
     if (e) e.preventDefault();
     setSelectedGuild(guild);
     setShowGuildPicker(false);
@@ -1045,16 +1061,17 @@ export default function App() {
     setBotInviteUrl("");
     setIsLoadingChannels(true);
     // Reset all form fields immediately to prevent showing old guild data
-    resetAllModuleStates();
-    isSwitchingGuild.current = true;
-    localStorage.setItem('active_guild_id', guild.id);
-    // Clear sample channels immediately - will show loading state
-    setChannels([]);
+    if (!forceRefresh) resetAllModuleStates();
+    isSwitchingGuild.current = !forceRefresh;
+    if (!forceRefresh) {
+      localStorage.setItem('active_guild_id', guild.id);
+      setChannels([]);
+    }
     handleAddLog({
       id: crypto.randomUUID(),
       timestamp: new Date().toLocaleTimeString(),
       type: "system",
-      message: `🌐 تم اختيار السيرفر: ${guild.name} (${guild.id}) - جاري جلب الرومات...`
+      message: `🌐 ${forceRefresh ? 'تحديث' : 'تم اختيار'} السيرفر: ${guild.name} - جاري جلب الرومات...`
     });
 
     // Fetch guild channels and update the channels state
@@ -1062,7 +1079,7 @@ export default function App() {
       // نرسل توكن البوت الخاص بالمستخدم (من LiveBot) عشان نجيب الرومات
       const userBotToken = localStorage.getItem("discord_bot_token") || "";
       const userClientId = localStorage.getItem("discord_bot_client_id") || "";
-      const chRes = await fetch(`/api/discord/guilds/${guild.id}/channels?session=${encodeURIComponent(discordSession)}&botToken=${encodeURIComponent(userBotToken)}&clientId=${encodeURIComponent(userClientId)}`);
+      const chRes = await fetch(`/api/discord/guilds/${guild.id}/channels?session=${encodeURIComponent(discordSession)}&botToken=${encodeURIComponent(userBotToken)}&clientId=${encodeURIComponent(userClientId)}&refresh=${forceRefresh ? "true" : "false"}`);
       if (chRes.ok) {
         const chData = await chRes.json();
         const mapped: Channel[] = chData
@@ -1106,7 +1123,6 @@ export default function App() {
             if (savedConfig.voiceStats) setVoiceStats(savedConfig.voiceStats);
             if (savedConfig.autoRoles) setAutoRoles(savedConfig.autoRoles);
             if (savedConfig.embedFormatter) setEmbedFormatter(savedConfig.embedFormatter);
-            if (savedConfig.staffManagement) setStaffManagement(savedConfig.staffManagement);
             if (savedConfig.modLogs) setModLogs(savedConfig.modLogs);
             if (savedConfig.commands) setCommands(savedConfig.commands);
             handleAddLog({
@@ -1173,13 +1189,13 @@ export default function App() {
             config, commands, welcome, ticket, staffApp, security,
             rulesBot, leaveConfig, suggestion, report, warning,
             autoResponse, giveaway, levelConfig, reactionRoles,
-            voiceStats, autoRoles, embedFormatter, staffManagement, modLogs
+            voiceStats, autoRoles, embedFormatter, modLogs
           })
         });
       } catch (e) {}
     }, 3000);
     return () => clearTimeout(timeout);
-  }, [selectedGuild, discordSession, discordUser, config, commands, welcome, ticket, staffApp, security, rulesBot, leaveConfig, suggestion, report, warning, autoResponse, giveaway, levelConfig, reactionRoles, voiceStats, autoRoles, embedFormatter, staffManagement, modLogs]);
+  }, [selectedGuild, discordSession, discordUser, config, commands, welcome, ticket, staffApp, security, rulesBot, leaveConfig, suggestion, report, warning, autoResponse, giveaway, levelConfig, reactionRoles, voiceStats, autoRoles, embedFormatter, modLogs]);
 
   // ==========================================
   // SERVER PROFILES STATE ENGINE (localStorage)
@@ -1205,7 +1221,6 @@ export default function App() {
     voiceStats: VoiceStatsConfig;
     autoRoles: AutoRolesConfig;
     embedFormatter: EmbedFormatterConfig;
-    staffManagement: StaffManagementConfig;
     modLogs: ModLogsConfig;
     commands: BotCommand[];
   }
@@ -1267,9 +1282,7 @@ export default function App() {
     if (profile.voiceStats) setVoiceStats(profile.voiceStats);
     if (profile.autoRoles) setAutoRoles(profile.autoRoles);
     if (profile.embedFormatter) setEmbedFormatter(profile.embedFormatter);
-    if (profile.staffManagement) setStaffManagement(profile.staffManagement);
     if (profile.modLogs) setModLogs(profile.modLogs);
-    if (profile.commands) setCommands(profile.commands);
   };
 
   useEffect(() => {
@@ -1311,7 +1324,6 @@ export default function App() {
       voiceStats,
       autoRoles,
       embedFormatter,
-      staffManagement,
       modLogs,
       commands
     };
@@ -1351,7 +1363,6 @@ export default function App() {
           voiceStats,
           autoRoles,
           embedFormatter,
-          staffManagement,
           modLogs,
           commands
         };
@@ -1393,11 +1404,10 @@ export default function App() {
     giveaway,
     levelConfig,
     reactionRoles,
-    voiceStats,
-    autoRoles,
-    embedFormatter,
-    staffManagement,
-    modLogs,
+          voiceStats,
+          autoRoles,
+          embedFormatter,
+          modLogs,
     commands,
     profiles,
     botStatus
@@ -1441,7 +1451,6 @@ export default function App() {
           voiceStats,
           autoRoles,
           embedFormatter,
-          staffManagement,
           modLogs
         })
       });
@@ -1502,21 +1511,19 @@ export default function App() {
           voiceStats,
           autoRoles,
           embedFormatter,
-          staffManagement,
           modLogs,
           commands
         };
       }
       return p;
     });
-    setProfiles(updated);
+
     localStorage.setItem("discord_bot_server_profiles_v1", JSON.stringify(updated));
-    const active = updated.find(p => p.id === activeProfileId);
     handleAddLog({
       id: crypto.randomUUID(),
       timestamp: new Date().toLocaleTimeString(),
       type: "system",
-      message: `💾 تم حفظ وتحديث الإعدادات الحالية لبروفايل: "${active?.name}" بنجاح في ذاكرة المتصفح الفورية.`
+      message: `💾 تم حفظ وتحديث الإعدادات الحالية لبروفايل: "${profiles.find(p => p.id === activeProfileId)?.name}" بنجاح في ذاكرة المتصفح الفورية.`
     });
   };
 
@@ -1544,7 +1551,6 @@ export default function App() {
       voiceStats,
       autoRoles,
       embedFormatter,
-      staffManagement,
       modLogs,
       commands
     };
@@ -1987,1117 +1993,1141 @@ export default function App() {
     );
   }
 
+  const sidebarNavItems = [
+    { section: 'MAIN', items: [
+      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { id: 'bot-system', label: 'Bot System', icon: Bot },
+      { id: 'hosting', label: 'Hosting', icon: Server },
+      { id: 'servers', label: 'Servers', icon: Users },
+      { id: 'logs', label: 'Logs', icon: Terminal },
+      { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    ]},
+    { section: 'TOOLS', items: [
+      { id: 'command-studio', label: 'Command Studio', icon: Puzzle },
+      { id: 'modules', label: 'Advanced Modules', icon: Layers },
+      { id: 'exporter', label: 'Code Exporter', icon: FileCode },
+    ]},
+    { section: 'ACCOUNT', items: [
+      { id: 'subscription', label: 'Subscription', icon: CreditCard },
+      { id: 'settings', label: 'Settings', icon: Settings },
+      { id: 'profile', label: 'Profile', icon: User },
+    ]},
+  ];
+
+  const activeGuildName = selectedGuild?.name || '';
+  const activeGuildIcon = selectedGuild?.icon
+    ? `https://cdn.discordapp.com/icons/${selectedGuild.id}/${selectedGuild.icon}.png?size=32`
+    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+  const notifItems = [
+    { id: '1', title: 'Bot updated', desc: 'Configuration synced to cloud', time: '2m ago', read: false },
+    { id: '2', title: 'New server added', desc: 'Your bot joined a new server', time: '1h ago', read: false },
+    { id: '3', title: 'Subscription renewed', desc: 'Premium plan extended', time: '2d ago', read: true },
+  ];
+
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0d12] to-[#040507] text-slate-100 flex flex-col selection:bg-indigo-600/30">
-      
-      {/* Upper Navigation Row Bar */}
-      <nav className="border-b border-slate-800/80 bg-slate-950/45 backdrop-blur-xl sticky top-0 z-30 px-6 py-4 select-none">
-        <div className="max-w-7xl mx-auto flex flex-col xl:flex-row xl:items-center justify-between gap-4 font-sans">
-          
-          <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between xl:justify-start w-full xl:w-auto">
-            <div className="flex items-center gap-4">
-              <MJKLogo size={46} showText={true} />
-              <div className="h-7 w-[1.5px] bg-[#1e293b]/60 hidden sm:block" />
-              <div className="text-right sm:text-left hidden sm:flex flex-col justify-center">
-                <div className="flex items-center gap-2 justify-end sm:justify-start">
-                  <span className="bg-cyan-550/15 bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 text-[9px] px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider font-mono shadow-[0_0_10px_rgba(34,211,238,0.15)]">v2.5 Studio</span>
-                </div>
-                <p className="text-[10px] text-slate-400 mt-1 font-semibold tracking-wide">منصة تصميم وبرمجة بوتات الديسكورد الذكية</p>
-              </div>
-            </div>
+    <div className="flex h-screen bg-[#080B12] text-white overflow-hidden selection:bg-primary/30">
 
-            {/* Discord OAuth Login / Server Selector */}
-            <div className="flex flex-wrap items-center gap-2 bg-slate-900/60 border border-slate-800/50 p-2 rounded-xl text-right" style={{ direction: "rtl" }}>
-              {!discordUser ? (
-                <button
-                  onClick={handleDiscordLogin}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#5865F2] hover:bg-[#4752C4] text-white text-[10px] font-black rounded-lg transition cursor-pointer whitespace-nowrap"
-                >
-                  <LogIn className="w-3.5 h-3.5" />
-                  <span>{oauthConfigured ? 'تسجيل الدخول عبر ديسكورد ➔' : 'إعداد Discord OAuth'}</span>
-                </button>
-              ) : (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <div className="flex items-center gap-1.5 text-[10px] text-slate-300">
-                    <img
-                      src={`https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=32`}
-                      alt=""
-                      className="w-5 h-5 rounded-full"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                    <span className="font-bold truncate max-w-[80px]">{discordUser.username}</span>
-                  </div>
-
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowGuildPicker(!showGuildPicker)}
-                      className="flex items-center gap-1 px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 text-[10px] font-black rounded-lg transition cursor-pointer"
-                    >
-                      <Server className="w-3 h-3" />
-                      <span>{selectedGuild ? selectedGuild.name : 'اختر سيرفر'}</span>
-                    </button>
-
-                    {showGuildPicker && (
-                      <div className="absolute top-full right-0 mt-1 w-64 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 max-h-64 overflow-y-auto">
-                        <div className="p-2 text-[10px] text-slate-400 border-b border-slate-800 font-bold text-center">
-                          سيرفراتك (اختر سيرفراً لتطبيق الإعدادات)
-                        </div>
-                        {discordGuilds.length === 0 ? (
-                          <div className="p-3 text-center text-[10px] text-slate-500">
-                            {isFetchingGuilds ? 'جاري التحميل...' : 'لا توجد سيرفرات متاحة'}
-                          </div>
-                        ) : (
-                          discordGuilds.map((g: any) => (
-                            <button
-                              key={g.id}
-                              onClick={() => handleSelectGuild(g)}
-                              className={`w-full text-right px-3 py-2 text-[11px] flex items-center gap-2 hover:bg-slate-800 transition cursor-pointer border-b border-slate-800/50 ${
-                                selectedGuild?.id === g.id ? 'bg-indigo-600/20 text-indigo-300' : 'text-slate-300'
-                              }`}
-                            >
-                              {g.icon ? (
-                                <img
-                                  src={`https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=32`}
-                                  alt=""
-                                  className="w-5 h-5 rounded-full"
-                                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                                />
-                              ) : (
-                                <div className="w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center text-[9px]">#</div>
-                              )}
-                              <span className="truncate">{g.name}</span>
-                            </button>
-                          ))
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {isLoadingChannels && (
-                    <span className="text-[10px] text-indigo-400 flex items-center gap-1">
-                      <RefreshCw className="w-3 h-3 animate-spin" />
-                      جلب الرومات...
-                    </span>
-                  )}
-
-                  {channelLoadError && !botInviteUrl && (
-                    <span className="text-[10px] text-red-400 max-w-[160px] truncate" title={channelLoadError}>
-                      ⚠️ {channelLoadError}
-                    </span>
-                  )}
-                  {channelLoadError && botInviteUrl && (
-                    <a
-                      href={botInviteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 text-[10px] font-black rounded-lg transition cursor-pointer whitespace-nowrap"
-                    >
-                      ➕ إضافة البوت
-                    </a>
-                  )}
-
-                  {!hasBotToken && discordUser && !isLoadingChannels && (
-                    <span className="text-[10px] text-yellow-400 max-w-[160px] truncate" title="لازم تحط Bot Token عشان تشوف الرومات">
-                      ⚠️ Bot Token ناقص
-                    </span>
-                  )}
-
-                  <button
-                    onClick={handleDiscordLogout}
-                    className="px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-black rounded-lg transition cursor-pointer"
-                  >
-                    خروج
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Premium Active Subscription details inline */}
-            {isSubVerified && subDetails && (
-              <div className="flex flex-wrap items-center gap-2 bg-slate-900/60 border border-slate-800/50 p-2 rounded-xl text-right" style={{ direction: "rtl" }}>
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse hidden sm:block"></div>
-                <div className="flex flex-col text-right">
-                  <div className="text-[10px] font-black text-slate-300 flex items-center gap-1">
-                    <span>الاشتراك:</span>
-                    <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${
-                      subDetails.duration === "Lifetime"
-                        ? "bg-gradient-to-r from-amber-500 to-yellow-600 text-black shadow-sm"
-                        : "bg-indigo-500/15 text-indigo-300 border border-indigo-500/20"
-                    }`}>
-                      {subDetails.duration === "Lifetime" ? "مدى الحياة ✨" : subDetails.duration}
-                    </span>
-                  </div>
-                  <div className="text-[10px] text-slate-500 font-mono mt-0.5 flex items-center gap-1 select-none">
-                    <span>كود:</span>
-                    <span className="font-bold tracking-wider select-text text-slate-400">
-                      {showFullKey 
-                        ? subDetails.key 
-                        : (subDetails.key.length > 10 
-                            ? `${subDetails.key.slice(0, 5)}••••${subDetails.key.slice(-5)}` 
-                            : "••••••••"
-                          )
-                      }
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setShowFullKey(!showFullKey)}
-                      className="p-1 hover:text-indigo-400 transition text-slate-550 cursor-pointer"
-                      title={showFullKey ? "إخفاء الكود الحساس" : "إظهار الكود الحساس"}
-                    >
-                      {showFullKey ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                    </button>
-                  </div>
-                </div>
-
-                {isAdminLoggedIn && (
-                  <span className="bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[8px] px-1 py-0.5 rounded font-black sm:inline hidden">
-                    التحكم بالإدارة نشط ⚙️
-                  </span>
-                )}
-
-                <div className="flex gap-1 mr-2">
-                  <button
-                    onClick={() => {
-                      localStorage.removeItem("mjk_guide_seen");
-                      setShowGuideCenter(true);
-                    }}
-                    className="px-2 py-1 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 text-[10px] font-black rounded-lg transition cursor-pointer"
-                    title="إظهار مرشد تشغيل البوت التفاعلي مجدداً"
-                  >
-                    💡 دليل الاستخدام
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      if (confirm("هل تريد تسجيل الخروج والذهاب لبوابة الإدارة (Admin Area)؟\n(ملاحظة: يمكنك إدخال الكود الخاص بك مجدداً لاحقاً لتسجيل الدخول)")) {
-                        handleLogout();
-                        setTimeout(() => {
-                          setShowAdminTab(true);
-                        }, 50);
-                      }
-                    }}
-                    className="px-2 py-1 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 text-[10px] font-black rounded-lg transition cursor-pointer"
-                  >
-                    بوابة الإدارة ⚙️
-                  </button>
-
-                  <button
-                    onClick={handleLogout}
-                    className="px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-black rounded-lg transition cursor-pointer"
-                    title="تسجيل خروج من هذا الترخيص"
-                  >
-                    تبديل الحساب 🚪
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-1.5 bg-slate-950/65 p-1.5 border border-slate-800/80 rounded-2xl w-full xl:w-auto overflow-x-auto">
-
-            {tabs.map(tab => {
-              const TabIcon = tab.icon;
-              const isSelected = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 lg:flex-none flex flex-col items-center justify-center px-4.5 py-2 rounded-xl text-xs font-bold transition-all relative cursor-pointer min-w-[100px] lg:min-w-[125px] ${
-                    isSelected ? "text-white" : "text-slate-400 hover:text-slate-250 hover:bg-slate-900/40"
-                  }`}
-                >
-                  {isSelected && (
-                    <motion.div
-                      layoutId="navThemeIndicator"
-                      className="absolute inset-0 bg-indigo-600 rounded-xl -z-0 focus:outline-none"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10 flex flex-col items-center text-center gap-0.5">
-                    <span className="flex items-center gap-1.5 font-black">
-                      <TabIcon className="w-3.5 h-3.5" />
-                      {tab.label}
-                    </span>
-                    <span className="text-[9px] opacity-65 font-mono font-medium tracking-normal block">{tab.sub}</span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Container */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-6 space-y-7">
-
-        {/* Real-time Cloud updates notice */}
-        {hasUnappliedChanges && (botStatus === 'online' || botStatus === 'logging_in') && (
-          <motion.div 
-            initial={{ opacity: 0, y: -15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-amber-950/70 via-amber-900/40 to-slate-900/90 border border-amber-500/30 rounded-2xl p-4.5 px-6 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 font-sans text-right"
-            dir="rtl"
-          >
-            <div className="flex items-start gap-3.5">
-              <span className="p-2 sm:p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 text-lg flex-shrink-0 mt-0.5">
-                ⚠️
-              </span>
-              <div className="space-y-1">
-                <h4 className="text-sm font-black text-amber-200">
-                  لديك تعديلات جديدة لم يتم تفعيلها على البوت بعد!
-                </h4>
-                <p className="text-xs text-slate-300 leading-relaxed font-semibold">
-                  قمت بتعديل البنرات أو النصوص في الأقسام المتنوعة. لتفعيل هذه التحديثات فوراً وبثها حية في سيرفر ديسكورد، اضغط على الزر أدناه لتطبيق التغييرات لجميع الأقسام دون انقطاع.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 justify-end">
-              <button
-                type="button"
-                onClick={() => {
-                  setHasUnappliedChanges(false);
-                  localStorage.removeItem("mjk_bot_needs_restart");
-                }}
-                className="text-slate-400 hover:text-slate-200 text-xs px-3 py-2 rounded-xl transition cursor-pointer font-bold"
-              >
-                تجاهل مؤقتاً
-              </button>
-              <button
-                type="button"
-                disabled={restartingBot}
-                onClick={handleQuickRestartBot}
-                className="bg-amber-500 hover:bg-amber-650 active:scale-95 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition shadow-lg shadow-amber-500/10 cursor-pointer flex items-center gap-1.5"
-              >
-                {restartingBot ? (
-                  <>
-                    <span className="w-3.5 h-3.5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
-                    <span>جاري التحديث الدقيق...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>⚡ تحديث وبث التعديلات حياً</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </motion.div>
-        )}
+      {/* ========== SIDEBAR ========== */}
+      <aside className="w-[260px] bg-[#0B0F1A] border-r border-[rgba(255,255,255,0.06)] flex flex-col flex-shrink-0 select-none">
         
-        {/* ========================================== */}
-        {/* SERVER CONFIGURATION PROFILES BOARD (REQ 4) */}
-        {/* ========================================== */}
-        <div className="bg-gradient-to-br from-slate-900 via-[#0e121a] to-[#0a0d14] border border-indigo-500/15 rounded-2xl p-6 shadow-2xl relative overflow-hidden" dir="rtl">
-          <div className="absolute top-0 left-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -z-10" />
-          <div className="absolute bottom-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl -z-10" />
+        {/* Logo */}
+        <div className="px-5 py-4 border-b border-[rgba(255,255,255,0.06)]">
+          <MJKLogo size={26} showText={true} />
+        </div>
 
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800/60 pb-5 mb-5">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
-                <Database className="w-5 h-5" />
-              </div>
-              <div className="space-y-1 text-right">
-                <h3 className="text-base font-black text-slate-100 flex items-center gap-2 justify-start">
-                  <span>بروفايلات وإعدادات السيرفرات المتعددة</span>
-                  <span className="bg-indigo-500/15 border border-indigo-500/25 text-indigo-300 text-[9px] px-2 py-0.5 rounded-full font-bold">تخزين فوري</span>
-                </h3>
-                <p className="text-xs text-slate-400">يمكنك حفظ وتهيئة إعدادات رسائل وأنظمة مخصصة لكل سيرفر والتنقل بينها فورياً دون فقدان بياناتك!</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 bg-slate-950/60 border border-slate-800/40 rounded-xl px-4 py-2.5">
-              <span className="relative flex h-2 w-2">
-                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${syncStatus === 'saving' ? 'bg-indigo-400' : 'bg-green-400'}`}></span>
-                <span className={`relative inline-flex rounded-full h-2 w-2 ${syncStatus === 'saving' ? 'bg-indigo-550' : 'bg-green-500'}`}></span>
-              </span>
-              <div className="flex flex-col text-right">
-                <span className="text-xs font-black text-slate-200">
-                  {syncStatus === 'saving' ? 'جاري مزامنة التغييرات...' : 'المزامنة التلقائية نشطة ⚡'}
-                </span>
-                <span className="text-[10px] text-slate-400">
-                  {lastSaved ? `تم التحديث تلقائياً: ${lastSaved}` : 'جميع الإعدادات والأنظمة محفوظة بلحظتها'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 leading-relaxed">
-            
-            {/* Right side: Switcher Dropdown and Info */}
-            <div className="lg:col-span-5 space-y-3.5">
-              <label className="block text-xs font-black text-slate-300">📁 الملف النشط حالياً (Active Server Config Profile)</label>
-              
-              <div className="flex items-stretch gap-2">
-                <select
-                  value={activeProfileId}
-                  onChange={(e) => handleSwitchProfile(e.target.value)}
-                  className="flex-1 bg-slate-950/75 border border-slate-800/80 rounded-xl px-4 py-3 text-xs font-bold text-slate-200 focus:outline-none focus:border-indigo-500/50 transition-colors cursor-pointer"
-                >
-                  {profiles.map(p => (
-                    <option key={p.id} value={p.id} className="bg-[#121620]">
-                      {p.name} {p.id === "prof-default-main" ? "(الافتراضي)" : ""}
-                    </option>
-                  ))}
-                </select>
-
-                <button
-                  onClick={() => handleDeleteProfile(activeProfileId)}
-                  title="حذف هذا السيرفر"
-                  className="px-3 bg-red-505/10 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl transition-all hover:text-red-300 cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="bg-slate-950/45 border border-slate-850/60 rounded-xl p-3.5 text-xs text-slate-400 flex items-start gap-2.5">
-                <Heart className="w-4 h-4 text-red-400/80 shrink-0 mt-0.5" />
-                <span className="leading-relaxed">
-                  الملف النشط حالياً يحفظ كلاً من: <strong className="text-slate-300">أوامر البوت، رسائل الترحيب، لوحات التذاكر، إعدادات الحماية والبث المباشر والقوانين</strong>. عند تنقلك، سيتم تبديل المحاكي والكود المتولد فورياً لهذا السيرفر!
-                </span>
-              </div>
-            </div>
-
-            {/* Left side: Create New Profile Form */}
-            <div className="lg:col-span-7 bg-slate-950/35 border border-slate-850/80 rounded-xl p-4.5 space-y-3.5">
-              <label className="block text-xs font-black text-slate-300">✨ إنشاء وحفظ بروفايل سيرفر جديد (New Profile Template)</label>
-              
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="مثال: سيرفر الألعاب الرئيسي، سيرفر طاقم الإدارة..."
-                  value={newProfileName}
-                  onChange={(e) => setNewProfileName(e.target.value)}
-                  className="flex-1 bg-slate-950/90 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
-                />
-                
-                <button
-                  onClick={handleCreateProfile}
-                  disabled={!newProfileName.trim()}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-700/65 text-slate-200 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
-                >
-                  <Plus className="w-4 h-4 ml-0.5 text-indigo-400" />
-                  <span>إنشاء وحفظ</span>
-                </button>
-              </div>
-
-              <div className="text-[11px] text-slate-500 flex flex-wrap gap-x-5 gap-y-1">
-                <span>تاريخ التخزين: {new Date().toLocaleDateString("ar-EG")}</span>
-                <span>•</span>
-                <span>يقوم بنسخ الإعدادات الحالية للبدء فورياً</span>
-              </div>
-            </div>
-
+        {/* Platform Status */}
+        <div className="px-5 py-3 border-b border-[rgba(255,255,255,0.06)]">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" style={{ animationDuration: '2s' }} />
+            <span className="text-[11px] font-medium text-text-muted">All systems normal</span>
           </div>
         </div>
 
-        {/* ========================================== */}
-        {/* INTERACTIVE GUIDE ONBOARDING CENTER */}
-        {/* ========================================== */}
-        {showGuideCenter && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="bg-slate-900/90 border border-indigo-505/20 border-indigo-500/25 rounded-2xl p-5 shadow-2xl relative overflow-hidden" 
-            dir="rtl"
-          >
-            {/* Background glows */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl -z-10" />
-            
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3.5 mb-4.5 gap-2">
-              <div className="flex items-center gap-2.5">
-                <span className="p-2 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-xl text-sm font-black shadow-lg shadow-indigo-500/10">💡</span>
-                <div className="space-y-0.5 text-right">
-                  <h3 className="text-sm font-black text-slate-100 flex items-center gap-1.5 justify-start flex-row-reverse">
-                    <span>مرشد الإعداد الفوري والتشغيل التفاعلي (Interactive Setup Companion)</span>
-                    <span className="bg-emerald-500/15 border border-emerald-555/30 text-emerald-300 text-[9.5px] px-2 py-0.5 rounded-full font-black animate-pulse">مساعد ذكي</span>
-                  </h3>
-                  <p className="text-[11px] text-slate-450">دليلك البسيط والمسار المتكامل خطوة بخطوة لبرمجة وإطلاق بوتك الخاص في الديسكورد بكل سهولة.</p>
-                </div>
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+          {sidebarNavItems.map((section) => (
+            <div key={section.section}>
+              <div className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-text-dim">
+                {section.section}
               </div>
-              <button 
-                type="button"
-                onClick={() => {
-                  setShowGuideCenter(false);
-                  localStorage.setItem("mjk_guide_seen", "true");
-                }}
-                className="text-slate-400 hover:text-slate-200 hover:border-slate-700 hover:bg-slate-900 transition-all text-xs font-bold bg-[#141923] p-1.5 px-3 rounded-lg border border-slate-800 cursor-pointer self-end sm:self-auto"
-              >
-                فهمت الشرح، إغلاق المرشد نهائياً ×
-              </button>
-            </div>
-
-            {/* Horizontal 5-Step Milestones Tracker */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 mb-5">
-              {[
-                { step: 0, icon: "🔑", num: "الخطوة ١", title: "كود الترخيص" },
-                { step: 1, icon: "🤖", num: "الخطوة ٢", title: "تعديل الهوية" },
-                { step: 2, icon: "🛡️", num: "الخطوة ٣", title: "تفعيل الأنظمة" },
-                { step: 3, icon: "⚡", num: "الخطوة ٤", title: "استضافة البوت" },
-                { step: 4, icon: "💬", num: "الخطوة ٥", title: "البث بديسكورد" },
-              ].map((stepObj) => {
-                const isSelected = selectedGuideStep === stepObj.step;
-                // Determine step status
-                let statusBadge = "قيد الانتظار";
-                let statusColor = "border-slate-800 bg-slate-950/40 text-slate-500";
-                
-                if (stepObj.step === 0) {
-                  statusBadge = "نشط ومفعل ✅";
-                  statusColor = "border-emerald-500/30 bg-emerald-500/5 text-emerald-400";
-                } else if (stepObj.step === 1) {
-                  const changed = config.name !== "SystemAI" || config.prefix !== "!";
-                  statusBadge = changed ? "تم التعديل ✅" : "اضبط الهوية ⚙️";
-                  statusColor = changed ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-400" : "border-indigo-500/20 bg-indigo-550/5 text-indigo-300";
-                } else if (stepObj.step === 2) {
-                  const anyActive = welcome.enabled || ticket.enabled || rulesBot.enabled || staffApp.enabled || suggestion?.enabled;
-                  statusBadge = anyActive ? "نشطة ومجهزة ✅" : "قيد الإعداد";
-                  statusColor = anyActive ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-400" : "border-slate-800 bg-slate-900 text-slate-400";
-                } else if (stepObj.step === 3) {
-                  statusBadge = "ربط التوكن 🌐";
-                  statusColor = "border-slate-800 bg-slate-900 text-slate-400";
-                } else {
-                  statusBadge = "البث المباشر";
-                  statusColor = "border-slate-800 bg-slate-900 text-slate-400";
-                }
-
+              {section.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = sidebarView === item.id;
                 return (
                   <button
-                    key={stepObj.step}
-                    type="button"
-                    onClick={() => setSelectedGuideStep(stepObj.step)}
-                    className={`p-3 rounded-xl border text-right transition-all cursor-pointer relative ${
-                      isSelected 
-                        ? "border-indigo-650 bg-gradient-to-br from-indigo-950/20 to-slate-900/10 ring-1 ring-indigo-500/30" 
-                        : "border-slate-850 bg-slate-950/50 hover:bg-slate-900 hover:border-slate-800"
+                    key={item.id}
+                    onClick={() => navigateTo(item.id)}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer ${
+                      isActive
+                        ? 'bg-primary/15 text-primary sidebar-item active'
+                        : 'text-text-muted hover:text-white hover:bg-[rgba(255,255,255,0.04)] sidebar-item'
                     }`}
                   >
-                    {isSelected && (
-                      <div className="absolute top-1 left-2 w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                    )}
-                    <div className="flex items-center gap-1.5 justify-end">
-                      <span className="text-base select-none">{stepObj.icon}</span>
-                      <span className="text-[10px] font-black text-slate-400">{stepObj.num}</span>
-                    </div>
-                    <div className="text-xs font-black text-slate-100 mt-1 select-none text-right">{stepObj.title}</div>
-                    <div className="text-right">
-                      <span className={`inline-block text-[8.5px] px-1.5 py-0.5 rounded-full font-black mt-2 ${statusColor}`}>
-                        {statusBadge}
-                      </span>
-                    </div>
+                    <Icon className={`w-4 h-4 shrink-0 sidebar-icon ${isActive ? 'text-primary' : 'text-text-dim'}`} />
+                    <span>{item.label}</span>
                   </button>
                 );
               })}
             </div>
+          ))}
+        </nav>
 
-            {/* Selected Step Deep Dive Details */}
-            <div className="bg-slate-950/90 border border-slate-850 p-4.5 rounded-xl space-y-3.5 leading-relaxed relative min-h-[140px] flex flex-col justify-between">
-              
-              {selectedGuideStep === 0 && (
-                <div className="space-y-2 text-right">
-                  <h4 className="text-xs font-black text-emerald-400 flex items-center gap-1.5 justify-end">
-                    <span>الخطوة ١: رخصة السيرفر وترخيص الاستوديو الذكي 🔑</span>
-                  </h4>
-                  <p className="text-xs text-slate-350">
-                    أهلاً بك يا باحث البرمجة! الترخيص الخاص بك نشط بنجاح حالياً في المنصة. تم فحص وتأمين بيئة السحابة البرمجية الخاصة بك، وتم تفعيل كافة أنظمة اللوحات المتقدمة المخصصة للتحكم بذكاء.
-                  </p>
-                  <p className="text-xs text-slate-450">
-                    تم تخزين إعدادات بروفايلك تلقائياً وسحابة المنصة تحفظها من أجلك. يمكنك الآن الانتقال مباشرة للبدء في تشغيل وصهر بوتك.
-                  </p>
-                </div>
-              )}
+        {/* Sidebar Footer */}
+        <div className="p-4 border-t border-[rgba(255,255,255,0.06)]">
+          <div className="flex items-center gap-2.5 px-3 py-2">
+            <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+              {discordUser ? discordUser.username.charAt(0).toUpperCase() : '?'}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-white truncate">{discordUser ? discordUser.username : 'Guest'}</p>
+              <p className="text-[10px] text-text-dim truncate">{isSubVerified ? 'Premium' : 'Free'}</p>
+            </div>
+          </div>
+        </div>
+      </aside>
 
-              {selectedGuideStep === 1 && (
-                <div className="space-y-2 text-right">
-                  <h4 className="text-xs font-black text-indigo-400 flex items-center gap-1.5 justify-end">
-                     <span>الخطوة ٢: تعديل وضبط هوية البوت وتواجد السيرفر 👤</span>
-                  </h4>
-                  <p className="text-xs text-slate-350">
-                    اضبط مظهر بوت المساعد الخاص بك! يمكنك تفصيل الاسم الفريد، وحالة التواجد (متصل 🟢، مشغول 🔴، خارج الخدمة 🟡)، ونوع النشاط الذي يمارسه البوت (أمثلة: تلعب لعبة معينة أو تستمع لأغنية ما).
-                  </p>
-                  <div className="flex items-center gap-2 pt-1 justify-end">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsConfigExpanded(true);
-                        setTimeout(() => {
-                          document.getElementById("bot-config-anchor")?.scrollIntoView({ behavior: "smooth" });
-                        }, 50);
-                      }}
-                      className="bg-indigo-600 hover:bg-indigo-500 text-white font-black text-[10px] px-3.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1"
-                    >
-                      <span>تفتيت لفتح نافذة إعدادات الهوية 🤖</span>
-                    </button>
+      {/* ========== MAIN CONTENT ========== */}
+      <div className="flex-1 flex flex-col min-w-0">
+
+        {/* Top Bar */}
+        <header className="h-14 border-b border-[rgba(255,255,255,0.06)] bg-[#080B12] flex items-center px-6 gap-3 flex-shrink-0">
+          
+          {/* Page Title */}
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <h1 className="text-sm font-semibold text-white truncate">
+              {sidebarNavItems.flatMap(s => s.items).find(i => i.id === sidebarView)?.label || 'Dashboard'}
+            </h1>
+            {selectedGuild && (
+              <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 bg-surface border border-border rounded-md text-[10px] text-text-muted">
+                <img src={activeGuildIcon} alt="" className="w-3.5 h-3.5 rounded" onError={(e) => { (e.target as HTMLImageElement).src = 'https://cdn.discordapp.com/embed/avatars/0.png'; }} />
+                <span className="truncate max-w-[120px]">{activeGuildName}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Search */}
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-surface border border-border rounded-lg text-xs text-text-dim min-w-[200px]">
+            <Search className="w-3.5 h-3.5 shrink-0" />
+            <span className="text-text-dim/50">Search commands, logs...</span>
+          </div>
+
+          {/* Notifications */}
+          <div className="relative">
+            <button
+              onClick={() => setShowNotifPanel(!showNotifPanel)}
+              className="relative p-2 text-text-dim hover:text-white hover:bg-[rgba(255,255,255,0.04)] rounded-lg transition cursor-pointer"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
+            </button>
+            <AnimatePresence>
+              {showNotifPanel && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-full mt-2 w-80 bg-card border border-border rounded-xl shadow-elevated overflow-hidden z-50"
+                >
+                  <div className="p-3 border-b border-border">
+                    <h3 className="text-xs font-semibold text-white">Notifications</h3>
                   </div>
-                </div>
-              )}
-
-              {selectedGuideStep === 2 && (
-                <div className="space-y-2 text-right">
-                  <h4 className="text-xs font-black text-indigo-400 flex items-center gap-1.5 justify-end">
-                    <span>الخطوة ٣: تفعيل وتكامل برمجيات الأنظمة المتقدمة 🛡️</span>
-                  </h4>
-                  <p className="text-xs text-slate-350">
-                    المنصة تحتوي على 14 نظاماً متقدماً يعملون باتصال فوري داخل بوت واحد! يمكنك تفعيل وإعداد كل نظام ليناسب طراز سيرفرك:
-                  </p>
-                  <p className="text-[11px] text-slate-450 leading-relaxed bg-[#10141e]/50 p-2.5 border border-slate-900 rounded-lg">
-                    • 🎫 نظام الدعم والتذاكر بالتصنيفات • 🛡️ نظام التقديم والتوظيف الإداري والفرز • ⚖️ بوت القوانين مع معاينة وتفاعلات القائمة • 💡 لوحة وتفاعلات استقبال الاقتراحات • 🌴 ونظام إجازات الاستقالات والمستويات المتقدمة وغيرها!
-                  </p>
-                  <div className="flex items-center gap-2 pt-1 justify-end">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveTab("advanced");
-                        window.scrollTo({ top: 350, behavior: 'smooth' });
-                      }}
-                      className="bg-[#1e1f22] hover:bg-[#2b2d31] hover:text-white text-indigo-300 font-extrabold text-[10px] px-3.5 py-1.5 rounded-lg border border-indigo-500/20 transition-all cursor-pointer"
-                    >
-                      <span>انتقل فوراً لتبويب الأنظمة المتقدمة 🛡️</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {selectedGuideStep === 3 && (
-                <div className="space-y-2 text-right font-sans">
-                  <h4 className="text-xs font-black text-indigo-400 flex items-center gap-1.5 justify-end">
-                    <span>الخطوة ٤: إشعال شفرة البوت والتشغيل في الاستضافة السحابية ⚡</span>
-                  </h4>
-                  <p className="text-xs text-slate-350">
-                    لجعل البوت متاحاً على مدار الساعة (24/7) مجاناً، سنقوم بجلبه للعمل مباشرة من استديو الاستضافة:
-                  </p>
-                  <ol className="text-[11px] text-slate-450 list-decimal list-inside pr-1 space-y-1.5 text-right font-sans">
-                    <li>أولاً، اذهب إلى <a href="https://discord.com/developers/applications" target="_blank" rel="noreferrer" className="text-indigo-400 hover:underline inline-flex items-center gap-1">صفحة مطوري الديسكورد (Discord Developer Application) <ExternalLink className="w-2.5 h-2.5" /></a> وأنشئ تطبيقاً جديداً من خيار <strong>New Application</strong>.</li>
-                    <li>من قائمة <strong>Bot</strong> في اليسار، انزل لأسفل واضغط على زر <strong>Reset Token</strong> ثم انسخ الكود السري (Token). كما لا تنسى تفعيل خيار <strong>Message Content Intent</strong>.</li>
-                    <li>اذهب لتبويب <strong className="text-indigo-400 cursor-pointer hover:underline" onClick={() => setActiveTab("host")}>الاستضافة والرفع</strong> باللوحة وضعه مع معرف البوت (Client ID)، ثم اضغط تشغيل لمشاهدة سجلات الاتصال الفورية!</li>
-                  </ol>
-                  <div className="flex items-center gap-2 pt-1 justify-end">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveTab("host");
-                        window.scrollTo({ top: 350, behavior: 'smooth' });
-                      }}
-                      className="bg-indigo-600 hover:bg-indigo-500 text-white font-black text-[10px] px-3.5 py-1.5 rounded-lg transition-all cursor-pointer"
-                    >
-                      <span>دخول لوحة الاستضافة السريعة 🌐</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {selectedGuideStep === 4 && (
-                <div className="space-y-2 text-right">
-                  <h4 className="text-xs font-black text-purple-400 flex items-center gap-1.5 justify-end">
-                    <span>الخطوة ٥: بث وطباعة لوحات الأنظمة التفاعلية داخل قناة ديسكورد 💬</span>
-                  </h4>
-                  <p className="text-xs text-slate-350">
-                    بمجرد أن يصبح بوتك <span className="text-emerald-400 font-bold">متصلاً بالإنترنت (Online)</span>، يمكنك توليد الأزرار والبطاقات الجاهزة داخل ديسكورد!
-                  </p>
-                  <p className="text-[11px] text-slate-450">
-                    ادخل إلى سيرفرك واكتب إحدى الأوامر السلاش التالية (والتأكد من إرسالها) ليقوم البوت بطباعة اللوحة التفاعلية الأنيقة في تلك القناة:
-                  </p>
-                  
-                  {/* Commands copyable grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 bg-[#0a0d12]/90 p-3 rounded-lg border border-slate-900 font-sans">
-                    {[
-                      { cmd: "/setup-rules", title: "لوحة تفعيل بوت القوانين" },
-                      { cmd: "/setup-suggestions", title: "لوحة وتفاعل الاقتراحات السريعة" },
-                      { cmd: "/setup-tickets", title: "لوحة بطاقات وعام الدعم الفني" },
-                      { cmd: "/setup-staff", title: "لوحة نموذج التقديم للإشراف" },
-                      { cmd: "/setup-verify", title: "لوحة حماية السيرفر والتحقق البشري" },
-                      { cmd: "/setup-hr", title: "لوحة إدارة الإجازات والاستقالات" },
-                    ].map((c) => (
-                      <div key={c.cmd} className="bg-slate-950/70 p-2 rounded border border-slate-900 flex justify-between items-center gap-1 relative text-right">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard.writeText(c.cmd);
-                            alert(`تم نسخ الأمر: ${c.cmd}`);
-                          }}
-                          className="bg-purple-900/40 hover:bg-purple-900 text-[8px] font-bold px-1.5 py-1 rounded text-purple-200 transition cursor-pointer self-center"
-                        >
-                          نسخ 📋
-                        </button>
-                        <div className="text-right">
-                          <code className="text-purple-400 font-mono text-[9.5px] font-bold block">{c.cmd}</code>
-                          <span className="text-[8.5px] text-slate-500 block leading-tight">{c.title}</span>
+                  <div className="max-h-64 overflow-y-auto">
+                    {notifItems.map((n) => (
+                      <div key={n.id} className={`px-4 py-3 border-b border-border/50 last:border-0 hover:bg-[rgba(255,255,255,0.02)] cursor-pointer transition ${!n.read ? '' : ''}`}>
+                        <div className="flex items-start gap-2.5">
+                          {!n.read && <span className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 shrink-0" />}
+                          <div className={n.read ? 'mr-4' : ''}>
+                            <p className="text-xs font-medium text-white">{n.title}</p>
+                            <p className="text-[10px] text-text-muted mt-0.5">{n.desc}</p>
+                            <p className="text-[9px] text-text-dim mt-0.5">{n.time}</p>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
+                  <div className="p-2 border-t border-border">
+                    <button className="w-full py-1.5 text-[10px] text-text-dim hover:text-text-muted text-center transition cursor-pointer">View all</button>
+                  </div>
+                </motion.div>
               )}
-
-              {/* Progress footer inside the companion */}
-              <div className="pt-3 border-t border-slate-900 flex items-center justify-between text-[10.5px]">
-                <div className="text-slate-500 select-none">
-                  الخطوة <span className="font-bold text-slate-350">{selectedGuideStep + 1}</span> من <span className="font-mono">٥</span>
-                </div>
-                <div className="flex gap-1.5">
-                  <button 
-                    type="button"
-                    disabled={selectedGuideStep === 0}
-                    onClick={() => setSelectedGuideStep(prev => prev - 1)}
-                    className="p-1 px-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 rounded cursor-pointer font-bold border border-slate-850"
-                  >
-                    السابق
-                  </button>
-                  {selectedGuideStep === 4 ? (
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setShowGuideCenter(false);
-                        localStorage.setItem("mjk_guide_seen", "true");
-                      }}
-                      className="p-1 px-3 bg-emerald-600 hover:bg-emerald-555 text-white rounded cursor-pointer font-black shadow-lg shadow-emerald-600/10"
-                    >
-                      فهمت الدليل بالكامل، ابدأ الآن! 🎉
-                    </button>
-                  ) : (
-                    <button 
-                      type="button"
-                      onClick={() => setSelectedGuideStep(prev => prev + 1)}
-                      className="p-1 px-2.5 bg-indigo-500/10 hover:bg-indigo-550/20 text-indigo-300 disabled:opacity-40 rounded cursor-pointer font-bold border border-indigo-500/10"
-                    >
-                      التالي
-                    </button>
-                  )}
-                </div>
-              </div>
-
-            </div>
-          </motion.div>
-        )}
-
-        {/* UPPER COLLAPSIBLE DRAWER: GLOBAL BOT PRESENCE SETTINGS PARAMETERS */}
-        <div id="bot-config-anchor" className="bg-slate-900/80 border border-slate-800/60 backdrop-blur-md rounded-2xl p-5 shadow-2xl select-none transition-all duration-300">
-          
-          {/* Header always visible to trigger expand/collapse toggle */}
-          <div 
-            onClick={() => setIsConfigExpanded(!isConfigExpanded)}
-            className="flex items-center justify-between cursor-pointer group"
-          >
-            <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-slate-300">
-              <Settings className="w-4 h-4 text-indigo-400 group-hover:rotate-45 transition-transform duration-300" />
-              <div className="space-y-0.5 text-right" style={{ direction: "rtl" }}>
-                <span className="block font-black text-sm text-slate-200">🤖 إعدادات الهوية الأساسية والعملية (Bot Profile & Presence)</span>
-                <span className="text-[10px] text-slate-550 font-sans tracking-wide">انقر هنا لتعديل اسم البوت، البادئة (Prefix)، والحالة الحركية</span>
-              </div>
-            </div>
-
-            {/* Quick summary indicators when collapsed */}
-            <div className="flex items-center gap-3">
-              {!isConfigExpanded && (
-                <div className="hidden sm:flex items-center gap-2.5 bg-slate-950/70 border border-slate-850/80 px-3.5 py-1.5 rounded-xl text-xs">
-                  <span className="font-mono text-indigo-450 font-extrabold">{config.avatar} {config.name}</span>
-                  <span className="text-slate-800">|</span>
-                  <span className="text-[11px] text-slate-400 font-mono">بادئة الأوامر: {config.prefix}</span>
-                  <span className="text-slate-800">|</span>
-                  <span className="flex items-center gap-1">
-                    <span className={`w-2 h-2 rounded-full ${
-                      config.status === "online" ? "bg-green-500" :
-                      config.status === "idle" ? "bg-amber-500" :
-                      config.status === "dnd" ? "bg-red-500" : "bg-slate-500"
-                    }`} />
-                    <span className="text-[11px] text-slate-400 font-sans capitalize">{config.status}</span>
-                  </span>
-                </div>
-              )}
-              
-              <button 
-                type="button"
-                className="p-1 px-3 bg-indigo-500/10 border border-indigo-500/20 group-hover:bg-indigo-600/30 group-hover:text-white rounded-lg text-xs font-bold text-indigo-400 transition cursor-pointer"
-              >
-                {isConfigExpanded ? "إخفاء التخصيص 🔼" : "تعديل الهوية 🔽"}
-              </button>
-            </div>
+            </AnimatePresence>
           </div>
 
-          <AnimatePresence>
-            {isConfigExpanded && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="overflow-hidden"
+          {/* Server Selector */}
+          {discordUser && discordGuilds.length > 0 && (
+            <div className="relative">
+              <button
+                onClick={() => setShowGuildPicker(!showGuildPicker)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-surface border border-border hover:border-border-hover text-text-muted hover:text-white rounded-lg text-[11px] font-medium transition cursor-pointer"
               >
-                <div className="pt-5 mt-4 border-t border-slate-800/60 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                  
-                  {/* Bot name */}
-                  <div className="col-span-1 sm:col-span-2 space-y-1.5 text-right" style={{ direction: "rtl" }}>
-                    <label className="block text-[11px] font-bold text-slate-400 font-sans">اسم البوت (Name)</label>
-                    <input
-                      type="text"
-                      value={config.name}
-                      onChange={(e) => handleUpdateConfigValue("name", e.target.value.replace(/\s+/g, ""))}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 font-mono text-left focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20"
-                      placeholder="SystemAI"
-                      style={{ direction: "ltr" }}
-                    />
-                  </div>
-
-                  {/* Prefix trigger key */}
-                  <div className="col-span-1 space-y-1.5 text-right" style={{ direction: "rtl" }}>
-                    <label className="block text-[11px] font-bold text-slate-400 font-sans">بادئة الأوامر (Prefix)</label>
-                    <input
-                      type="text"
-                      value={config.prefix}
-                      maxLength={4}
-                      onChange={(e) => handleUpdateConfigValue("prefix", e.target.value.trim())}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 font-mono text-center focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20"
-                      placeholder="!"
-                      style={{ direction: "ltr" }}
-                    />
-                  </div>
-
-                  {/* Profile Avatar customizer */}
-                  <div className="col-span-1 space-y-1.5 text-right" style={{ direction: "rtl" }}>
-                    <label className="block text-[11px] font-bold text-slate-400 font-sans">أيقونة البوت (Avatar)</label>
-                    <select
-                      value={config.avatar}
-                      onChange={(e) => handleUpdateConfigValue("avatar", e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-850 rounded-lg text-xs text-slate-200 focus:outline-none cursor-pointer focus:border-indigo-500"
+                <Server className="w-3.5 h-3.5" />
+                {selectedGuild ? (
+                  <span className="max-w-[80px] truncate">{selectedGuild.name}</span>
+                ) : (
+                  <span>Select Server</span>
+                )}
+                <ChevronDown className="w-3 h-3 text-text-dim" />
+              </button>
+              {showGuildPicker && (
+                <div className="absolute right-0 top-full mt-1.5 bg-card border border-border rounded-xl p-2 w-72 max-h-72 overflow-y-auto z-40 shadow-elevated">
+                  {discordGuilds.map((g: any) => (
+                    <button
+                      key={g.id}
+                      onClick={(e) => { handleSelectGuild(g, e); setShowGuildPicker(false); }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-[rgba(255,255,255,0.04)] text-xs transition cursor-pointer"
                     >
-                      <option value="🤖">🤖 Robust Robot</option>
-                      <option value="👾">👾 Cyber Alien</option>
-                      <option value="🦊">🦊 Smart Fox</option>
-                      <option value="🐱">🐱 Space Kitten</option>
-                      <option value="🌸">🌸 Sakura Blossom</option>
-                      <option value="🔥">🔥 Plasma Core</option>
-                    </select>
-                  </div>
-
-                  {/* Status dot selector */}
-                  <div className="col-span-1 space-y-1.5 text-right" style={{ direction: "rtl" }}>
-                    <label className="block text-[11px] font-bold text-slate-400 font-sans">حالة التواجد (Status)</label>
-                    <select
-                      value={config.status}
-                      onChange={(e) => handleUpdateConfigValue("status", e.target.value as any)}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-850 rounded-lg text-xs text-slate-200 focus:outline-none cursor-pointer font-sans focus:border-indigo-500"
-                    >
-                      <option value="online">🟢 Online (متصل)</option>
-                      <option value="idle">🟡 Idle (خارج الخدمة)</option>
-                      <option value="dnd">🔴 Do Not Disturb (مشغول)</option>
-                      <option value="offline">⚪ Invisible (مخفي)</option>
-                    </select>
-                  </div>
-
-                  {/* Activity Status type selection */}
-                  <div className="col-span-1 space-y-1.5 text-right" style={{ direction: "rtl" }}>
-                    <label className="block text-[11px] font-bold text-slate-400 font-sans">نوع النشاط (Activity)</label>
-                    <select
-                      value={config.activityType}
-                      onChange={(e) => handleUpdateConfigValue("activityType", e.target.value as any)}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-850 rounded-lg text-xs text-slate-200 focus:outline-none cursor-pointer focus:border-indigo-500"
-                    >
-                      <option value="PLAYING">🎮 Playing (يلعب)</option>
-                      <option value="LISTENING">🎧 Listening (يستمع إلى)</option>
-                      <option value="WATCHING">📺 Watching (يشاهد)</option>
-                      <option value="STREAMING">🎬 Streaming (يبث)</option>
-                    </select>
-                  </div>
-
-                  {/* Activity Status text */}
-                  <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 mt-1 space-y-1.5 text-right" style={{ direction: "rtl" }}>
-                    <label className="block text-[11px] font-bold text-slate-400 font-sans">نص الحالة الخاص المخصص (Status Presence Text)</label>
-                    <input
-                      type="text"
-                      value={config.activityName}
-                      onChange={(e) => handleUpdateConfigValue("activityName", e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 font-sans focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 text-left placeholder-slate-705"
-                      placeholder="مثال: with modular parameters"
-                      style={{ direction: 'ltr' }}
-                    />
-                  </div>
-
-                  {/* Bot Default Embed Color customizer */}
-                  <div className="col-span-1 sm:col-span-2 md:col-span-1 lg:col-span-2 mt-1 space-y-1.5 text-right" style={{ direction: "rtl" }}>
-                    <label className="block text-[11px] font-bold text-slate-400 font-sans">لون الإمبد الافتراضي للبوت (Bot Embed Color)</label>
-                    <div className="flex gap-2 font-mono">
-                      <input
-                        type="color"
-                        value={config.embedColor || "#5865F2"}
-                        onChange={(e) => handleUpdateConfigValue("embedColor", e.target.value)}
-                        className="w-10 h-8 p-0 bg-transparent border border-slate-800 rounded-lg cursor-pointer self-center"
+                      <img
+                        src={g.icon ? `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=32` : 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                        alt=""
+                        className="w-6 h-6 rounded-lg flex-shrink-0"
+                        onError={(e) => { (e.target as HTMLImageElement).src = 'https://cdn.discordapp.com/embed/avatars/0.png'; }}
                       />
+                      <span className="text-white font-medium truncate flex-1">{g.name}</span>
+                      <span className="text-text-dim text-[9px]">{g.memberCount?.toLocaleString() || '?'}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* User Profile */}
+          {discordUser ? (
+            <div className="flex items-center gap-2">
+              <img
+                src={`https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=32`}
+                alt=""
+                className="w-6 h-6 rounded-full"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <span className="text-xs font-medium text-white hidden sm:inline">{discordUser.username}</span>
+              <button
+                onClick={handleDiscordLogout}
+                className="p-1.5 text-text-dim hover:text-white rounded-lg transition cursor-pointer"
+                title="Logout"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleDiscordLogin}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-primary hover:bg-primary-hover text-white text-xs font-semibold rounded-lg transition cursor-pointer"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>{oauthConfigured ? 'Sign In' : 'Setup OAuth'}</span>
+            </button>
+          )}
+        </header>
+
+        {/* ========== CONTENT AREA ========== */}
+        <main className="flex-1 overflow-y-auto p-6">
+
+          {/* Real-time Cloud updates notice */}
+          {hasUnappliedChanges && (botStatus === 'online' || botStatus === 'logging_in') && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-card border border-warning/20 rounded-xl p-4 flex items-center justify-between gap-4 mb-6"
+            >
+              <div className="flex items-center gap-3">
+                <RefreshCw className="w-4 h-4 text-warning" />
+                <div>
+                  <p className="text-xs font-medium text-white">Unapplied changes detected</p>
+                  <p className="text-[10px] text-text-muted">Sync your config to the live bot in Hosting</p>
+                </div>
+              </div>
+              <button
+                onClick={() => navigateTo('hosting')}
+                className="shrink-0 px-3 py-1.5 bg-warning/10 border border-warning/20 text-warning rounded-lg text-[10px] font-semibold transition cursor-pointer hover:bg-warning/20"
+              >
+                Go to Hosting
+              </button>
+            </motion.div>
+          )}
+
+          {/* ==================== ACTIVATION / ADMIN / OAUTH SCREENS ==================== */}
+
+          {/* SUBSCRIPTION ACTIVATION */}
+          {(!subKey || !isSubVerified) ? (
+            <div className="max-w-md mx-auto mt-16 space-y-6 text-center">
+              <div className="flex justify-center">
+                <MJKLogo size={56} showText={true} />
+              </div>
+              <div className="space-y-2">
+                <h1 className="text-xl font-bold text-white">Welcome to MJK System</h1>
+                <p className="text-sm text-text-muted">Activate your license to manage Discord bots.</p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-6 text-right">
+                <form onSubmit={handleActivateLicense} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-medium text-text-muted">License Key</label>
+                    <div className="relative">
+                      <Key className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim" />
                       <input
                         type="text"
-                        value={config.embedColor || "#5865F2"}
-                        onChange={(e) => handleUpdateConfigValue("embedColor", e.target.value)}
-                        placeholder="#5865F2"
-                        className="flex-1 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 text-center focus:border-indigo-500 focus:outline-none"
+                        value={activationInput}
+                        onChange={(e) => setActivationInput(e.target.value)}
+                        className="w-full pr-10 pl-3 py-2.5 bg-[#080B12] border border-border rounded-lg text-sm text-white text-right focus:border-primary/50 focus:outline-none"
+                        placeholder="Enter your license key"
                       />
                     </div>
                   </div>
+                  {activationError && (
+                    <div className="p-3 bg-danger/10 border border-danger/20 rounded-lg text-xs text-danger flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>{activationError}</span>
+                    </div>
+                  )}
+                  {activationSuccess && (
+                    <div className="p-3 bg-success/10 border border-success/20 rounded-lg text-xs text-success flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 shrink-0" />
+                      <span>{activationSuccess}</span>
+                    </div>
+                  )}
+                  {subKey && !isSubVerified && !checkingSub && (
+                    <div className="p-3 bg-warning/10 border border-warning/20 rounded-lg text-xs text-warning">
+                      Saved key is invalid. Enter a new key.
+                    </div>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={isActivating || checkingSub}
+                    className="w-full py-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-semibold rounded-lg text-sm transition cursor-pointer disabled:cursor-not-allowed"
+                  >
+                    {checkingSub ? 'Verifying...' : isActivating ? 'Activating...' : 'Activate License'}
+                  </button>
+                </form>
+                {!isAdminLoggedIn && (
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <button
+                      onClick={() => setShowAdminTab(!showAdminTab)}
+                      className="text-xs text-text-dim hover:text-text-muted transition cursor-pointer"
+                    >
+                      {showAdminTab ? 'Hide' : 'Admin Login'}
+                    </button>
+                  </div>
+                )}
+              </div>
 
+              {/* Admin Login */}
+              {(isAdminLoggedIn || showAdminTab) && (
+                <div className="bg-card border border-border rounded-xl p-6 text-right space-y-4">
+                  <h3 className="text-sm font-semibold text-white">Admin Panel</h3>
+                  {!isAdminLoggedIn ? (
+                    <form onSubmit={handleAdminLogin} className="space-y-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-text-muted">Admin Code</label>
+                        <input
+                          type="password"
+                          value={adminInput}
+                          onChange={(e) => setAdminInput(e.target.value)}
+                          className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-sm text-white text-right focus:border-primary/50 focus:outline-none"
+                          placeholder="Enter admin code"
+                        />
+                      </div>
+                      {adminError && <p className="text-xs text-danger">{adminError}</p>}
+                      <button
+                        type="submit"
+                        disabled={isLoggingAdmin}
+                        className="w-full py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-semibold rounded-lg text-xs transition cursor-pointer"
+                      >
+                        {isLoggingAdmin ? 'Logging in...' : 'Login'}
+                      </button>
+                    </form>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-success flex items-center gap-1.5">
+                          <CheckCircle className="w-3.5 h-3.5" />
+                          Logged in as admin
+                        </span>
+                        <div className="flex gap-2">
+                          <button onClick={handleLogout} className="text-xs text-text-dim hover:text-text-muted px-2 py-1 rounded hover:bg-border/50 transition cursor-pointer">Logout Subscription</button>
+                          <button onClick={handleAdminLogout} className="text-xs text-danger px-2 py-1 rounded hover:bg-danger/10 transition cursor-pointer">Logout Admin</button>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <h4 className="text-xs font-semibold text-white">Key Management</h4>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-text-dim">Count</label>
+                            <input type="number" value={genCount} onChange={(e) => setGenCount(Number(e.target.value))} min={1} max={50} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-text-dim">Duration</label>
+                            <select value={genDuration} onChange={(e) => setGenDuration(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white">
+                              <option>7 Days</option><option>15 Days</option><option>30 Days</option><option>60 Days</option><option>90 Days</option><option>Lifetime</option>
+                            </select>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-text-dim">Note</label>
+                            <input type="text" value={genNote} onChange={(e) => setGenNote(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" placeholder="Optional" />
+                          </div>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] text-text-dim">Allowed Modules</label>
+                          <div className="grid grid-cols-3 gap-1.5 max-h-32 overflow-y-auto">
+                            {SYSTEM_MODULES_LIST.map(m => (
+                              <label key={m.id} className="flex items-center gap-1.5 text-[10px] text-text-muted cursor-pointer">
+                                <input type="checkbox" checked={genModules.includes(m.id)} onChange={() => genModules.includes(m.id) ? setGenModules(genModules.filter(x => x !== m.id)) : setGenModules([...genModules, m.id])} className="rounded border-border bg-[#080B12]" />
+                                {m.label}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                        <button onClick={handleGenerateKeys} className="w-full py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg text-xs transition cursor-pointer">Generate Keys</button>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="text-xs font-semibold text-white">Keys ({keysList.length})</h4>
+                        {loadingKeys ? (
+                          <p className="text-xs text-text-dim">Loading...</p>
+                        ) : keysList.length === 0 ? (
+                          <p className="text-xs text-text-dim">No keys.</p>
+                        ) : (
+                          <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                            {keysList.map((k, i) => (
+                              <div key={i} className="flex items-center justify-between p-2 bg-[#080B12] border border-border rounded-lg text-[10px]">
+                                <div className="flex items-center gap-2 text-left" style={{ direction: 'ltr' }}>
+                                  <span className="font-mono text-text-muted">{k.key || k.code}</span>
+                                  <span className="text-text-dim">{k.duration}</span>
+                                  {k.usedBy ? <span className="text-primary">Used</span> : <span className="text-success">New</span>}
+                                </div>
+                                <button onClick={() => handleDeleteKey(k.key || k.code)} className="p-1 text-danger hover:bg-danger/10 rounded cursor-pointer transition"><Trash2 className="w-3 h-3" /></button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+              )}
+            </div>
+          ) : isAdminLoggedIn && showAdminTab ? (
+            <div className="max-w-2xl mx-auto mt-8 space-y-6">
+              <div className="bg-card border border-border rounded-xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-semibold text-white">Admin Key Management</h2>
+                  <div className="flex gap-2">
+                    <button onClick={handleAdminLogout} className="text-xs text-text-dim hover:text-text-muted px-3 py-1.5 rounded-lg hover:bg-border/50 transition cursor-pointer">Logout Admin</button>
+                    <button onClick={handleLogout} className="text-xs text-text-dim hover:text-text-muted px-3 py-1.5 rounded-lg hover:bg-border/50 transition cursor-pointer">Logout Subscription</button>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] text-text-dim">Count</label><input type="number" value={genCount} onChange={(e) => setGenCount(Number(e.target.value))} min={1} max={50} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] text-text-dim">Duration</label>
+                      <select value={genDuration} onChange={(e) => setGenDuration(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white">
+                        <option>7 Days</option><option>15 Days</option><option>30 Days</option><option>60 Days</option><option>90 Days</option><option>Lifetime</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] text-text-dim">Note</label><input type="text" value={genNote} onChange={(e) => setGenNote(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" placeholder="Optional" />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] text-text-dim">Allowed Modules</label>
+                    <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto">
+                      {SYSTEM_MODULES_LIST.map(m => (
+                        <label key={m.id} className="flex items-center gap-1.5 text-[10px] text-text-muted cursor-pointer">
+                          <input type="checkbox" checked={genModules.includes(m.id)} onChange={() => genModules.includes(m.id) ? setGenModules(genModules.filter(x => x !== m.id)) : setGenModules([...genModules, m.id])} className="rounded border-border bg-[#080B12]" />
+                          {m.label}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <button onClick={handleGenerateKeys} className="px-6 py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg text-xs transition cursor-pointer">Generate Keys</button>
+                </div>
+                {loadingKeys ? <p className="text-xs text-text-dim mt-4">Loading...</p> : keysList.length > 0 && (
+                  <div className="mt-4 space-y-1.5 max-h-48 overflow-y-auto">
+                    {keysList.map((k, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 bg-[#080B12] border border-border rounded-lg text-[10px]">
+                        <div className="flex items-center gap-2 text-left" style={{ direction: 'ltr' }}>
+                          <span className="font-mono text-text-muted">{k.key || k.code}</span>
+                          <span className="text-text-dim">{k.duration}</span>
+                          {k.usedBy ? <span className="text-primary">Used</span> : <span className="text-success">New</span>}
+                        </div>
+                        <button onClick={() => handleDeleteKey(k.key || k.code)} className="p-1 text-danger hover:bg-danger/10 rounded cursor-pointer transition"><Trash2 className="w-3 h-3" /></button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : showOAuthSetup ? (
+            <div className="max-w-md mx-auto mt-8">
+              <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+                <h2 className="text-sm font-semibold text-white">Discord OAuth Setup</h2>
+                <p className="text-xs text-text-muted">Enter your Discord application credentials.</p>
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-text-muted">Client ID</label>
+                    <input type="text" value={oauthClientId} onChange={(e) => setOauthClientId(e.target.value)} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white" placeholder="Client ID" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-text-muted">Client Secret</label>
+                    <input type="password" value={oauthClientSecret} onChange={(e) => setOauthClientSecret(e.target.value)} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white" placeholder="Client Secret" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-text-muted">Bot Token</label>
+                    <input type="password" value={oauthBotToken} onChange={(e) => setOauthBotToken(e.target.value)} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white font-mono" placeholder="Bot Token (optional)" />
+                  </div>
+                  <p className="text-xs text-text-dim">Add <span className="text-primary">http://localhost:3000/api/discord/callback</span> in OAuth2 &gt; Redirects.</p>
+                  <button onClick={saveOAuthConfig} disabled={savingOAuth} className="w-full py-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-semibold rounded-lg text-sm transition cursor-pointer disabled:cursor-not-allowed">
+                    {savingOAuth ? 'Saving...' : 'Save Settings'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* ==================== NORMAL DASHBOARD CONTENT ==================== */
+            <div className="space-y-6">
+            
+              {/* Dashboard Tab */}
+              {activeTab === 'dashboard' && (
+                <>
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    {[
+                      { label: 'Active Servers', value: selectedGuild ? '1' : '0', icon: Server, color: 'text-primary', bg: 'bg-primary/10' },
+                      { label: 'Bot Status', value: botStatus === 'online' ? 'Online' : 'Offline', icon: Cpu, color: 'text-success', bg: 'bg-success/10' },
+                      { label: 'Commands', value: String(commands.length), icon: Terminal, color: 'text-accent', bg: 'bg-accent/10' },
+                      { label: 'Uptime', value: botStatus === 'online' ? '99.9%' : '--', icon: Activity, color: 'text-success', bg: 'bg-success/10' },
+                      { label: 'Latency', value: botStatus === 'online' ? '14ms' : '--', icon: Zap, color: 'text-warning', bg: 'bg-warning/10' },
+                    ].map((stat) => {
+                      const Icon = stat.icon;
+                      return (
+                        <div key={stat.label} className="metric-card">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-dim">{stat.label}</span>
+                            <div className={`p-2 ${stat.bg} ${stat.color} rounded-lg`}>
+                              <Icon className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <p className="text-2xl font-bold text-white stat-value">{stat.value}</p>
+                          <div className="mt-1 h-1 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
+                            <div className={`h-full rounded-full ${stat.color.replace('text-', 'bg-')}/40`} style={{ width: botStatus === 'online' ? '85%' : '30%' }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
 
-        {/* Workspace Display Area Router */}
-        <div className="min-h-[500px]">
-          <AnimatePresence mode="wait">
-            {activeTab === "studio" && (
-              <motion.div
-                key="studio"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.2 }}
-              >
-                <CommandStudio
-                  commands={commands}
-                  setCommands={setCommands}
-                  prefix={config.prefix}
+                  {/* Main Dashboard */}
+                  <BotDashboard logs={logs} setLogs={setLogs} commandsCount={commands.length} />
+                </>
+              )}
+
+              {/* Hosting Tab */}
+              {activeTab === 'hosting' && (
+                <LiveHost
+                  config={config} commands={commands}
+                  welcome={welcome} ticket={ticket} staffApp={staffApp}
+                  security={security} rulesBot={rulesBot} leaveConfig={leaveConfig}
+                  suggestion={suggestion} report={report} warning={warning}
+                  autoResponse={autoResponse} giveaway={giveaway}
+                  levelConfig={levelConfig} reactionRoles={reactionRoles} voiceStats={voiceStats}
                 />
-              </motion.div>
-            )}
+              )}
 
-            {activeTab === "advanced" && (
-              <motion.div
-                key="advanced"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.2 }}
-              >
+              {/* Modules Tab */}
+              {activeTab === 'modules' && (
                 <AdvancedModules
-                  welcome={welcome}
-                  setWelcome={setWelcome}
-                  ticket={ticket}
-                  setTicket={setTicket}
-                  staffApp={staffApp}
-                  setStaffApp={setStaffApp}
-                  security={security}
-                  setSecurity={setSecurity}
-                  rulesBot={rulesBot}
-                  setRulesBot={setRulesBot}
-                  leaveConfig={leaveConfig}
-                  setLeaveConfig={setLeaveConfig}
-                  suggestion={suggestion}
-                  setSuggestion={setSuggestion}
-                  report={report}
-                  setReport={setReport}
-                  warning={warning}
-                  setWarning={setWarning}
-                  autoResponse={autoResponse}
-                  setAutoResponse={setAutoResponse}
-                  giveaway={giveaway}
-                  setGiveaway={setGiveaway}
-                  levelConfig={levelConfig}
-                  setLevelConfig={setLevelConfig}
-                  reactionRoles={reactionRoles}
-                  setReactionRoles={setReactionRoles}
-                  voiceStats={voiceStats}
-                  setVoiceStats={setVoiceStats}
-                  autoRoles={autoRoles}
-                  setAutoRoles={setAutoRoles}
-                  embedFormatter={embedFormatter}
-                  setEmbedFormatter={setEmbedFormatter}
-                  staffManagement={staffManagement}
-                  setStaffManagement={setStaffManagement}
-                  modLogs={modLogs}
-                  setModLogs={setModLogs}
+                  welcome={welcome} setWelcome={setWelcome}
+                  ticket={ticket} setTicket={setTicket}
+                  staffApp={staffApp} setStaffApp={setStaffApp}
+                  security={security} setSecurity={setSecurity}
+                  rulesBot={rulesBot} setRulesBot={setRulesBot}
+                  leaveConfig={leaveConfig} setLeaveConfig={setLeaveConfig}
+                  suggestion={suggestion} setSuggestion={setSuggestion}
+                  report={report} setReport={setReport}
+                  warning={warning} setWarning={setWarning}
+                  autoResponse={autoResponse} setAutoResponse={setAutoResponse}
+                  giveaway={giveaway} setGiveaway={setGiveaway}
+                  levelConfig={levelConfig} setLevelConfig={setLevelConfig}
+                  reactionRoles={reactionRoles} setReactionRoles={setReactionRoles}
+                  voiceStats={voiceStats} setVoiceStats={setVoiceStats}
+                  autoRoles={autoRoles} setAutoRoles={setAutoRoles}
+                  embedFormatter={embedFormatter} setEmbedFormatter={setEmbedFormatter}
+                  modLogs={modLogs} setModLogs={setModLogs}
                   guildRoles={guildRoles}
                   selectedGuildId={selectedGuild?.id}
                   discordSession={discordSession}
-                  channels={channels}
-                  setChannels={setChannels}
+                  channels={channels} setChannels={setChannels}
                   onAddLog={handleAddLog}
-                  members={members}
-                  setMembers={setMembers}
+                  members={members} setMembers={setMembers}
                   allowedModules={subDetails?.allowedModules}
                   isAdmin={isAdminLoggedIn}
                   isLoadingChannels={isLoadingChannels}
                   channelLoadError={channelLoadError}
                   botInviteUrl={botInviteUrl}
-                  onRetryChannels={() => selectedGuild && handleSelectGuild(selectedGuild)}
+                  onRetryChannels={() => { if (selectedGuild) handleSelectGuild(selectedGuild, undefined, true); }}
                 />
-              </motion.div>
-            )}
+              )}
 
-            {activeTab === "logs" && (
-              <motion.div
-                key="logs"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.2 }}
-              >
-                <BotDashboard
-                  logs={logs}
-                  setLogs={setLogs}
-                  commandsCount={commands.length}
-                />
-              </motion.div>
-            )}
-
-            {activeTab === "exporter" && (
-              <motion.div
-                key="exporter"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.2 }}
-              >
+              {/* Exporter Tab */}
+              {activeTab === 'exporter' && (
                 <CodeExporter
-                  config={config}
-                  commands={commands}
-                  welcome={welcome}
-                  ticket={ticket}
-                  staffApp={staffApp}
-                  security={security}
-                  rulesBot={rulesBot}
-                  leaveConfig={leaveConfig}
-                  suggestion={suggestion}
-                  report={report}
-                  warning={warning}
-                  autoResponse={autoResponse}
-                  giveaway={giveaway}
-                  levelConfig={levelConfig}
-                  reactionRoles={reactionRoles}
-                  voiceStats={voiceStats}
+                  config={config} commands={commands}
+                  welcome={welcome} ticket={ticket} staffApp={staffApp}
+                  security={security} rulesBot={rulesBot} leaveConfig={leaveConfig}
+                  suggestion={suggestion} report={report} warning={warning}
+                  autoResponse={autoResponse} giveaway={giveaway}
+                  levelConfig={levelConfig} reactionRoles={reactionRoles} voiceStats={voiceStats}
                 />
-              </motion.div>
-            )}
+              )}
 
-            {activeTab === "host" && (
-              <motion.div
-                key="host"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.2 }}
-              >
-                <LiveHost
-                  config={config}
-                  commands={commands}
-                  welcome={welcome}
-                  ticket={ticket}
-                  staffApp={staffApp}
-                  security={security}
-                  rulesBot={rulesBot}
-                  leaveConfig={leaveConfig}
-                  suggestion={suggestion}
-                  report={report}
-                  warning={warning}
-                  autoResponse={autoResponse}
-                  giveaway={giveaway}
-                  levelConfig={levelConfig}
-                  reactionRoles={reactionRoles}
-                  voiceStats={voiceStats}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+              {/* Bot System Tab */}
+              {activeTab === 'bot-system' && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {[
+                      { label: 'Bot Name', value: config.name || 'Unnamed', icon: Bot, color: 'text-primary' },
+                      { label: 'Prefix', value: config.prefix || '/', icon: Terminal, color: 'text-accent' },
+                      { label: 'Status', value: botStatus === 'online' ? 'Online' : 'Offline', icon: Activity, color: botStatus === 'online' ? 'text-success' : 'text-danger' },
+                      { label: 'Servers', value: selectedGuild ? '1 Connected' : '0', icon: Server, color: 'text-primary' },
+                    ].map((stat) => {
+                      const Icon = stat.icon;
+                      return (
+                        <div key={stat.label} className="metric-card">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-dim">{stat.label}</span>
+                            <div className={`p-2 ${stat.color.replace('text', 'bg')}/10 ${stat.color} rounded-lg`}>
+                              <Icon className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <p className="text-lg font-bold text-white">{stat.value}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                          <Settings className="w-4 h-4" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-white">Bot Configuration</h3>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Name</label>
+                        <input type="text" value={config.name} onChange={(e) => setConfig({...config, name: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Avatar</label>
+                        <input type="text" value={config.avatar} onChange={(e) => setConfig({...config, avatar: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Prefix</label>
+                        <input type="text" value={config.prefix} onChange={(e) => setConfig({...config, prefix: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
-      </main>
+              {/* Logs Tab */}
+              {activeTab === 'logs' && (
+                <div className="bg-card border border-border rounded-xl overflow-hidden">
+                  <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                        <Terminal className="w-4 h-4" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-white">Live Logs</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="flex items-center gap-1.5 text-[10px] text-text-dim">
+                        <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" style={{ animationDuration: '2s' }} />
+                        {logs.length} events
+                      </span>
+                      {logs.length > 0 && (
+                        <button onClick={() => setLogs([])} className="px-2 py-1 text-[10px] text-text-dim hover:text-danger transition cursor-pointer rounded hover:bg-danger/10">
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    {logs.length === 0 ? (
+                      <div className="text-center py-12">
+                        <Terminal className="w-10 h-10 text-border mx-auto mb-2" />
+                        <p className="text-xs text-text-muted">No logs yet</p>
+                        <p className="text-[10px] text-text-dim mt-1">Logs will appear here as events are processed</p>
+                      </div>
+                    ) : (
+                      <div className="bg-[#080B12] border border-border rounded-xl overflow-hidden font-mono">
+                        <div className="flex items-center gap-3 px-4 py-2 border-b border-border bg-[#0A0D14]">
+                          <span className="w-2.5 h-2.5 rounded-full bg-danger/70" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-warning/70" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-success/70" />
+                          <span className="text-[10px] text-text-dim ml-1">terminal — logs</span>
+                        </div>
+                        <div className="p-4 max-h-[500px] overflow-y-auto space-y-1">
+                          {[...logs].reverse().map((log, i) => (
+                            <div key={i} className="flex items-start gap-3 text-[11px] leading-relaxed">
+                              <span className="text-text-dim shrink-0 w-8 text-right select-none">{logs.length - i}</span>
+                              <span className="text-text-dim shrink-0">{log.timestamp}</span>
+                              <span className={`shrink-0 font-semibold ${
+                                log.type === 'error' || log.type === 'critical' ? 'text-danger' :
+                                log.type === 'warning' ? 'text-warning' :
+                                log.type === 'success' ? 'text-success' :
+                                'text-primary'
+                              }`}>[{log.type.toUpperCase()}]</span>
+                              <span className="text-gray-300">{log.message}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
-      {/* Floating Interactive Guide Companion Trigger Bubble */}
-      {!showGuideCenter && !localStorage.getItem("mjk_guide_seen") && (
-        <motion.div 
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="fixed bottom-6 left-6 z-40 font-sans"
-          dir="rtl"
-        >
-          <button
-            type="button"
-            onClick={() => {
-              setShowGuideCenter(true);
-              window.scrollTo({ top: 100, behavior: 'smooth' });
-            }}
-            className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full p-3 px-4 shadow-2xl shadow-indigo-500/30 font-black text-xs hover:from-indigo-500 hover:to-purple-500 hover:scale-105 transition-all duration-200 border border-indigo-400/20 cursor-pointer"
-          >
-            <span className="relative flex h-2 w-2 mr-0.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span>💡 دليل تشغيل البوت السريع</span>
-          </button>
-        </motion.div>
-      )}
+              {/* Analytics Tab */}
+              {activeTab === 'analytics' && (
+                <BotDashboard logs={logs} setLogs={setLogs} commandsCount={commands.length} />
+              )}
 
-      {/* OAuth Setup Modal */}
-      {showOAuthSetup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" dir="rtl">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-white">إعداد Discord OAuth</h3>
-              <button
-                onClick={() => setShowOAuthSetup(false)}
-                className="text-slate-400 hover:text-white transition cursor-pointer text-xl"
-              >
-                ✕
-              </button>
+              {/* Servers Tab */}
+              {activeTab === 'servers' && (
+                <div className="space-y-6">
+                  <div className="bg-card border border-border rounded-xl p-5">
+                    <div className="flex items-center gap-2 border-b border-border pb-3 mb-4">
+                      <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                        <Globe className="w-4 h-4" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-white">Connected Server</h3>
+                      {selectedGuild && <span className="text-[10px] text-success ml-2">● Connected</span>}
+                    </div>
+                    {selectedGuild ? (
+                      <div className="flex items-center gap-3 p-3 bg-[#080B12] border border-border rounded-xl">
+                        {selectedGuild.icon && (
+                          <img src={`https://cdn.discordapp.com/icons/${selectedGuild.id}/${selectedGuild.icon}.png`} alt="" className="w-10 h-10 rounded-lg" />
+                        )}
+                        <div>
+                          <p className="text-sm font-semibold text-white">{selectedGuild.name}</p>
+                          <p className="text-[10px] text-text-dim">{selectedGuild.memberCount || '?'} members</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <Globe className="w-10 h-10 text-border mx-auto mb-2" />
+                        <p className="text-xs text-text-muted">No server connected</p>
+                        <p className="text-[10px] text-text-dim mt-1">Connect via Discord OAuth to manage a server</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Command Studio Tab */}
+              {activeTab === 'command-studio' && (
+                <>
+                  <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                          <Settings className="w-4 h-4" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-white">Bot Configuration</h3>
+                      </div>
+                      <span className="text-[9px] text-text-dim uppercase tracking-wider">v{config.prefix}</span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Name</label>
+                        <input type="text" value={config.name} onChange={(e) => setConfig({...config, name: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white focus:border-primary/50 focus:outline-none" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Avatar</label>
+                        <input type="text" value={config.avatar} onChange={(e) => setConfig({...config, avatar: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white font-mono focus:border-primary/50 focus:outline-none" placeholder="🤖" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Prefix</label>
+                        <input type="text" value={config.prefix} onChange={(e) => setConfig({...config, prefix: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white font-mono focus:border-primary/50 focus:outline-none" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Status</label>
+                        <select value={config.status} onChange={(e) => setConfig({...config, status: e.target.value as any})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white focus:border-primary/50 focus:outline-none">
+                          <option value="online">Online</option>
+                          <option value="idle">Idle</option>
+                          <option value="dnd">DND</option>
+                          <option value="offline">Offline</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Activity</label>
+                        <select value={config.activityType} onChange={(e) => setConfig({...config, activityType: e.target.value as any})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white focus:border-primary/50 focus:outline-none">
+                          <option value="PLAYING">Playing</option>
+                          <option value="STREAMING">Streaming</option>
+                          <option value="LISTENING">Listening</option>
+                          <option value="WATCHING">Watching</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Custom Status</label>
+                        <input type="text" value={config.customStatus} onChange={(e) => setConfig({...config, customStatus: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white focus:border-primary/50 focus:outline-none" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Activity Name</label>
+                        <input type="text" value={config.activityName} onChange={(e) => setConfig({...config, activityName: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white focus:border-primary/50 focus:outline-none" />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-medium text-text-dim uppercase tracking-wider">Embed Color</label>
+                      <div className="flex gap-2">
+                        <input type="color" value={config.embedColor || '#5865F2'} onChange={(e) => setConfig({...config, embedColor: e.target.value})} className="w-8 h-8 bg-transparent border-0 rounded cursor-pointer shrink-0" />
+                        <input type="text" value={config.embedColor || '#5865F2'} onChange={(e) => setConfig({...config, embedColor: e.target.value})} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white font-mono focus:border-primary/50 focus:outline-none" />
+                      </div>
+                    </div>
+                  </div>
+                  <CommandStudio commands={commands} setCommands={setCommands} prefix={config.prefix} />
+                </>
+              )}
+
+              {/* Settings Tab */}
+              {activeTab === 'settings' && (
+                <div className="max-w-2xl space-y-6">
+                  <div className="bg-card border border-border rounded-xl p-5">
+                    <div className="flex items-center gap-2 border-b border-border pb-3 mb-4">
+                      <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                        <Settings className="w-4 h-4" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-white">Settings</h3>
+                    </div>
+                    {showOAuthSetup ? (
+                      <div className="space-y-4">
+                        <h4 className="text-xs font-semibold text-white">Discord OAuth Configuration</h4>
+                        <div className="space-y-3">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-text-muted">Client ID</label>
+                            <input type="text" value={oauthClientId} onChange={(e) => setOauthClientId(e.target.value)} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-text-muted">Client Secret</label>
+                            <input type="password" value={oauthClientSecret} onChange={(e) => setOauthClientSecret(e.target.value)} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-text-muted">Bot Token</label>
+                            <input type="password" value={oauthBotToken} onChange={(e) => setOauthBotToken(e.target.value)} className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white font-mono" placeholder="Optional" />
+                          </div>
+                          <button onClick={saveOAuthConfig} disabled={savingOAuth} className="px-4 py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-semibold rounded-lg text-xs transition cursor-pointer">
+                            {savingOAuth ? 'Saving...' : 'Save Settings'}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button onClick={() => setShowOAuthSetup(true)} className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs transition cursor-pointer">
+                        Configure Discord OAuth
+                      </button>
+                    )}
+                  </div>
+                  {/* Admin Section (only visible when admin is logged in) */}
+                  {isAdminLoggedIn && (
+                    <div className="bg-card border border-border rounded-xl p-5">
+                      <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                            <Shield className="w-4 h-4" />
+                          </div>
+                          <h3 className="text-sm font-semibold text-white">Admin Panel</h3>
+                        </div>
+                        <button onClick={handleAdminLogout} className="text-xs text-text-dim hover:text-text-muted px-3 py-1.5 rounded-lg hover:bg-border/50 transition cursor-pointer">Logout Admin</button>
+                      </div>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-3 gap-3">
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-text-dim">Count</label>
+                            <input type="number" value={genCount} onChange={(e) => setGenCount(Number(e.target.value))} min={1} max={50} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-text-dim">Duration</label>
+                            <select value={genDuration} onChange={(e) => setGenDuration(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white">
+                              <option>7 Days</option><option>15 Days</option><option>30 Days</option><option>60 Days</option><option>90 Days</option><option>Lifetime</option>
+                            </select>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-text-dim">Note</label>
+                            <input type="text" value={genNote} onChange={(e) => setGenNote(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" placeholder="Optional" />
+                          </div>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] text-text-dim">Allowed Modules</label>
+                          <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto">
+                            {SYSTEM_MODULES_LIST.map(m => (
+                              <label key={m.id} className="flex items-center gap-1.5 text-[10px] text-text-muted cursor-pointer">
+                                <input type="checkbox" checked={genModules.includes(m.id)} onChange={() => genModules.includes(m.id) ? setGenModules(genModules.filter(x => x !== m.id)) : setGenModules([...genModules, m.id])} className="rounded border-border bg-[#080B12]" />
+                                {m.label}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                        <button onClick={handleGenerateKeys} className="px-6 py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg text-xs transition cursor-pointer">Generate Keys</button>
+                      </div>
+                      {loadingKeys ? <p className="text-xs text-text-dim mt-4">Loading...</p> : keysList.length > 0 && (
+                        <div className="mt-4 space-y-1.5 max-h-48 overflow-y-auto">
+                          {keysList.map((k, i) => (
+                            <div key={i} className="flex items-center justify-between p-2 bg-[#080B12] border border-border rounded-lg text-[10px]">
+                              <div className="flex items-center gap-2 text-left" style={{ direction: 'ltr' }}>
+                                <span className="font-mono text-text-muted">{k.key || k.code}</span>
+                                <span className="text-text-dim">{k.duration}</span>
+                                {k.usedBy ? <span className="text-primary">Used</span> : <span className="text-success">New</span>}
+                              </div>
+                              <button onClick={() => handleDeleteKey(k.key || k.code)} className="p-1 text-danger hover:bg-danger/10 rounded cursor-pointer transition"><Trash2 className="w-3 h-3" /></button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Subscription Tab */}
+              {activeTab === 'subscription' && (
+                <div className="max-w-lg space-y-6">
+                  <div className="bg-card border border-border rounded-xl p-6">
+                    <div className="flex items-center gap-2 border-b border-border pb-3 mb-4">
+                      <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                        <CreditCard className="w-4 h-4" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-white">Subscription</h3>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-4 bg-[#080B12] border border-border rounded-xl">
+                        <div>
+                          <p className="text-xs text-text-muted">Status</p>
+                          <p className="text-sm font-semibold text-white mt-1">{isSubVerified ? 'Active' : 'Inactive'}</p>
+                        </div>
+                        <span className={`px-3 py-1 rounded-lg text-[10px] font-semibold ${isSubVerified ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+                          {isSubVerified ? '● Active' : '○ Inactive'}
+                        </span>
+                      </div>
+                      {subKey && (
+                        <div className="p-4 bg-[#080B12] border border-border rounded-xl">
+                          <p className="text-xs text-text-muted">License Key</p>
+                          <p className="text-sm font-mono text-white mt-1 select-all">{subKey}</p>
+                        </div>
+                      )}
+                      {subDetails && (
+                        <>
+                          <div className="p-4 bg-[#080B12] border border-border rounded-xl">
+                            <p className="text-xs text-text-muted">Plan</p>
+                            <p className="text-sm font-semibold text-white mt-1">{subDetails.duration || 'Standard'}</p>
+                          </div>
+                          {subDetails.expiresAt && subDetails.expiresAt !== 'lifetime' && (
+                            <SubscriptionCountdown expiresAt={subDetails.expiresAt} />
+                          )}
+                          {subDetails.expiresAt === 'lifetime' && (
+                            <div className="p-4 bg-[#080B12] border border-border rounded-xl">
+                              <p className="text-xs text-text-muted">Expiry</p>
+                              <p className="text-sm font-semibold text-success mt-1">Lifetime — never expires</p>
+                            </div>
+                          )}
+                        </>
+                      )}
+                      {!isSubVerified && (
+                        <button onClick={handleLogout} className="w-full py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg text-sm transition cursor-pointer">
+                          Enter New License Key
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Profile Tab */}
+              {activeTab === 'profile' && (
+                <div className="max-w-lg space-y-6">
+                  <div className="bg-card border border-border rounded-xl p-6">
+                    <div className="flex items-center gap-2 border-b border-border pb-3 mb-4">
+                      <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-white">Profile</h3>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 p-4 bg-[#080B12] border border-border rounded-xl">
+                        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-lg font-bold text-primary shrink-0">
+                          {discordUser ? discordUser.username.charAt(0).toUpperCase() : '?'}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-white">{discordUser ? discordUser.username : 'Guest'}</p>
+                          <p className="text-[10px] text-text-dim">{isSubVerified ? 'Premium · Active' : 'Free Tier'}</p>
+                        </div>
+                      </div>
+                      {!discordUser && (
+                        <button onClick={() => setShowOAuthSetup(true)} className="w-full py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg text-sm transition cursor-pointer">
+                          Connect Discord Account
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Server Profiles */}
+              <div className="bg-card border border-border rounded-xl p-5">
+                <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-primary/10 text-primary rounded-lg"><Layers className="w-4 h-4" /></div>
+                    <h3 className="text-sm font-semibold text-white">Server Profiles</h3>
+                  </div>
+                  {profiles.length > 0 && (
+                    <button onClick={() => setNewProfileName('')} className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1">
+                      <Plus className="w-3 h-3" /> Save Profile
+                    </button>
+                  )}
+                </div>
+                {profiles.length === 0 ? (
+                  <div className="text-center py-6">
+                    <Save className="w-10 h-10 text-border mx-auto mb-2" />
+                    <p className="text-xs text-text-muted">No saved profiles</p>
+                    <p className="text-[10px] text-text-dim mt-1">Save current config as a reusable profile</p>
+                    <div className="mt-4 flex items-center justify-center gap-2 max-w-sm mx-auto">
+                      <input type="text" value={newProfileName} onChange={(e) => setNewProfileName(e.target.value)} className="flex-1 px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white text-center" placeholder="Profile name" />
+                      <button onClick={handleCreateProfile} disabled={!newProfileName.trim()} className="px-4 py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white rounded-lg text-[10px] font-semibold transition cursor-pointer disabled:cursor-not-allowed">Save</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {profiles.map((profile) => (
+                        <div key={profile.id} className={`p-3 rounded-xl border cursor-pointer transition group ${activeProfileId === profile.id ? 'bg-primary/10 border-primary/30' : 'bg-[#080B12] border-border hover:border-border-hover'}`} onClick={() => loadProfileData(profile)}>
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <p className="text-xs font-semibold text-white">{profile.name}</p>
+                              <p className="text-[9px] text-text-muted mt-0.5">{profile.createdAt}</p>
+                            </div>
+                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition">
+                              <button onClick={(e) => { e.stopPropagation(); loadProfileData(profile); }} className="p-1 text-primary hover:bg-primary/10 rounded transition cursor-pointer" title="Load"><Check className="w-3 h-3" /></button>
+                              <button onClick={(e) => { e.stopPropagation(); if (confirm(`Delete "${profile.name}"?`)) setProfiles(profiles.filter(p => p.id !== profile.id)); }} className="p-1 text-danger hover:bg-danger/10 rounded transition cursor-pointer" title="Delete"><Trash2 className="w-3 h-3" /></button>
+                            </div>
+                          </div>
+                          <div className="mt-2 flex items-center gap-2">
+                            <span className="text-[9px] text-text-dim">{profile.commands.length} commands</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 pt-2 border-t border-border">
+                      <input type="text" value={newProfileName} onChange={(e) => setNewProfileName(e.target.value)} className="flex-1 px-3 py-2 bg-[#080B12] border border-border rounded-lg text-xs text-white" placeholder="New profile name" />
+                      <button onClick={handleCreateProfile} disabled={!newProfileName.trim()} className="px-4 py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white rounded-lg text-[10px] font-semibold transition cursor-pointer disabled:cursor-not-allowed"><Plus className="w-3 h-3 inline mr-1" /> Save</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sync Status */}
+              {selectedGuild && (
+                <div className="bg-card border border-border rounded-xl p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <Globe className="w-5 h-5 text-primary" />
+                        <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success" />
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-semibold text-white">Sync Status</h3>
+                        <p className="text-[10px] text-text-muted mt-0.5">{selectedGuild.name} — connected</p>
+                      </div>
+                    </div>
+                    <button onClick={(e) => handleSelectGuild(selectedGuild, e, true)} disabled={isLoadingChannels} className="px-3 py-1.5 bg-[#080B12] border border-border hover:border-border-hover text-text-muted hover:text-white rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1.5 disabled:opacity-50">
+                      <RefreshCw className={`w-3 h-3 ${isLoadingChannels ? 'animate-spin' : ''}`} />
+                      Refresh
+                    </button>
+                  </div>
+                  {isLoadingChannels && (
+                    <div className="mt-3 flex items-center gap-2 text-xs text-text-dim"><RefreshCw className="w-3 h-3 animate-spin" /> Loading channels...</div>
+                  )}
+                  {channelLoadError && (
+                    <div className="mt-3 p-3 bg-danger/10 border border-danger/20 rounded-lg text-xs text-danger">
+                      {channelLoadError}
+                      {botInviteUrl && <a href={botInviteUrl} target="_blank" rel="noopener noreferrer" className="block mt-1.5 text-primary hover:underline">Add bot to server</a>}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
-              لأجل ربط حساب Discord، أدخل بيانات OAuth من{' '}
-              <a
-                href="https://discord.com/developers/applications"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-400 underline"
-              >
-                بوابة المطورين
-              </a>.
-              توجه إلى تطبيقك &gt; OAuth2 &gt; General، وانسخ البيانات أدناه.
-            </p>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-[11px] text-slate-400 mb-1 font-bold">Client ID</label>
-                <input
-                  type="text"
-                  value={oauthClientId}
-                  onChange={(e) => setOauthClientId(e.target.value)}
-                  placeholder="ألصق Client ID هنا"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-[13px] placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] text-slate-400 mb-1 font-bold">Client Secret</label>
-                <input
-                  type="password"
-                  value={oauthClientSecret}
-                  onChange={(e) => setOauthClientSecret(e.target.value)}
-                  placeholder="ألصق Client Secret هنا"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-[13px] placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] text-slate-400 mb-1 font-bold">Bot Token <span className="text-yellow-400">(اختياري)</span></label>
-                <input
-                  type="password"
-                  value={oauthBotToken}
-                  onChange={(e) => setOauthBotToken(e.target.value)}
-                  placeholder="Bot Token (لجلب رومات السيرفر)"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-[13px] placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <p className="text-[9px] text-slate-500 mt-0.5">اختياري - ضروري فقط عشان تجيب الرومات الحقيقية للسيرفر. البوت لازم يكون في السيرفر.</p>
-              </div>
-              <p className="text-[10px] text-slate-500">
-                ⚠️ تأكد من إضافة <span className="text-indigo-400 font-bold">http://localhost:3000/api/discord/callback</span> في OAuth2 &gt; Redirects.
-              </p>
-              <button
-                onClick={saveOAuthConfig}
-                disabled={savingOAuth}
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 text-white font-bold text-[13px] rounded-lg transition cursor-pointer disabled:cursor-not-allowed"
-              >
-                {savingOAuth ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Humble craft credit line */}
-      <footer className="mt-12 py-6 border-t border-slate-850/60 bg-slate-950/20 text-center text-[11px] text-slate-600 font-mono select-none">
-        MJK System • Active Sandbox Port: 3000 • Production ready exports
-      </footer>
-
+          )}
+        </main>
+      </div>
     </div>
   );
 }
+
+function SubscriptionCountdown({ expiresAt }: { expiresAt: string }) {
+  const [timeLeft, setTimeLeft] = useState('');
+
+  useEffect(() => {
+    const target = new Date(expiresAt).getTime();
+
+    const update = () => {
+      const now = Date.now();
+      const diff = target - now;
+      if (diff <= 0) {
+        setTimeLeft('Expired');
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [expiresAt]);
+
+  const isExpired = timeLeft === 'Expired';
+
+  return (
+    <div className="p-4 bg-[#080B12] border border-border rounded-xl">
+      <p className="text-xs text-text-muted">Time Remaining</p>
+      <p className={`text-lg font-bold mt-1 font-mono ${isExpired ? 'text-danger' : 'text-warning'}`}>
+        {timeLeft}
+      </p>
+      <div className="mt-2 h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
+        <CountdownBar expiresAt={expiresAt} />
+      </div>
+    </div>
+  );
+}
+
+function CountdownBar({ expiresAt }: { expiresAt: string }) {
+  const [pct, setPct] = useState(100);
+
+  useEffect(() => {
+    const target = new Date(expiresAt).getTime();
+
+    const update = () => {
+      const now = Date.now();
+      const diff = target - now;
+      if (diff <= 0) { setPct(0); return; }
+      const total = 365 * 24 * 60 * 60 * 1000;
+      setPct(Math.min(100, Math.max(0, (diff / total) * 100)));
+    };
+
+    update();
+    const interval = setInterval(update, 5000);
+    return () => clearInterval(interval);
+  }, [expiresAt]);
+
+  return <div className="h-full rounded-full bg-primary/60 transition-all duration-1000" style={{ width: `${pct}%` }} />;
+}
+

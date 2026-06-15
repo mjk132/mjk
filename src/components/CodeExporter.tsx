@@ -169,111 +169,100 @@ export default function CodeExporter({
 
   return (
     <div className="space-y-6" id="code-exporter">
-      
-      {/* Visual walkthrough banner */}
-      <div className="p-4.5 bg-gradient-to-r from-blue-950/80 to-slate-900 border border-blue-900/40 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 font-sans">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-blue-400">
+
+      {/* Header */}
+      <div className="bg-card border border-border rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-primary mb-1">
             <Layers className="w-5 h-5" />
-            <span className="font-extrabold text-[13px] uppercase tracking-wider">Production Node Bundle Generator</span>
+            <span className="font-semibold text-sm uppercase tracking-wider text-white">Production Bundle Generator</span>
           </div>
-          <p className="text-xs text-slate-400 leading-relaxed max-w-2xl">
-            This module dynamically maps all status presets, custom designed prefix/slash commands, and layouts crafted in other tabs into ready-to-use <strong>Discord.js v14</strong> JavaScript source code.
+          <p className="text-xs text-text-muted max-w-2xl">
+            Exports your bot configuration, commands, and modules into ready-to-use <strong>Discord.js v14</strong> source code.
           </p>
         </div>
-        <div className="flex items-center gap-2 self-start md:self-center">
-          <a
-            href="https://discord.com/developers/applications"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold transition"
-          >
-            <span>Developer Portal</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-        </div>
+        <a
+          href="https://discord.com/developers/applications"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-surface border border-border hover:border-border-hover text-text-muted hover:text-white rounded-lg text-xs font-medium transition shrink-0"
+        >
+          <ExternalLink className="w-3.5 h-3.5" />
+          Developer Portal
+        </a>
       </div>
 
-      {/* Code explorer structure */}
+      {/* Code Explorer */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Left Files Tree */}
-        <div className="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-4 h-[600px] flex flex-col">
-          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-800 text-slate-400">
-            <FolderOpen className="w-4 h-4 text-blue-400" />
-            <span className="text-xs font-bold uppercase tracking-wider font-sans">Workspace Files</span>
+
+        {/* File Tree */}
+        <div className="lg:col-span-3 bg-card border border-border rounded-xl h-[600px] flex flex-col">
+          <div className="flex items-center gap-2 px-4 py-3.5 border-b border-border">
+            <FolderOpen className="w-4 h-4 text-primary" />
+            <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Files</span>
           </div>
 
-          <div className="flex-1 space-y-1 overflow-y-auto pr-1">
+          <div className="flex-1 space-y-1 overflow-y-auto p-3">
             {generatedFiles.map(file => {
               const isActive = file.filename === activeFilename;
               return (
                 <div
                   key={file.filename}
-                  onClick={() => {
-                    setActiveFilename(file.filename);
-                    setCopied(false);
-                  }}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition select-none group border ${
+                  onClick={() => { setActiveFilename(file.filename); setCopied(false); }}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition select-none border ${
                     isActive
-                      ? "bg-slate-800/80 border-blue-600/40 text-blue-400 font-bold"
-                      : "bg-slate-950/20 border-transparent text-slate-400 hover:bg-slate-850 hover:text-slate-200"
+                      ? "bg-primary/10 border-primary/30 text-primary font-medium"
+                      : "bg-surface border-border text-text-muted hover:border-border-hover hover:text-white"
                   }`}
                 >
-                  <FileCode className={`w-4 h-4 ${isActive ? "text-blue-400" : "text-slate-500"}`} />
+                  <FileCode className={`w-4 h-4 ${isActive ? "text-primary" : "text-text-dim"}`} />
                   <span className="text-xs font-mono truncate">{file.filename}</span>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-4 p-3 bg-slate-950 border border-slate-800 rounded-lg text-xs leading-relaxed text-slate-500 font-sans">
-            <Info className="w-4 h-4 text-indigo-400 shrink-0 inline mr-1 mb-0.5" />
-            Click on any file directory workspace entry to load, copy, or download components separately.
+          <div className="mt-auto p-3 border-t border-border">
+            <p className="text-xs text-text-dim flex items-center gap-1.5">
+              <Info className="w-3.5 h-3.5 shrink-0" />
+              Click a file to view, copy, or download its source.
+            </p>
           </div>
         </div>
 
-        {/* Right Code Area viewport with Syntax Pre Render */}
-        <div className="lg:col-span-9 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-[600px]">
-          
-          {/* Active File Header */}
-          <div className="px-5 py-3.5 bg-slate-950 border-b border-slate-850 flex items-center justify-between select-none">
+        {/* Code Viewer */}
+        <div className="lg:col-span-9 bg-card border border-border rounded-xl overflow-hidden flex flex-col h-[600px]">
+          <div className="px-5 py-3.5 bg-surface border-b border-border flex items-center justify-between select-none">
             <div className="flex items-center gap-2 font-mono">
-              <FileCode className="w-4 h-4 text-blue-400" />
-              <span className="text-xs font-bold text-slate-300">{activeFile.filename}</span>
-              <span className="text-[10px] text-slate-600 ml-1.5 font-sans">({activeFile.filename === "index.js" ? "Engine Bootstrapper" : "Configuration Module"})</span>
+              <FileCode className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold text-white">{activeFile.filename}</span>
+              <span className="text-[10px] text-text-dim ml-1.5 font-sans">
+                ({activeFile.filename === "index.js" ? "Engine Bootstrapper" : "Configuration Module"})
+              </span>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownloadZipFake}
-                className="p-1 px-2 text-[11px] font-bold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 rounded hover:border-slate-700 transition flex items-center gap-1 font-sans shadow"
-                title="Download this file standalone"
+                className="px-3 py-1.5 text-[11px] font-medium text-text-muted hover:text-white bg-surface border border-border rounded-lg hover:border-border-hover transition flex items-center gap-1.5"
               >
                 <Download className="w-3.5 h-3.5" />
                 Download
               </button>
               <button
                 onClick={handleCopyCode}
-                className="p-1.5 px-3 rounded text-[11px] font-bold bg-blue-600 hover:bg-blue-500 text-white transition flex items-center gap-1.5 font-sans shadow-sm hover:shadow"
+                className="px-3 py-1.5 rounded-lg text-[11px] font-medium bg-primary hover:bg-primary-hover text-white transition flex items-center gap-1.5"
               >
                 {copied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5" />
-                    Copied!
-                  </>
+                  <><Check className="w-3.5 h-3.5" /> Copied!</>
                 ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    Copy Code
-                  </>
+                  <><Copy className="w-3.5 h-3.5" /> Copy Code</>
                 )}
               </button>
             </div>
           </div>
 
-          {/* Interactive Source Code view */}
-          <div className="flex-1 overflow-auto bg-[#0b0c0e] p-5 font-mono text-xs text-slate-300 leading-relaxed custom-scrollbar selection:bg-blue-700/50">
+          <div className="flex-1 overflow-auto bg-[#080B12] p-5 font-mono text-xs text-text-muted leading-relaxed">
             <pre className="whitespace-pre overflow-x-visible">
               <code>{activeFile.content}</code>
             </pre>
@@ -282,161 +271,107 @@ export default function CodeExporter({
 
       </div>
 
-      {/* Guide walk-through blocks with interactive Arabic / English beginner assistant */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-6">
-        <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="text-right">
-            <h3 className="text-sm font-bold text-slate-200 flex items-center justify-start md:justify-end gap-1.5 flex-row-reverse">
-              <BookOpen className="w-5 h-5 text-indigo-400" />
-              <span>دليل المبتدئين خطوة بخطوة للتشغيل 🚀</span>
+      {/* Setup Guide */}
+      <div className="bg-card border border-border rounded-xl p-5 space-y-6">
+        <div className="border-b border-border pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-primary" />
+              Setup Guide
             </h3>
-            <p className="text-[11px] text-slate-400 mt-1">كيف تقوم بتشغيل كود البوت أو تعديل موقع لوحة التحكم وتنزيله على جهازك بسهولة تامة</p>
+            <p className="text-xs text-text-muted mt-1">Step-by-step instructions to run your bot or host the dashboard.</p>
           </div>
 
-          {/* Interactive Toggle tabs */}
-          <div className="flex bg-slate-950 p-1 rounded-lg border border-slate-800 self-start md:self-center font-sans">
+          <div className="flex bg-surface p-0.5 rounded-lg border border-border self-start md:self-center">
             <button
               onClick={() => setActiveGuide("bot")}
-              className={`px-4 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-2 ${
-                activeGuide === "bot"
-                  ? "bg-indigo-600 text-white shadow"
-                  : "text-slate-400 hover:text-slate-200"
+              className={`px-4 py-1.5 rounded-md text-xs font-medium transition ${
+                activeGuide === "bot" ? "bg-primary text-white shadow-sm" : "text-text-muted hover:text-white"
               }`}
             >
-              <span>🤖 تشغيل كود البوت</span>
+              Bot Guide
             </button>
             <button
               onClick={() => setActiveGuide("website")}
-              className={`px-4 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-2 ${
-                activeGuide === "website"
-                  ? "bg-indigo-600 text-white shadow"
-                  : "text-slate-400 hover:text-slate-200"
+              className={`px-4 py-1.5 rounded-md text-xs font-medium transition ${
+                activeGuide === "website" ? "bg-primary text-white shadow-sm" : "text-text-muted hover:text-white"
               }`}
             >
-              <span>🖥️ تشغيل الموقع بالكامل</span>
+              Website Guide
             </button>
           </div>
         </div>
 
-        {/* 1. DISCORD BOT GUIDE */}
         {activeGuide === "bot" && (
-          <div className="space-y-6 text-right animate-fadeIn">
-            {/* Quick Overview */}
-            <div className="p-4 bg-indigo-950/20 rounded-xl border border-indigo-900/40 text-xs text-slate-300 leading-relaxed">
-              <p className="font-bold text-indigo-400 mb-1">💡 فكرة تشغيل البوت:</p>
-              الكود الذي أمامك بالأعلى هو المحرك الفعلي لبوت الديسكورد الخاص بك (مكتوب بـ <strong>Discord.js v14</strong>). لتشغيله في سيرفرك الحقيقي، ستقوم بنسخ هذه الملفات ووضعها في مجلد على كمبيوترك الخاص وتشغيلها باستخدام بيئة <strong>Node.js</strong>.
+          <div className="space-y-6">
+            <div className="p-4 bg-primary/5 rounded-lg border border-primary/10 text-xs text-text-muted leading-relaxed">
+              <p className="font-medium text-primary mb-1">Running your bot:</p>
+              The code above is a complete Discord.js v14 bot. Copy the files, place them in a folder, and run with Node.js.
             </div>
 
-            {/* Steps Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {arabicBotSteps.map((step, idx) => (
-                <div key={idx} className="p-4 bg-slate-950 border border-slate-850 rounded-xl space-y-3">
-                  <div className="flex items-center gap-2 justify-start flex-row-reverse border-b border-slate-900 pb-2">
-                    <span className="w-5 h-5 rounded-full bg-indigo-500/15 text-indigo-400 text-[10px] font-black flex items-center justify-center font-mono">
-                      {idx + 1}
-                    </span>
-                    <h4 className="text-xs font-extrabold text-slate-200">{step.title}</h4>
+              {guideSteps.map((step, idx) => (
+                <div key={idx} className="p-4 bg-surface border border-border rounded-xl space-y-3">
+                  <div className="flex items-center gap-2 border-b border-border pb-2">
+                    <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold flex items-center justify-center">{idx + 1}</span>
+                    <h4 className="text-xs font-semibold text-white">{step.title}</h4>
                   </div>
-                  <p className="text-[11px] text-slate-400 leading-relaxed font-sans">{step.desc}</p>
-                  <ul className="text-[10.5px] text-slate-400 space-y-1.5 list-disc list-inside leading-relaxed pr-1">
+                  <p className="text-[11px] text-text-muted leading-relaxed">{step.desc}</p>
+                  <ul className="text-[10.5px] text-text-muted space-y-1.5 list-disc list-inside leading-relaxed">
                     {step.bullets.map((b, bidx) => (
-                      <li key={bidx} className="marker:text-blue-500 pl-1">{b}</li>
+                      <li key={bidx} className="marker:text-primary">{b}</li>
                     ))}
                   </ul>
                 </div>
               ))}
             </div>
 
-            {/* Run Local Bot Commands Setup */}
-            <div className="p-5 bg-slate-950 border border-slate-850 rounded-xl space-y-4">
-              <h4 className="text-xs font-black text-slate-100 border-b border-slate-900 pb-2 flex items-center gap-2 flex-row-reverse">
-                <span className="p-1 bg-emerald-500/10 rounded text-emerald-400 font-bold">🔨 خطوة التشغيل الفعلي على كمبيوترك</span>
-              </h4>
-
-              <div className="space-y-3 text-right text-[11px] text-slate-400 font-sans">
-                <p>1. قم بتثبيت برنامج <strong>Node.js</strong> (اصدار 18 أو أحدث) من موقعه الرسمي: <a href="https://nodejs.org" target="_blank" rel="noreferrer" className="text-blue-450 hover:underline">nodejs.org</a>.</p>
-                <p>2. أنشئ مجلداً فارغاً على جهازك باسم <code className="text-emerald-400 bg-slate-900 px-1 py-0.5 rounded font-mono">my-discord-bot</code>.</p>
-                <p>3. قم بتحميل الملفات المعروضة في القائمة اليسرى بالأعلى وضعها جميعاً داخل هذا المجلد:</p>
-                
-                <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[10px] font-mono text-left space-y-1 my-2">
+            <div className="p-5 bg-surface border border-border rounded-xl space-y-4">
+              <h4 className="text-xs font-semibold text-white border-b border-border pb-2">Running the bot locally</h4>
+              <div className="space-y-3 text-xs text-text-muted leading-relaxed">
+                <p>1. Install <strong>Node.js</strong> v18+ from <a href="https://nodejs.org" target="_blank" rel="noreferrer" className="text-primary hover:underline">nodejs.org</a>.</p>
+                <p>2. Create a folder <code className="text-success bg-surface px-1 py-0.5 rounded font-mono">my-discord-bot</code>.</p>
+                <p>3. Download all files from the left panel into that folder.</p>
+                <div className="bg-[#080B12] p-3 rounded-lg border border-border text-[10px] font-mono text-left space-y-1">
                   <div>📁 my-discord-bot/</div>
-                  <div className="pl-4">├── index.js      {"<-"} (انسخ ولصق كود هذا الملف)</div>
-                  <div className="pl-4">├── config.json   {"<-"} (انسخ ولصق كود الكوفنج)</div>
-                  <div className="pl-4">├── .env          {"<-"} (ضع فيه التوكن والـ Client ID الخاص بك)</div>
-                  <div className="pl-4">├── package.json  {"<-"} (ملف تعريفي للمكتبات المطلوبة)</div>
-                  <div className="pl-4">└── deploy-commands.js {"<-"} (ملف تسجيل أوامر السلاش)</div>
+                  <div className="pl-4">├── index.js</div>
+                  <div className="pl-4">├── config.json</div>
+                  <div className="pl-4">├── .env</div>
+                  <div className="pl-4">├── package.json</div>
+                  <div className="pl-4">└── deploy-commands.js</div>
                 </div>
-
-                <p>4. افتح شاشة الأوامر (Terminal أو الـ CMD) داخل المجلد واكتب الأمر التالي لتثبيت المبرمجات:</p>
-                <div className="bg-slate-900 p-2.5 rounded text-left font-mono text-emerald-400 select-all border border-slate-800 whitespace-pre">
-                  npm install
-                </div>
-
-                <p>5. لتسجيل أوامر السلاش (Slash Commands) الجديدة داخل الديسكورد، قم بتشغيل هذا الأمر لمرة واحدة:</p>
-                <div className="bg-slate-900 p-2.5 rounded text-left font-mono text-amber-400 select-all border border-slate-800 whitespace-pre">
-                  npm run deploy
-                </div>
-
-                <p>6. وأخيراً، قم بتشغيل البوت ليعمل 24 ساعة ويستجيب للأعضاء بسيرفرك:</p>
-                <div className="bg-slate-900 p-2.5 rounded text-left font-mono text-blue-400 select-all border border-slate-800 whitespace-pre">
-                  npm start
-                </div>
-
-                <div className="p-3.5 bg-indigo-500/5 rounded-lg border border-indigo-500/10 text-[10px] text-slate-400 mt-2">
-                  💡 **الاستضافة السحابية المجانية (للعمل دون انقطاع):** إذا أردت أن يعمل البوت حتى لو أغلقت كمبيوترك، يمكنك رفع هذه الملفات إلى مستودع <strong>GitHub</strong> وربطه بمواقع استضافة مجانية لبوتات الديسكورد مثل <strong>Render.com</strong> أو <strong>Railway.app</strong>!
+                <p>4. Run <code className="text-primary bg-surface px-1.5 py-0.5 rounded font-mono text-[11px]">npm install</code> in the folder.</p>
+                <p>5. Run <code className="text-warning bg-surface px-1.5 py-0.5 rounded font-mono text-[11px]">npm run deploy</code> to register slash commands.</p>
+                <p>6. Start the bot with <code className="text-accent bg-surface px-1.5 py-0.5 rounded font-mono text-[11px]">npm start</code>.</p>
+                <div className="p-3 bg-primary/5 rounded-lg border border-primary/10 text-[10px] text-text-muted mt-2">
+                  💡 For 24/7 hosting, push the files to GitHub and deploy on <strong>Render.com</strong> or <strong>Railway.app</strong>.
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* 2. WEBSITE PANEL DEVELOPER GUIDE */}
         {activeGuide === "website" && (
-          <div className="space-y-6 text-right animate-fadeIn">
-            {/* Quick Website Overview */}
-            <div className="p-4 bg-emerald-950/20 rounded-xl border border-emerald-900/40 text-xs text-slate-300 leading-relaxed">
-              <p className="font-bold text-emerald-400 mb-1">💡 تشغيل هذا الموقع بالكامل على جهازك (المحاكي ولوحة التحكم):</p>
-              هذا الموقع مبني كلياً كبرنامج ويب ديناميكي متكامل باستخدام لغة <strong>React (TypeScript)</strong> مع أداة البناء الفائقة <strong>Vite</strong> وستايل <strong>Tailwind CSS</strong>. يمكنك تشغيل وتخصيص الموقع بالكامل محلياً على جهازك لتعديله كما تحب ومشاركته مع أصدقائك.
+          <div className="space-y-6">
+            <div className="p-4 bg-success/5 rounded-lg border border-success/10 text-xs text-text-muted leading-relaxed">
+              <p className="font-medium text-success mb-1">Running this dashboard locally:</p>
+              This project is built with React (TypeScript), Vite, and Tailwind CSS. Run it locally to customize and extend.
             </div>
 
-            {/* Run Website Steps */}
-            <div className="bg-slate-950 border border-slate-850 rounded-xl p-5 space-y-4">
-              <h4 className="text-xs font-black text-slate-100 border-b border-slate-900 pb-2">💻 خطوات تنزيل وتشغيل الموقع خطوة بخطوة</h4>
-              
-              <div className="space-y-3.5 text-[11px] text-slate-400 font-sans leading-relaxed">
-                <div>
-                  <span className="text-indigo-400 font-bold block mb-1">1. تنزيل كود الموقع:</span>
-                  يمكنك الحصول على ملفات المشروع بالكامل عبر تنزيلها بصيغة <strong>ZIP</strong> من خلال قائمة الإعدادات أو القائمة العلوية الخاصة بالمنصة وإخراجها على جهازك.
+            <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+              <h4 className="text-xs font-semibold text-white border-b border-border pb-2">Development Setup</h4>
+              <div className="space-y-3.5 text-xs text-text-muted leading-relaxed">
+                <div><span className="text-primary font-medium block mb-1">1. Download the code</span> Export from the dashboard or clone from your repository.</div>
+                <div><span className="text-primary font-medium block mb-1">2. Install dependencies</span>
+                  <div className="bg-[#080B12] p-2.5 rounded text-left font-mono text-success border border-border whitespace-pre mt-1">npm install</div>
                 </div>
-
-                <div>
-                  <span className="text-indigo-400 font-bold block mb-1">2. تثبيت الحزم والمكتبات:</span>
-                  افتح برنامج سطر الأوامر (Terminal أو VS Code Command Panel) في مجلد المشروع، ثم اكتب واستدعي الأمر التالي لتنزيل مكتبات React بالكامل:
-                  <div className="bg-slate-900 p-2.5 rounded text-left font-mono text-emerald-400 select-all border border-slate-800 whitespace-pre mt-1">
-                    npm install
-                  </div>
+                <div><span className="text-primary font-medium block mb-1">3. Start dev server</span>
+                  <div className="bg-[#080B12] p-2.5 rounded text-left font-mono text-primary border border-border whitespace-pre mt-1">npm run dev</div>
+                  <p className="text-[10px] text-text-dim mt-1">Opens at <code className="text-primary font-mono">http://localhost:5173</code></p>
                 </div>
-
-                <div>
-                  <span className="text-indigo-400 font-bold block mb-1">3. بدء تشغيل المطور المحلي (Local Server):</span>
-                  قم بتشغيل السيرفر المحلي بضغطة زر لرؤية الموقع وتعديلاته حياً على جهازك فورا:
-                  <div className="bg-slate-900 p-2.5 rounded text-left font-mono text-blue-400 select-all border border-slate-800 whitespace-pre mt-1">
-                    npm run dev
-                  </div>
-                  <p className="text-[10px] text-slate-500 mt-1">
-                    سيفتح لك الموقع تلقائياً على الرابط المحلي: <code className="text-indigo-400 font-mono">http://localhost:3000</code> أو <code className="text-indigo-400 font-mono">http://localhost:5173</code> لتشغيله كصفحة محلية متطورة وسريعة للغاية!
-                  </p>
-                </div>
-
-                <div>
-                  <span className="text-indigo-400 font-bold block mb-1">4. بناء ملفات الإنتاج لرفعها أونلاين (Build):</span>
-                  عندما تنتهي من تعديلاتك وتصبح جاهزاً لمشاركة الموقع مجاناً مع سيرفرك عبر الإنترنت، قم ببناء النسخة المعقمة الخفيفة عبر تشغيل:
-                  <div className="bg-slate-900 p-2.5 rounded text-left font-mono text-amber-400 select-all border border-slate-800 whitespace-pre mt-1">
-                    npm run build
-                  </div>
-                  <p className="text-[10px] text-slate-500 mt-1">
-                    سينشأ لديك مجلد يدعى <code className="text-indigo-400 font-mono">dist</code> يحتوي على ملفات HTML و CSS خفيفة ومستقرة، يمكنك سحبها وإلقائها في مواقع الاستضافة الساحرة بضغطة زر واحدة ومجاناً مثل **Vercel** أو **Netlify** لتجعل موقعك متاحاً لكل العالم!
-                  </p>
+                <div><span className="text-primary font-medium block mb-1">4. Build for production</span>
+                  <div className="bg-[#080B12] p-2.5 rounded text-left font-mono text-warning border border-border whitespace-pre mt-1">npm run build</div>
+                  <p className="text-[10px] text-text-dim mt-1">Outputs a <code className="text-primary font-mono">dist/</code> folder ready for Vercel, Netlify, or any static host.</p>
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { WelcomeConfig, TicketConfig, StaffAppConfig, StaffSubmission, Channel, TicketInstance, SecurityConfig, Member, RulesConfig, LeaveResignationConfig, SuggestionConfig, ReportConfig, WarningConfig, AutoResponseConfig, GiveawayConfig, LevelConfig, ReactionRolesConfig, VoiceStatsConfig, AutoRolesConfig, EmbedFormatterConfig, StaffManagementConfig, ModLogsConfig } from "../types";
+import { WelcomeConfig, TicketConfig, StaffAppConfig, StaffSubmission, Channel, TicketInstance, SecurityConfig, Member, RulesConfig, LeaveResignationConfig, SuggestionConfig, ReportConfig, WarningConfig, AutoResponseConfig, GiveawayConfig, LevelConfig, ReactionRolesConfig, VoiceStatsConfig, AutoRolesConfig, EmbedFormatterConfig, ModLogsConfig } from "../types";
 import { 
   Sparkles, Bot, Ticket, Users, CheckCircle, XCircle, Trash2, ChevronRight,
   Settings, Layout, Heart, AlertCircle, Plus, PenTool, Image, UserCheck, Trophy, Layers,
@@ -40,8 +40,6 @@ interface AdvancedModulesProps {
   setAutoRoles: React.Dispatch<React.SetStateAction<AutoRolesConfig>>;
   embedFormatter: EmbedFormatterConfig;
   setEmbedFormatter: React.Dispatch<React.SetStateAction<EmbedFormatterConfig>>;
-  staffManagement: StaffManagementConfig;
-  setStaffManagement: React.Dispatch<React.SetStateAction<StaffManagementConfig>>;
   modLogs: ModLogsConfig;
   setModLogs: React.Dispatch<React.SetStateAction<ModLogsConfig>>;
   guildRoles: { id: string; name: string; color: number }[];
@@ -93,8 +91,6 @@ export default function AdvancedModules({
   setAutoRoles,
   embedFormatter,
   setEmbedFormatter,
-  staffManagement,
-  setStaffManagement,
   modLogs,
   setModLogs,
   guildRoles,
@@ -112,7 +108,7 @@ export default function AdvancedModules({
   botInviteUrl,
   onRetryChannels
 }: AdvancedModulesProps) {
-  const [activeSubTab, setActiveSubTab] = useState<"welcome" | "auto-roles" | "ticket" | "staff" | "security" | "auto-responses" | "embed-formatter" | "suggestions" | "reports" | "warnings" | "mod-logs" | "levels" | "staff-management" | "giveaways" | "reaction-roles" | "voice-stats" | "rules-bot" | "leave-resignation">("welcome");
+  const [activeSubTab, setActiveSubTab] = useState<"welcome" | "auto-roles" | "ticket" | "staff" | "security" | "auto-responses" | "embed-formatter" | "suggestions" | "reports" | "warnings" | "mod-logs" | "levels" | "giveaways" | "reaction-roles" | "voice-stats" | "rules-bot" | "leave-resignation">("welcome");
   
   const isModuleAllowed = (moduleId: string) => {
     if (isAdmin) return true;
@@ -681,18 +677,17 @@ export default function AdvancedModules({
   return (
     <div className="space-y-6 animate-fade-in" id="advanced-modules">
       {/* Banner / Title Header */}
-      <div className="p-6 bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 border border-indigo-900/40 rounded-xl relative overflow-hidden select-none">
-        <div className="absolute right-0 top-0 w-80 h-80 bg-indigo-500/10 rounded-full filter blur-3xl" />
-        <div className="relative z-10 space-y-2">
-          <div className="flex items-center gap-2 text-indigo-400">
-            <Bot className="w-5 h-5 text-indigo-400 animate-pulse" />
-            <span className="font-extrabold text-[12px] uppercase tracking-wider font-mono">الأنظمة الإدارية الذكية (Specialized Internal Bots Engine)</span>
+      <div className="p-6 bg-card border border-border rounded-xl select-none">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-primary">
+            <Bot className="w-5 h-5" />
+            <span className="font-semibold text-xs uppercase tracking-wider">Modules Engine</span>
           </div>
-          <h2 className="text-2xl font-black text-white font-sans tracking-tight">
-            نظام تشغيل وإدارة بوتات السيرفر الاحترافية
+          <h2 className="text-lg font-bold text-white tracking-tight">
+            Bot System Modules
           </h2>
-          <p className="text-xs text-slate-400 leading-relaxed max-w-3xl font-sans">
-            تحكّم بشكل كامل في البوتات الداخلية الذكية المدمجة في نظامك. يدعم هذا القسم تشغيل وإشراف بوت الترحيب التلقائي ذو البطاقات المصممة، وبوت الدعم الفني وفتح التذاكر التفاعلي، ونظام التقديم للإدارة واستقبل الطلبات ومراجعتها بحرفية تامة.
+          <p className="text-xs text-text-muted leading-relaxed max-w-3xl">
+            Configure and manage all integrated bot modules — welcome, tickets, staff applications, security, and more.
           </p>
         </div>
       </div>
@@ -708,7 +703,7 @@ export default function AdvancedModules({
             <select
               value={activeSubTab}
               onChange={(e) => setActiveSubTab(e.target.value as any)}
-              className="w-full bg-[#0d1017] border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-bold"
+              className="w-full bg-card border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-bold"
             >
               <option value="welcome">👋 الترحيب التلقائي (WelcomeBot)</option>
               <option value="auto-roles">🎖️ الرتب التلقائية (Auto Roles)</option>
@@ -722,7 +717,6 @@ export default function AdvancedModules({
               <option value="warnings">🔨 نظام التحذيرات والعقوبات (Warnings)</option>
               <option value="mod-logs">📋 نظام السجلات واللوقات (Mod Logs)</option>
               <option value="levels">🏆 نظام مستويات الخبرة (Leveling System)</option>
-              <option value="staff-management">👥 إدارة طاقم العمل (Staff Management)</option>
               <option value="giveaways">🎁 قيف اواي والفعاليات (Giveaways)</option>
               <option value="reaction-roles">🎭 رتب التفاعل الذاتي (Button Roles)</option>
               <option value="rules-bot">⚖️ دستور وقوانين السيرفر (Rules Bot)</option>
@@ -732,7 +726,7 @@ export default function AdvancedModules({
           </div>
 
           {/* Vertical Menu for Large screens */}
-          <div className="hidden lg:flex flex-col bg-[#0d1017] border border-slate-800/80 p-2 text-right rounded-xl space-y-1 shadow-2xl">
+          <div className="hidden lg:flex flex-col bg-card border border-slate-800/80 p-2 text-right rounded-xl space-y-1 shadow-2xl">
             <div className="px-3 py-2 border-b border-slate-850 mb-1.5 pointer-events-none">
               <span className="text-[10px] uppercase tracking-wider font-extrabold text-slate-500 block">منظومة البوتات والأنظمة</span>
               <span className="text-xs font-bold text-slate-300 mt-0.5 block">انقر للتخصيص الفوري</span>
@@ -967,28 +961,6 @@ export default function AdvancedModules({
             </button>
 
             <button
-              onClick={() => setActiveSubTab("staff-management")}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
-                activeSubTab === "staff-management"
-                  ? "bg-slate-900 border-indigo-500/40 text-indigo-300 shadow-md"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border-transparent"
-              } ${!isModuleAllowed("staff-management") ? "opacity-75" : ""}`}
-            >
-              <span className="flex items-center gap-2">
-                <Users className="w-3.5 h-3.5 text-[#1ABC9C]" />
-                <span>👥 إدارة طاقم العمل</span>
-              </span>
-              <div className="flex items-center gap-1">
-                {leaveConfig.requests.filter(r => r.status === "pending").length > 0 && isModuleAllowed("staff-management") && (
-                  <span className="bg-[#1ABC9C]/25 text-[#1ABC9C] text-[9px] px-1.5 py-0.5 rounded font-black">
-                    {leaveConfig.requests.filter(r => r.status === "pending").length}
-                  </span>
-                )}
-                {!isModuleAllowed("staff-management") && <Lock className="w-3 h-3 text-red-500" />}
-              </div>
-            </button>
-
-            <button
               onClick={() => setActiveSubTab("giveaways")}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
                 activeSubTab === "giveaways"
@@ -1070,6 +1042,13 @@ export default function AdvancedModules({
                   <span className="bg-emerald-500 text-slate-950 text-[9px] px-1.5 py-0.5 rounded-full font-black">
                     {leaveConfig.requests.filter(r => r.status === "pending").length}
                   </span>
+                )}
+                {isModuleAllowed("leave-resignation") && leaveConfig.requests.filter(r => r.status === "pending").length === 0 && (
+                  leaveConfig.enabled ? (
+                    <span className="bg-emerald-500/20 text-emerald-400 text-[8px] px-1.5 py-0.5 rounded font-black">نشط</span>
+                  ) : (
+                    <span className="bg-slate-800 text-slate-500 text-[8px] px-1.5 py-0.5 rounded font-bold">معطل</span>
+                  )
                 )}
                 {!isModuleAllowed("leave-resignation") && <Lock className="w-3 h-3 text-red-500" />}
               </div>
@@ -1167,7 +1146,6 @@ export default function AdvancedModules({
                 activeSubTab === "warnings" ? "🔨 نظام التحذيرات والعقوبات" :
                 activeSubTab === "mod-logs" ? "📋 نظام السجلات واللوقات" :
                 activeSubTab === "levels" ? "🏆 نظام مستويات الخبرة" :
-                activeSubTab === "staff-management" ? "👥 إدارة طاقم العمل" :
                 activeSubTab === "giveaways" ? "🎁 قيف اواي والهدايا التفاعلية" :
                 activeSubTab === "reaction-roles" ? "🎭 رتب الأزرار والتفاعل" :
                 activeSubTab === "rules-bot" ? "⚖️ دستور وقوانين السيرفر" :
@@ -1481,7 +1459,7 @@ export default function AdvancedModules({
                   <select
                     value={newAutoRoleId}
                     onChange={(e) => setNewAutoRoleId(e.target.value)}
-                    className="bg-[#0d1017] border border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-200 w-44 focus:outline-none focus:border-indigo-500"
+                    className="bg-card border border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-200 w-44 focus:outline-none focus:border-indigo-500"
                   >
                     <option value="">-- اختر رتبة --</option>
                     {guildRoles.map((role) => (
@@ -1501,7 +1479,7 @@ export default function AdvancedModules({
               ) : (
                 <div className="space-y-1.5">
                   {autoRoles.rolesList.map((role) => (
-                    <div key={role.id} className="flex items-center justify-between bg-[#0d1017] border border-slate-800 rounded-lg px-3 py-2">
+                    <div key={role.id} className="flex items-center justify-between bg-card border border-slate-800 rounded-lg px-3 py-2">
                       <span className="text-xs font-bold text-slate-300">{role.roleName}</span>
                       <button
                         onClick={() => handleRemoveAutoRole(role.id)}
@@ -2969,15 +2947,14 @@ export default function AdvancedModules({
                   </div>
 
                   {/* Interactive Attack Diagnostics Trigger */}
-                  <div className="p-4 bg-gradient-to-br from-indigo-950/20 to-slate-950 border border-indigo-900/20 rounded-xl space-y-3 font-sans">
+                  <div className="p-4 bg-surface border border-border rounded-xl space-y-3">
                     <div className="flex items-start gap-2.5">
-                      <Shield className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5 animate-pulse" />
+                      <Shield className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                       <div className="space-y-0.5">
-                        <span className="block text-xs font-bold text-slate-200">فحص درع الحماية الذاتي (Core Shield Diagnostics)</span>
-                        <p className="text-[10px] text-slate-550 leading-relaxed">قم بتفعيل الفحص الذاتي للتأكد من ثبات درع الحماية وسلامة اتصال نظام الرادار والتحقق من سرعة رصد التهكير والسبام.</p>
+                        <span className="block text-xs font-semibold text-white">Core Shield Diagnostics</span>
+                        <p className="text-[10px] text-text-muted leading-relaxed">Run diagnostics to verify security shield integrity and anti-spam systems.</p>
                       </div>
                     </div>
-                    
                     <button
                       type="button"
                       onClick={() => {
@@ -2987,12 +2964,11 @@ export default function AdvancedModules({
                           type: "automod",
                           message: "🛡️ [SHIELD INTEGRITY] All quarantine pipelines & security rules checked. Protection is 100% active."
                         });
-                        alert("✔️ اكتمل فحص النظام بنجاح! تم التحقق من سلامة دروع الحماية ومكافحة الانتهاكات بنسبة 100% ورصد قنوات السجلات بنجاح.");
                       }}
-                      className="w-full p-2 bg-indigo-900/40 hover:bg-indigo-900/60 border border-indigo-800/40 hover:border-indigo-700/60 rounded-lg text-[11px] font-bold text-indigo-300 flex items-center justify-center gap-1.5 transition-all text-center cursor-pointer"
+                      className="w-full p-2 bg-primary/10 hover:bg-primary/20 border border-primary/30 rounded-lg text-[11px] font-medium text-primary flex items-center justify-center gap-1.5 transition cursor-pointer"
                     >
                       <Play className="w-3.5 h-3.5" />
-                      <span>بدء الفحص الذاتي لدرع الحماية | Execute Core Shield Diagnostics</span>
+                      <span>Run Shield Diagnostics</span>
                     </button>
                   </div>
 
@@ -3000,10 +2976,10 @@ export default function AdvancedModules({
 
               </div>
             ) : (
-              <div className="p-8 text-center bg-slate-950/25 border border-slate-850 rounded-xl text-slate-500 text-xs space-y-1 font-sans py-16">
-                <Shield className="w-8 h-8 text-slate-800 mx-auto mb-2 animate-pulse" />
-                <span className="block font-bold">بوابة الحماية والمصادقة خاملة.</span>
-                <p>قم بتنشيط درع الحماية لتشغيل أنظمة الدفاع ومضاد السبام والروابط.</p>
+              <div className="p-8 text-center bg-surface border border-border rounded-xl text-text-dim text-xs space-y-1 py-16">
+                <Shield className="w-8 h-8 text-border mx-auto mb-2" />
+                <span className="block font-medium text-text-muted">Security shield inactive</span>
+                <p>Activate the shield to enable defense and anti-spam systems.</p>
               </div>
             )}
           </div>
@@ -3012,18 +2988,17 @@ export default function AdvancedModules({
         {/* 5. GTA RP SYSTEMS INTEGRATION PANEL */}
         {activeSubTab === "gta-rp" && (
           <div className="space-y-6 animate-fadeIn">
-            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-4 gap-3 text-right">
+            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-border pb-4 gap-3">
               <div className="space-y-1">
-                <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2 flex-row-reverse mx-auto md:mx-0">
-                  <Sparkles className="w-5 h-5 text-emerald-400 animate-pulse" />
-                  <span>نظام إدارة الحياة الواقعية المتقدم (GTA RP Bot Settings)</span>
+                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  <span>GTA RP Bot Settings</span>
                 </h3>
-                <p className="text-[11px] text-slate-400 leading-relaxed">تعديل رواتب الوظائف، وإصدار بطاقات ومحاضر وسجلات هوية المواطنين وسحب رخص القيادة بنقرة واحدة</p>
+                <p className="text-xs text-text-muted leading-relaxed">Configure job salaries, identity cards, and citizen management systems.</p>
               </div>
             </div>
 
-            {/* Beginner-friendly Comprehensive Visual Guide Box */}
-            <div className="bg-gradient-to-l from-indigo-950/30 to-slate-950 p-5 rounded-xl border border-indigo-900/30 space-y-4 text-right">
+            <div className="bg-surface border border-border p-5 rounded-xl space-y-4">
               <div className="flex items-center gap-2.5 flex-row-reverse">
                 <div className="p-1.5 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-indigo-400">
                   <BookOpen className="w-5 h-5" />
@@ -4163,7 +4138,7 @@ export default function AdvancedModules({
                     <select
                       value={(modLogs as any)[field.key] || ''}
                       onChange={(e) => setModLogs({ ...modLogs, [field.key]: e.target.value })}
-                      className="w-full bg-[#0d1017] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-card border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
                     >
                       <option value="">-- اختر روم --</option>
                       {channels.filter(c => c.type === 'text').map(ch => (
@@ -4193,7 +4168,7 @@ export default function AdvancedModules({
                       className={`flex items-center gap-2 p-2.5 rounded-lg border text-xs font-bold cursor-pointer select-none transition ${
                         (modLogs as any)[evt.key]
                           ? 'bg-indigo-500/10 border-indigo-500/30 text-indigo-300'
-                          : 'bg-[#0d1017] border-slate-800 text-slate-400 hover:border-slate-700'
+                          : 'bg-card border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
                       <input
@@ -4401,7 +4376,7 @@ export default function AdvancedModules({
                 <select
                   value={embedTargetChannel}
                   onChange={(e) => setEmbedTargetChannel(e.target.value)}
-                  className="w-full bg-[#0d1017] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-card border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
                 >
                   <option value="">-- اختر روم --</option>
                   {channels.filter(c => c.type === 'text').map(ch => (
@@ -4417,7 +4392,7 @@ export default function AdvancedModules({
                     value={embedTitle}
                     onChange={(e) => setEmbedTitle(e.target.value)}
                     placeholder="عنوان الرسالة"
-                    className="w-full bg-[#0d1017] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-card border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -4426,7 +4401,7 @@ export default function AdvancedModules({
                     type="color"
                     value={embedColorVal}
                     onChange={(e) => setEmbedColorVal(e.target.value)}
-                    className="w-full h-9 bg-[#0d1017] border border-slate-800 rounded-lg cursor-pointer"
+                    className="w-full h-9 bg-card border border-slate-800 rounded-lg cursor-pointer"
                   />
                 </div>
                 <div className="space-y-1.5 md:col-span-2">
@@ -4436,7 +4411,7 @@ export default function AdvancedModules({
                     onChange={(e) => setEmbedDesc(e.target.value)}
                     placeholder="نص الوصف..."
                     rows={3}
-                    className="w-full bg-[#0d1017] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 resize-none"
+                    className="w-full bg-card border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 resize-none"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -4446,7 +4421,7 @@ export default function AdvancedModules({
                     value={embedThumb}
                     onChange={(e) => setEmbedThumb(e.target.value)}
                     placeholder="https://example.com/thumb.png"
-                    className="w-full bg-[#0d1017] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-card border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -4456,7 +4431,7 @@ export default function AdvancedModules({
                     value={embedImg}
                     onChange={(e) => setEmbedImg(e.target.value)}
                     placeholder="https://example.com/image.png"
-                    className="w-full bg-[#0d1017] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-card border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div className="space-y-1.5 md:col-span-2">
@@ -4466,7 +4441,7 @@ export default function AdvancedModules({
                     value={embedFooter}
                     onChange={(e) => setEmbedFooter(e.target.value)}
                     placeholder="نص التذييل"
-                    className="w-full bg-[#0d1017] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-card border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
@@ -5058,6 +5033,23 @@ export default function AdvancedModules({
         {/* 7. LEAVE AND RESIGNATION (الإجازات والاستقالات) */}
         {activeSubTab === "leave-resignation" && (
           <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-4 gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🌴</span>
+                <h3 className="text-sm font-bold text-slate-200">نظام الإجازات والاستقالات (Leave & Resignation)</h3>
+              </div>
+              <button
+                onClick={() => setLeaveConfig({ ...leaveConfig, enabled: !leaveConfig.enabled })}
+                className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition cursor-pointer ${
+                  leaveConfig.enabled
+                    ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                    : "bg-slate-850 text-slate-500 border border-slate-700"
+                }`}
+              >
+                {leaveConfig.enabled ? "🟢 مفعل" : "🔴 معطل"}
+              </button>
+            </div>
+
             <div className="p-4 bg-emerald-950/20 border border-emerald-900/40 rounded-xl flex gap-3.5 items-start text-right" style={{ direction: "rtl" }}>
               <FileText className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
               <div className="space-y-1">
@@ -5068,6 +5060,8 @@ export default function AdvancedModules({
               </div>
             </div>
 
+            {leaveConfig.enabled ? (
+            <div className="space-y-6">
             {/* Core HR Bot Properties */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-right" style={{ direction: "rtl" }}>
               <div className="space-y-1.5 font-sans">
@@ -5360,6 +5354,13 @@ export default function AdvancedModules({
               )}
             </div>
           </div>
+            ) : (
+              <div className="py-12 text-center bg-slate-950 border border-slate-850 rounded-xl">
+                <p className="text-xs font-bold text-slate-500">نظام الإجازات والاستقالات معطل حالياً</p>
+                <p className="text-[10px] text-slate-600 mt-1">فعّل النظام من الزر بالأعلى لظهور الكوماند في الدسكورد</p>
+              </div>
+            )}
+          </div>
         )}
 
         {/* 1. LEVELS & XP MODULE */}
@@ -5546,108 +5547,6 @@ export default function AdvancedModules({
                 <p className="text-[10px] text-slate-650 mt-1">قم بتفعيله من الزر بالأعلى لمراكمة الـ XP مع كل رسالة بالمحاكي.</p>
               </div>
             )}
-          </div>
-        )}
-
-        {/* STAFF MANAGEMENT MODULE */}
-        {activeSubTab === "staff-management" && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-4 gap-3">
-              <div className="space-y-1">
-                <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                  <span className="text-lg">👥</span>
-                  <span>إدارة طاقم العمل (Staff Management)</span>
-                </h3>
-                <p className="text-xs text-slate-500">إدارة أعضاء طاقم الإدارة، قوانين السيرفر، وطلبات الإجازات والاستقالات.</p>
-              </div>
-              <button
-                onClick={() => setStaffManagement({ ...staffManagement, enabled: !staffManagement.enabled })}
-                className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition cursor-pointer ${
-                  staffManagement.enabled
-                    ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                    : "bg-slate-850 text-slate-500 border border-slate-700"
-                }`}
-              >
-                {staffManagement.enabled ? "🟢 مفعل" : "🔴 معطل"}
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {/* القوانين */}
-              <div className="bg-slate-950/50 border border-slate-850 rounded-xl p-5 space-y-3">
-                <h4 className="text-xs font-bold text-slate-300 flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-purple-400" />
-                  ⚖️ قوانين السيرفر (Server Rules)
-                </h4>
-                {rulesBot.categories.length === 0 ? (
-                  <p className="text-xs text-slate-500 text-center py-4">لا توجد قوانين مضافة حالياً.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {rulesBot.categories.map((cat) => (
-                      <div key={cat.id} className="bg-[#0d1017] border border-slate-800 rounded-lg p-3 space-y-1.5">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-slate-300">{cat.icon} {cat.name}</span>
-                          <button
-                            onClick={() => {
-                              const updated = rulesBot.categories.filter(c => c.id !== cat.id);
-                              setRulesBot({ ...rulesBot, categories: updated });
-                            }}
-                            className="text-red-500 hover:text-red-400 transition cursor-pointer"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                        {cat.rules.map((rule, idx) => (
-                          <p key={idx} className="text-[10px] text-slate-400 pr-2 border-r border-slate-700">{idx + 1}. {rule}</p>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* الإجازات والاستقالات */}
-              <div className="bg-slate-950/50 border border-slate-850 rounded-xl p-5 space-y-3">
-                <h4 className="text-xs font-bold text-slate-300 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[#1ABC9C]" />
-                  🌴 طلبات الإجازات والاستقالات (Leave & Resignation)
-                </h4>
-                {leaveConfig.requests.length === 0 ? (
-                  <p className="text-xs text-slate-500 text-center py-4">لا توجد طلبات معلقة.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {leaveConfig.requests.filter(r => r.status === "pending").map((req) => (
-                      <div key={req.id} className="bg-[#0d1017] border border-slate-800 rounded-lg p-3 flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <span className="text-xs font-bold text-slate-300">{req.username}</span>
-                          <p className="text-[10px] text-slate-500">{req.type === "leave" ? "🌴 إجازة" : "🚪 استقالة"}: {req.reason}</p>
-                        </div>
-                        <div className="flex gap-1.5">
-                          <button
-                            onClick={() => {
-                              const updated = leaveConfig.requests.map(r => r.id === req.id ? { ...r, status: "approved" as const } : r);
-                              setLeaveConfig({ ...leaveConfig, requests: updated });
-                            }}
-                            className="px-2 py-1 bg-green-600/20 text-green-400 text-[9px] font-black rounded cursor-pointer"
-                          >
-                            ✔ موافقة
-                          </button>
-                          <button
-                            onClick={() => {
-                              const updated = leaveConfig.requests.map(r => r.id === req.id ? { ...r, status: "rejected" as const } : r);
-                              setLeaveConfig({ ...leaveConfig, requests: updated });
-                            }}
-                            className="px-2 py-1 bg-red-600/20 text-red-400 text-[9px] font-black rounded cursor-pointer"
-                          >
-                            ✖ رفض
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         )}
 
