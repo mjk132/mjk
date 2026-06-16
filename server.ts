@@ -3503,6 +3503,7 @@ const ALL_SYSTEM_MODULES = [
   // 5. Admin generate keys
   app.post("/api/subscription/admin/generate", (req, res) => {
     if (!requireAdmin(req, res)) return;
+    const subData = loadSubscriptions();
     const { count, duration, note, allowedModules } = req.body;
 
     // Rate limit: max 50 keys per 5 minutes
@@ -3548,6 +3549,7 @@ const ALL_SYSTEM_MODULES = [
   // 6. Admin expire key (بدلاً من الحذف — المفتاح يبقى للأبد)
   app.post("/api/subscription/admin/delete", (req, res) => {
     if (!requireAdmin(req, res)) return;
+    const subData = loadSubscriptions();
     const { keyToDelete } = req.body;
 
     const found = subData.keys.find((k: any) => k.key.toUpperCase() === keyToDelete.toString().trim().toUpperCase());

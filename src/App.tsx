@@ -271,12 +271,15 @@ export default function App() {
           allowedModules: genModules
         })
       });
+      const data = await res.json();
       if (res.ok) {
         setGenNote("");
         fetchAdminKeys();
+      } else {
+        alert(data.message || "فشل توليد المفاتيح");
       }
     } catch (err) {
-      console.error(err);
+      alert("فشل الاتصال بالخادم");
     }
   };
 
@@ -293,11 +296,14 @@ export default function App() {
           keyToDelete: keyToDelete
         })
       });
+      const data = await res.json();
       if (res.ok) {
         fetchAdminKeys();
+      } else {
+        alert(data.message || "فشل حذف المفتاح");
       }
     } catch (err) {
-      console.error(err);
+      alert("فشل الاتصال بالخادم");
     }
   };
 
