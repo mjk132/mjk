@@ -10,3 +10,5 @@ coverage/
 # Data files (generated on server, must not be overwritten by git)
 subscriptions.json
 guild_configs.json
+oauth_config.json
+active_bots.json

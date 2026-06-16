@@ -3683,10 +3683,29 @@ const ALL_SYSTEM_MODULES = [
   const DISCORD_REDIRECT_URI = process.env.DISCORD_REDIRECT_URI?.trim() || "";
 
   // OAuth credentials from .env أو من واجهة الإعدادات
+  // OAuth config persistence (survives server restarts)
+  const OAUTH_CONFIG_FILE = path.join(process.cwd(), "oauth_config.json");
+
+  function loadOAuthConfig() {
+    try {
+      if (fs.existsSync(OAUTH_CONFIG_FILE)) {
+        return JSON.parse(fs.readFileSync(OAUTH_CONFIG_FILE, "utf-8"));
+      }
+    } catch (e) { /* ignore */ }
+    return {};
+  }
+
+  function saveOAuthConfigToDisk(config: any) {
+    withFileLock(OAUTH_CONFIG_FILE, () => {
+      try { atomicWrite(OAUTH_CONFIG_FILE, config); } catch (e) { /* ignore */ }
+    });
+  }
+
+  const persistedOAuth = loadOAuthConfig();
   let oauthConfig = {
-    clientId: process.env.DISCORD_CLIENT_ID || "",
-    clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
-    botToken: process.env.DISCORD_BOT_TOKEN || "",
+    clientId: process.env.DISCORD_CLIENT_ID || persistedOAuth.clientId || "",
+    clientSecret: process.env.DISCORD_CLIENT_SECRET || persistedOAuth.clientSecret || "",
+    botToken: process.env.DISCORD_BOT_TOKEN || persistedOAuth.botToken || "",
   };
 
   // جلسات Discord (in-memory)
@@ -3724,6 +3743,7 @@ const ALL_SYSTEM_MODULES = [
     oauthConfig.clientId = clientId.trim();
     oauthConfig.clientSecret = clientSecret.trim();
     if (botToken) oauthConfig.botToken = botToken.trim();
+    saveOAuthConfigToDisk(oauthConfig);
     res.json({ success: true, message: 'تم حفظ بيانات OAuth بنجاح' });
   });
 
