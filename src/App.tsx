@@ -904,7 +904,7 @@ export default function App() {
       if (savedGuildId) {
         const savedGuild = discordGuilds.find((g: any) => g.id === savedGuildId);
         if (savedGuild) {
-          handleSelectGuild(savedGuild);
+          handleSelectGuild(savedGuild, undefined, true);
         }
       }
     }
@@ -1102,35 +1102,39 @@ export default function App() {
           message: `[OK] تم جلب ${mapped.length + cats.length} روم من السيرفر ${guild.name}`
         });
 
-        // Try to load saved config for this guild
-        const configRes = await fetch(`/api/discord/guilds/${guild.id}/config?session=${encodeURIComponent(discordSession)}`);
-        if (configRes.ok) {
-          const savedConfig = await configRes.json();
-          if (savedConfig) {
-            if (savedConfig.welcome) setWelcome(savedConfig.welcome);
-            if (savedConfig.ticket) setTicket(savedConfig.ticket);
-            if (savedConfig.staffApp) setStaffApp(savedConfig.staffApp);
-            if (savedConfig.security) setSecurity(savedConfig.security);
-            if (savedConfig.rulesBot) setRulesBot(savedConfig.rulesBot);
-            if (savedConfig.leaveConfig) setLeaveConfig(savedConfig.leaveConfig);
-            if (savedConfig.suggestion) setSuggestion(savedConfig.suggestion);
-            if (savedConfig.report) setReport(savedConfig.report);
-            if (savedConfig.warning) setWarning(savedConfig.warning);
-            if (savedConfig.autoResponse) setAutoResponse(savedConfig.autoResponse);
-            if (savedConfig.giveaway) setGiveaway(savedConfig.giveaway);
-            if (savedConfig.levelConfig) setLevelConfig(savedConfig.levelConfig);
-            if (savedConfig.reactionRoles) setReactionRoles(savedConfig.reactionRoles);
-            if (savedConfig.voiceStats) setVoiceStats(savedConfig.voiceStats);
-            if (savedConfig.autoRoles) setAutoRoles(savedConfig.autoRoles);
-            if (savedConfig.embedFormatter) setEmbedFormatter(savedConfig.embedFormatter);
-            if (savedConfig.modLogs) setModLogs(savedConfig.modLogs);
-            if (savedConfig.commands) setCommands(savedConfig.commands);
-            handleAddLog({
-              id: crypto.randomUUID(),
-              timestamp: new Date().toLocaleTimeString(),
-              type: "system",
-              message: `[LOAD] تم تحميل الإعدادات المحفوظة للسيرفر ${guild.name}`
-            });
+        // Try to load saved config for this guild (skip if we already restored from localStorage)
+        const profilesData = localStorage.getItem("discord_bot_server_profiles_v1");
+        const hasLocalProfile = profilesData && JSON.parse(profilesData).length > 0;
+        if (!hasLocalProfile || !forceRefresh) {
+          const configRes = await fetch(`/api/discord/guilds/${guild.id}/config?session=${encodeURIComponent(discordSession)}`);
+          if (configRes.ok) {
+            const savedConfig = await configRes.json();
+            if (savedConfig) {
+              if (savedConfig.welcome) setWelcome(savedConfig.welcome);
+              if (savedConfig.ticket) setTicket(savedConfig.ticket);
+              if (savedConfig.staffApp) setStaffApp(savedConfig.staffApp);
+              if (savedConfig.security) setSecurity(savedConfig.security);
+              if (savedConfig.rulesBot) setRulesBot(savedConfig.rulesBot);
+              if (savedConfig.leaveConfig) setLeaveConfig(savedConfig.leaveConfig);
+              if (savedConfig.suggestion) setSuggestion(savedConfig.suggestion);
+              if (savedConfig.report) setReport(savedConfig.report);
+              if (savedConfig.warning) setWarning(savedConfig.warning);
+              if (savedConfig.autoResponse) setAutoResponse(savedConfig.autoResponse);
+              if (savedConfig.giveaway) setGiveaway(savedConfig.giveaway);
+              if (savedConfig.levelConfig) setLevelConfig(savedConfig.levelConfig);
+              if (savedConfig.reactionRoles) setReactionRoles(savedConfig.reactionRoles);
+              if (savedConfig.voiceStats) setVoiceStats(savedConfig.voiceStats);
+              if (savedConfig.autoRoles) setAutoRoles(savedConfig.autoRoles);
+              if (savedConfig.embedFormatter) setEmbedFormatter(savedConfig.embedFormatter);
+              if (savedConfig.modLogs) setModLogs(savedConfig.modLogs);
+              if (savedConfig.commands) setCommands(savedConfig.commands);
+              handleAddLog({
+                id: crypto.randomUUID(),
+                timestamp: new Date().toLocaleTimeString(),
+                type: "system",
+                message: `[LOAD] تم تحميل الإعدادات المحفوظة للسيرفر ${guild.name}`
+              });
+            }
           }
         }
 
@@ -1283,6 +1287,7 @@ export default function App() {
     if (profile.autoRoles) setAutoRoles(profile.autoRoles);
     if (profile.embedFormatter) setEmbedFormatter(profile.embedFormatter);
     if (profile.modLogs) setModLogs(profile.modLogs);
+    if (profile.commands) setCommands(profile.commands);
   };
 
   useEffect(() => {
