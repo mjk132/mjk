@@ -170,15 +170,9 @@ export default function App() {
 
     // Fetch stats
     try {
-      const statsRes = await fetch("/api/subscription/admin/stats", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        params: { sessionToken: token }
-      } as any);
-      // Use POST-style for GET with sessionToken
-      const statsRes2 = await fetch(`/api/subscription/admin/stats?sessionToken=${encodeURIComponent(token)}`);
-      const statsData = await statsRes2.json();
-      if (statsRes2.ok) setAdminStats(statsData);
+      const statsRes = await fetch(`/api/subscription/admin/stats?sessionToken=${encodeURIComponent(token)}`);
+      const statsData = await statsRes.json();
+      if (statsRes.ok) setAdminStats(statsData);
     } catch (err) {}
 
     // Fetch audit log
