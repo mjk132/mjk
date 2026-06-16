@@ -101,6 +101,7 @@ async function stopDiscordBot(subscriptionKey: string) {
     botState.client = null;
   }
   botState.status = 'offline';
+  removeActiveBot(subscriptionKey);
 }
 
 async function startDiscordBot(token: string, clientId: string, botPayload: any) {
@@ -295,6 +296,9 @@ async function startDiscordBot(token: string, clientId: string, botPayload: any)
         guildsCount: client.guilds.cache.size,
         latency: client.ws.ping
       };
+      
+      // Persist for auto-resume
+      setActiveBot(subscriptionKey, { token, clientId, subscriptionKey, ...botPayload });
       
       addLiveBotLog(`Connected securely! Logged in as: ${client.user?.tag}`, 'READY');
       
@@ -2978,6 +2982,59 @@ function atomicWrite(filePath: string, data: any): void {
 
 // ---- End File Lock ----
 
+// ---- Active Bots Persistence (auto-resume) ----
+const ACTIVE_BOTS_FILE = path.join(process.cwd(), "active_bots.json");
+
+function loadActiveBots(): Record<string, any> {
+  try {
+    if (fs.existsSync(ACTIVE_BOTS_FILE)) {
+      return JSON.parse(fs.readFileSync(ACTIVE_BOTS_FILE, "utf-8"));
+    }
+  } catch (e) { /* ignore */ }
+  return {};
+}
+
+function saveActiveBots(data: Record<string, any>) {
+  withFileLock(ACTIVE_BOTS_FILE, () => {
+    try {
+      atomicWrite(ACTIVE_BOTS_FILE, data);
+    } catch (e) { /* ignore */ }
+  });
+}
+
+function removeActiveBot(subscriptionKey: string) {
+  const bots = loadActiveBots();
+  const cleanKey = subscriptionKey.trim().toUpperCase();
+  if (bots[cleanKey]) {
+    delete bots[cleanKey];
+    saveActiveBots(bots);
+  }
+}
+
+function setActiveBot(subscriptionKey: string, config: any) {
+  const bots = loadActiveBots();
+  bots[subscriptionKey.trim().toUpperCase()] = config;
+  saveActiveBots(bots);
+}
+// ---- End Active Bots ----
+
+// ---- Audit Log ----
+interface AuditEntry {
+  timestamp: string;
+  action: string;
+  actor: string;
+  detail: string;
+}
+
+const auditLog: AuditEntry[] = [];
+
+function addAuditLog(action: string, actor: string, detail: string) {
+  auditLog.unshift({ timestamp: new Date().toISOString(), action, actor, detail });
+  // Keep last 500 entries
+  if (auditLog.length > 500) auditLog.length = 500;
+}
+// ---- End Audit Log ----
+
 function hashString(input: string): string {
   return crypto.createHash('sha256').update(input).digest('hex');
 }
@@ -3204,6 +3261,16 @@ Respond in a friendly, conversational, authentic Discord user/bot tone. Use Disc
       return res.status(403).json({ status: "error", message: "كود الاشتراك المُدخل غير صحيح أو غير متواجد بسجلات الاستضافة!" });
     }
 
+    // Device binding check: if key is bound to a user, verify it matches
+    const discordUserId = req.body.discordUserId || ""; // Sent from frontend
+    const discordGuildId = req.body.discordGuildId || "";
+    if (foundKey.activatedUserId && foundKey.activatedUserId !== discordUserId) {
+      return res.status(403).json({ status: "error", message: "❌ هذا المفتاح مرتبط بحساب ديسكورد آخر! لا يمكن استخدامه." });
+    }
+    if (foundKey.activatedGuildId && foundKey.activatedGuildId !== discordGuildId) {
+      return res.status(403).json({ status: "error", message: "❌ هذا المفتاح مرتبط بسيرفر آخر! لا يمكن استخدامه." });
+    }
+
     // Migrate old "active" status
     if (foundKey.status === "active") {
       foundKey.status = "used";
@@ -3221,6 +3288,14 @@ Respond in a friendly, conversational, authentic Discord user/bot tone. Use Disc
         saveSubscriptions(subData);
         return res.status(403).json({ status: "error", message: "❌ الاشتراك منتهي الصلاحية!" });
       }
+    }
+
+    // Device binding: record the user/guild on first use
+    if (foundKey.status === "unused" || (!foundKey.activatedUserId && discordUserId)) {
+      foundKey.activatedUserId = discordUserId;
+    }
+    if (foundKey.status === "unused" || (!foundKey.activatedGuildId && discordGuildId)) {
+      foundKey.activatedGuildId = discordGuildId;
     }
 
     // In unused case, first start will activate it
@@ -3421,6 +3496,8 @@ const ALL_SYSTEM_MODULES = [
     subData.keys[index] = found;
     saveSubscriptions(subData);
 
+    addAuditLog("activate", userId || "unknown", `Activated ${cleanKey.substring(0, 12)}... duration: ${found.duration}`);
+
     return res.json({
       status: "success",
       message: `✅ تم تفعيل الاشتراك بنجاح لمدة (${found.duration})!`,
@@ -3539,11 +3616,31 @@ const ALL_SYSTEM_MODULES = [
 
     saveSubscriptions(subData);
 
+    addAuditLog("generate_keys", "admin", `Generated ${numCount} keys (${selectedDuration})`);
+
     return res.json({
       status: "success",
       message: `تم توليد عدد ${numCount} من الأكواد بنجاح.`,
       keys: generated
     });
+  });
+
+  // 7. Admin audit log
+  app.get("/api/subscription/admin/audit-log", (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    res.json({ entries: auditLog });
+  });
+
+  // 8. Admin dashboard stats
+  app.get("/api/subscription/admin/stats", (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    const subData = loadSubscriptions();
+    const total = subData.keys.length;
+    const used = subData.keys.filter((k: any) => k.status === "used").length;
+    const expired = subData.keys.filter((k: any) => k.status === "expired").length;
+    const unused = subData.keys.filter((k: any) => k.status === "unused").length;
+    const activeBotCount = Array.from(botInstances.values()).filter((b: any) => b.status === "online").length;
+    res.json({ total, used, expired, unused, activeBotCount });
   });
 
   // 6. Admin expire key (بدلاً من الحذف — المفتاح يبقى للأبد)
@@ -3563,6 +3660,8 @@ const ALL_SYSTEM_MODULES = [
       found.expiresAt = new Date(0).toISOString();
     }
     saveSubscriptions(subData);
+
+    addAuditLog("expire_key", "admin", `Expired key ${keyToDelete.substring(0, 12)}...`);
 
     return res.json({
       status: "success",
@@ -4303,6 +4402,20 @@ const ALL_SYSTEM_MODULES = [
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
+  }
+
+  // Auto-resume active bots on startup
+  const activeBots = loadActiveBots();
+  const botKeys = Object.keys(activeBots);
+  if (botKeys.length > 0) {
+    console.log(`Found ${botKeys.length} saved bot(s). Resuming...`);
+    for (const key of botKeys) {
+      const saved = activeBots[key];
+      if (saved && saved.token && saved.clientId) {
+        console.log(`Resuming bot for key ${key.substring(0, 12)}...`);
+        startDiscordBot(saved.token, saved.clientId, saved);
+      }
+    }
   }
 
   app.listen(PORT, "0.0.0.0", () => {

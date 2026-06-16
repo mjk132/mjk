@@ -28,6 +28,8 @@ interface LiveHostProps {
   autoRoles?: any;
   embedFormatter?: any;
   modLogs?: any;
+  discordUserId?: string;
+  discordGuildId?: string;
 }
 
 interface LiveBotStatus {
@@ -61,7 +63,9 @@ export default function LiveHost({
   voiceStats,
   autoRoles,
   embedFormatter,
-  modLogs
+  modLogs,
+  discordUserId,
+  discordGuildId
 }: LiveHostProps) {
   const [token, setToken] = useState("");
   const [clientId, setClientId] = useState("");
@@ -182,6 +186,8 @@ export default function LiveHost({
             token: token.trim(),
             clientId: clientId.trim(),
             subscriptionKey: localStorage.getItem("sub_key") || "",
+            discordUserId: discordUserId || "",
+            discordGuildId: discordGuildId || "",
             config,
             commands,
             welcome,

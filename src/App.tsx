@@ -55,6 +55,8 @@ export default function App() {
   const [adminInput, setAdminInput] = useState<string>("");
   const [adminError, setAdminError] = useState<string>("");
   const [isLoggingAdmin, setIsLoggingAdmin] = useState<boolean>(false);
+  const [adminStats, setAdminStats] = useState<any>(null);
+  const [auditEntries, setAuditEntries] = useState<any[]>([]);
 
   // Admin management lists
   const [keysList, setKeysList] = useState<any[]>([]);
@@ -164,9 +166,29 @@ export default function App() {
       }
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoadingKeys(false);
     }
+
+    // Fetch stats
+    try {
+      const statsRes = await fetch("/api/subscription/admin/stats", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        params: { sessionToken: token }
+      } as any);
+      // Use POST-style for GET with sessionToken
+      const statsRes2 = await fetch(`/api/subscription/admin/stats?sessionToken=${encodeURIComponent(token)}`);
+      const statsData = await statsRes2.json();
+      if (statsRes2.ok) setAdminStats(statsData);
+    } catch (err) {}
+
+    // Fetch audit log
+    try {
+      const auditRes = await fetch(`/api/subscription/admin/audit-log?sessionToken=${encodeURIComponent(token)}`);
+      const auditData = await auditRes.json();
+      if (auditRes.ok) setAuditEntries(auditData.entries || []);
+    } catch (err) {}
+
+    setLoadingKeys(false);
   };
 
   const handleAdminLogin = async (e: React.FormEvent) => {
@@ -1444,6 +1466,8 @@ export default function App() {
           token: savedToken.trim(),
           clientId: savedClientId.trim(),
           subscriptionKey: subKey.trim(),
+          discordUserId: discordUser?.id || "",
+          discordGuildId: selectedGuild?.id || "",
           config,
           commands,
           welcome,
@@ -2502,6 +2526,8 @@ export default function App() {
                   autoResponse={autoResponse} giveaway={giveaway}
                   levelConfig={levelConfig} reactionRoles={reactionRoles} voiceStats={voiceStats}
                   autoRoles={autoRoles} embedFormatter={embedFormatter} modLogs={modLogs}
+                  discordUserId={discordUser?.id}
+                  discordGuildId={selectedGuild?.id}
                 />
               )}
 
@@ -2897,7 +2923,32 @@ export default function App() {
 
               {/* Admin Panel Tab */}
               {activeTab === 'admin-panel' && isAdminLoggedIn && (
-                <div className="max-w-2xl space-y-6">
+                <div className="max-w-3xl space-y-6">
+                  {/* Stats Cards */}
+                  {adminStats && (
+                    <div className="grid grid-cols-5 gap-3">
+                      <div className="bg-card border border-border rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-white">{adminStats.total}</p>
+                        <p className="text-[10px] text-text-muted mt-1">Total Keys</p>
+                      </div>
+                      <div className="bg-card border border-border rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-success">{adminStats.activeBotCount}</p>
+                        <p className="text-[10px] text-text-muted mt-1">Active Bots</p>
+                      </div>
+                      <div className="bg-card border border-border rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-primary">{adminStats.used}</p>
+                        <p className="text-[10px] text-text-muted mt-1">Used</p>
+                      </div>
+                      <div className="bg-card border border-border rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-warning">{adminStats.unused}</p>
+                        <p className="text-[10px] text-text-muted mt-1">Unused</p>
+                      </div>
+                      <div className="bg-card border border-border rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-danger">{adminStats.expired}</p>
+                        <p className="text-[10px] text-text-muted mt-1">Expired</p>
+                      </div>
+                    </div>
+                  )}
                   <div className="bg-card border border-border rounded-xl p-5">
                     <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
                       <div className="flex items-center gap-2">
@@ -2953,6 +3004,29 @@ export default function App() {
                       </div>
                     )}
                   </div>
+                  {/* Audit Log */}
+                  {auditEntries.length > 0 && (
+                    <div className="bg-card border border-border rounded-xl p-5">
+                      <div className="flex items-center gap-2 border-b border-border pb-3 mb-4">
+                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                          <Activity className="w-4 h-4" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-white">Audit Log</h3>
+                      </div>
+                      <div className="space-y-1 max-h-60 overflow-y-auto">
+                        {auditEntries.map((entry: any, i: number) => (
+                          <div key={i} className="flex items-center justify-between p-2 bg-[#080B12] border border-border rounded-lg text-[10px]">
+                            <div className="flex items-center gap-2">
+                              <span className="text-text-dim">{new Date(entry.timestamp).toLocaleString()}</span>
+                              <span className="text-primary font-semibold">{entry.action}</span>
+                              <span className="text-text-muted">{entry.detail}</span>
+                            </div>
+                            <span className="text-text-dim">{entry.actor}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
