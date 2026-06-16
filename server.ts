@@ -2960,12 +2960,37 @@ setInterval(() => {
   }
 }, 300000);
 
+// ---- File Lock (mutex for concurrent write safety) ----
+const fileLocks = new Map<string, Promise<void>>();
+
+function withFileLock<T>(filePath: string, fn: () => T): Promise<T> {
+  const prev = fileLocks.get(filePath) || Promise.resolve();
+  const next = prev.then(fn, fn);
+  fileLocks.set(filePath, next.then(() => {}, () => {}));
+  return next;
+}
+
+function atomicWrite(filePath: string, data: any): void {
+  const tmp = filePath + ".tmp." + Date.now();
+  fs.writeFileSync(tmp, JSON.stringify(data, null, 2), "utf-8");
+  fs.renameSync(tmp, filePath);
+}
+
+// ---- End File Lock ----
+
 function hashString(input: string): string {
   return crypto.createHash('sha256').update(input).digest('hex');
 }
 
+const DEFAULT_MASTER_CODE = process.env.ADMIN_MASTER_CODE || "ADMIN-70-VIP-MEMBERSHIP";
+
 function generateSecureToken(): string {
   return crypto.randomBytes(32).toString('hex');
+}
+
+function getMasterHash(): string {
+  const subData = loadSubscriptions();
+  return subData.masterCodeHashed || hashString(DEFAULT_MASTER_CODE);
 }
 
 const adminSessions = new Map<string, { adminCode: string; createdAt: number }>();
@@ -2974,12 +2999,25 @@ function verifyAdminSession(sessionToken: string | undefined, masterCode: string
   if (!sessionToken) return false;
   const session = adminSessions.get(sessionToken);
   if (!session) return false;
-  // Session expires after 24 hours
   if (Date.now() - session.createdAt > 86400000) {
     adminSessions.delete(sessionToken);
     return false;
   }
   return session.adminCode === masterCode;
+}
+
+function getAdminSessionToken(req: any): string | undefined {
+  return req.body?.sessionToken || req.query?.sessionToken as string | undefined;
+}
+
+function requireAdmin(req: any, res: any): boolean {
+  const sessionToken = getAdminSessionToken(req);
+  const masterHash = getMasterHash();
+  if (!sessionToken || !verifyAdminSession(sessionToken, masterHash)) {
+    res.status(403).json({ status: "error", message: "غير مصرح! سجل دخول كمسؤول أولاً." });
+    return false;
+  }
+  return true;
 }
 
 const SUBS_FILE = path.join(process.cwd(), "subscriptions.json");
@@ -3001,23 +3039,8 @@ interface SubscriptionKey {
 function loadSubscriptions() {
   if (!fs.existsSync(SUBS_FILE)) {
     const defaultData = {
-      masterCodeHashed: hashString("ADMIN-70-VIP-MEMBERSHIP"),
-      keys: [
-        {
-          key: "LIFETIME-MASTER-PAPY615",
-          duration: "Lifetime",
-          status: "unused",
-          createdAt: new Date().toISOString(),
-          note: "Master Custom Lifetime Key"
-        },
-        {
-          key: "DISCORD-30DAYS-TEST",
-          duration: "30 Days",
-          status: "unused",
-          createdAt: new Date().toISOString(),
-          note: "Trial Starter Key"
-        }
-      ]
+      masterCodeHashed: hashString(DEFAULT_MASTER_CODE),
+      keys: []
     };
     fs.writeFileSync(SUBS_FILE, JSON.stringify(defaultData, null, 2), "utf-8");
     return defaultData;
@@ -3034,16 +3057,18 @@ function loadSubscriptions() {
     return data;
   } catch (err) {
     console.error("Error reading subscriptions.json", err);
-    return { masterCodeHashed: hashString("ADMIN-70-VIP-MEMBERSHIP"), keys: [] };
+    return { masterCodeHashed: hashString(DEFAULT_MASTER_CODE), keys: [] };
   }
 }
 
 function saveSubscriptions(data: any) {
-  try {
-    fs.writeFileSync(SUBS_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (err) {
-    console.error("Error writing subscriptions.json", err);
-  }
+  withFileLock(SUBS_FILE, () => {
+    try {
+      atomicWrite(SUBS_FILE, data);
+    } catch (err) {
+      console.error("Error writing subscriptions.json", err);
+    }
+  });
 }
 
 async function startServer() {
@@ -3053,6 +3078,11 @@ async function startServer() {
 
   // AI Discord Bot Chat endpoint
   app.post("/api/bot/chat", async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (!rateLimit(`chat_${ip}`, 30, 60000)) {
+      return res.status(429).json({ reply: "Too many requests. Please slow down.", isSimulated: true });
+    }
     try {
       const { message, botName, personality, history } = req.body;
       const client = getGeminiClient();
@@ -3268,6 +3298,10 @@ const ALL_SYSTEM_MODULES = [
 
   // 1. Validate key
   app.get("/api/subscription/validate", (req, res) => {
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (!rateLimit(`validate_${ip}`, 10, 60000)) {
+      return res.status(429).json({ valid: false, message: "محاولات كثيرة جداً! انتظر دقيقة." });
+    }
     const { key } = req.query;
     if (!key) {
       return res.status(400).json({ valid: false, message: "الكود مطلوب" });
@@ -3317,6 +3351,10 @@ const ALL_SYSTEM_MODULES = [
 
   // 2. Activate an unused key
   app.post("/api/subscription/activate", (req, res) => {
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (!rateLimit(`activate_${ip}`, 5, 60000)) {
+      return res.status(429).json({ status: "error", message: "محاولات كثيرة جداً! انتظر دقيقة." });
+    }
     const { key, clientId, guildId, userId } = req.body;
     if (!key) {
       return res.status(400).json({ status: "error", message: "الرجاء إدخال كود التفعيل" });
@@ -3406,8 +3444,7 @@ const ALL_SYSTEM_MODULES = [
       return res.status(429).json({ success: false, message: "محاولات كثيرة جداً! انتظر دقيقة." });
     }
 
-    const subData = loadSubscriptions();
-    const masterHash = subData.masterCodeHashed || hashString(subData.masterCode || "ADMIN-70-VIP-MEMBERSHIP");
+    const masterHash = getMasterHash();
     
     if (hashString(code.toString().trim()) === masterHash) {
       const sessionToken = generateSecureToken();
@@ -3420,22 +3457,16 @@ const ALL_SYSTEM_MODULES = [
 
   // 3b. Verify admin session token
   app.post("/api/subscription/admin/verify-session", (req, res) => {
-    const { sessionToken } = req.body;
-    const subData = loadSubscriptions();
-    const masterHash = subData.masterCodeHashed || hashString(subData.masterCode || "ADMIN-70-VIP-MEMBERSHIP");
+    const sessionToken = getAdminSessionToken(req);
+    const masterHash = getMasterHash();
     const isValid = verifyAdminSession(sessionToken, masterHash);
     res.json({ valid: isValid });
   });
 
   // 4. Admin fetch all keys
   app.post("/api/subscription/admin/keys", (req, res) => {
-    const { sessionToken } = req.body;
+    if (!requireAdmin(req, res)) return;
     const subData = loadSubscriptions();
-    const masterHash = subData.masterCodeHashed || hashString(subData.masterCode || "ADMIN-70-VIP-MEMBERSHIP");
-
-    if (!verifyAdminSession(sessionToken, masterHash)) {
-      return res.status(403).json({ status: "error", message: "غير مصرح لك باستعراض المفاتيح! سجل دخول كمسؤول أولاً." });
-    }
 
     // Before returning, sweep and update expired status on any old keys
     let changed = false;
@@ -3471,13 +3502,8 @@ const ALL_SYSTEM_MODULES = [
 
   // 5. Admin generate keys
   app.post("/api/subscription/admin/generate", (req, res) => {
-    const { sessionToken, count, duration, note, allowedModules } = req.body;
-    const subData = loadSubscriptions();
-    const masterHash = subData.masterCodeHashed || hashString(subData.masterCode || "ADMIN-70-VIP-MEMBERSHIP");
-
-    if (!verifyAdminSession(sessionToken, masterHash)) {
-      return res.status(403).json({ status: "error", message: "غير مصرح لك بتوليد مفاتيح! سجل دخول كمسؤول أولاً." });
-    }
+    if (!requireAdmin(req, res)) return;
+    const { count, duration, note, allowedModules } = req.body;
 
     // Rate limit: max 50 keys per 5 minutes
     const ip = req.ip || req.socket.remoteAddress || "unknown";
@@ -3521,13 +3547,8 @@ const ALL_SYSTEM_MODULES = [
 
   // 6. Admin expire key (بدلاً من الحذف — المفتاح يبقى للأبد)
   app.post("/api/subscription/admin/delete", (req, res) => {
-    const { sessionToken, keyToDelete } = req.body;
-    const subData = loadSubscriptions();
-    const masterHash = subData.masterCodeHashed || hashString(subData.masterCode || "ADMIN-70-VIP-MEMBERSHIP");
-
-    if (!verifyAdminSession(sessionToken, masterHash)) {
-      return res.status(403).json({ status: "error", message: "غير مصرح لك بتعديل المفاتيح! سجل دخول كمسؤول أولاً." });
-    }
+    if (!requireAdmin(req, res)) return;
+    const { keyToDelete } = req.body;
 
     const found = subData.keys.find((k: any) => k.key.toUpperCase() === keyToDelete.toString().trim().toUpperCase());
 
@@ -3594,6 +3615,7 @@ const ALL_SYSTEM_MODULES = [
   // 🇪 إندبوينت حفظ إعدادات OAuth من الواجهة
   // ──────────────────────────────────────────
   app.post('/api/discord/setup', (req, res) => {
+    if (!requireAdmin(req, res)) return;
     const { clientId, clientSecret, botToken } = req.body;
     if (!clientId || !clientSecret) {
       return res.status(400).json({ error: 'يرجى إدخال Client ID و Client Secret' });
@@ -3985,9 +4007,11 @@ const ALL_SYSTEM_MODULES = [
   }
 
   function saveGuildConfigs(data: Record<string, any>) {
-    try {
-      fs.writeFileSync(GUILD_CONFIG_FILE, JSON.stringify(data, null, 2), "utf-8");
-    } catch (e) { /* ignore */ }
+    withFileLock(GUILD_CONFIG_FILE, () => {
+      try {
+        atomicWrite(GUILD_CONFIG_FILE, data);
+      } catch (e) { /* ignore */ }
+    });
   }
 
   /**
