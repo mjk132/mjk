@@ -25,6 +25,9 @@ interface LiveHostProps {
   levelConfig?: any;
   reactionRoles?: any;
   voiceStats?: any;
+  autoRoles?: any;
+  embedFormatter?: any;
+  modLogs?: any;
 }
 
 interface LiveBotStatus {
@@ -55,7 +58,10 @@ export default function LiveHost({
   giveaway,
   levelConfig,
   reactionRoles,
-  voiceStats
+  voiceStats,
+  autoRoles,
+  embedFormatter,
+  modLogs
 }: LiveHostProps) {
   const [token, setToken] = useState("");
   const [clientId, setClientId] = useState("");
@@ -172,27 +178,30 @@ export default function LiveHost({
       const response = await fetch("/api/bot/live-start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token: token.trim(),
-          clientId: clientId.trim(),
-          subscriptionKey: localStorage.getItem("sub_key") || "",
-          config,
-          commands,
-          welcome,
-          ticket,
-          staffApp,
-          security,
-          rulesBot,
-          leaveConfig,
-          suggestion,
-          report,
-          warning,
-          autoResponse,
-          giveaway,
-          levelConfig,
-          reactionRoles,
-          voiceStats
-        })
+          body: JSON.stringify({
+            token: token.trim(),
+            clientId: clientId.trim(),
+            subscriptionKey: localStorage.getItem("sub_key") || "",
+            config,
+            commands,
+            welcome,
+            ticket,
+            staffApp,
+            security,
+            rulesBot,
+            leaveConfig,
+            suggestion,
+            report,
+            warning,
+            autoResponse,
+            giveaway,
+            levelConfig,
+            reactionRoles,
+            voiceStats,
+            autoRoles,
+            embedFormatter,
+            modLogs
+          })
       });
 
       if (!response.ok) {

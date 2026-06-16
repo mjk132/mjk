@@ -50,7 +50,7 @@ export default function App() {
 
   // Admin login states
   const [showAdminTab, setShowAdminTab] = useState<boolean>(false);
-  const [adminCode, setAdminCode] = useState<string>(() => localStorage.getItem("admin_code") || "");
+  const [adminSessionToken, setAdminSessionToken] = useState<string>(() => localStorage.getItem("admin_session") || "");
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(false);
   const [adminInput, setAdminInput] = useState<string>("");
   const [adminError, setAdminError] = useState<string>("");
@@ -123,40 +123,40 @@ export default function App() {
     verifySavedKey();
   }, [subKey]);
 
-  // If subscription is verified and admin password exists, pre-log admin
+  // If subscription is verified and admin session exists, verify it
   useEffect(() => {
-    async function verifyAdminCode() {
-      if (!adminCode) return;
+    async function verifyAdminSessionToken() {
+      if (!adminSessionToken) return;
       try {
-        const res = await fetch("/api/subscription/admin/login", {
+        const res = await fetch("/api/subscription/admin/verify-session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: adminCode })
+          body: JSON.stringify({ sessionToken: adminSessionToken })
         });
         const data = await res.json();
-        if (data.success) {
+        if (data.valid) {
           setIsAdminLoggedIn(true);
           fetchAdminKeys();
         } else {
-          localStorage.removeItem("admin_code");
-          setAdminCode("");
+          localStorage.removeItem("admin_session");
+          setAdminSessionToken("");
         }
       } catch (err) {
         console.error(err);
       }
     }
-    verifyAdminCode();
-  }, [adminCode]);
+    verifyAdminSessionToken();
+  }, [adminSessionToken]);
 
   const fetchAdminKeys = async () => {
-    const code = adminCode || adminInput;
-    if (!code) return;
+    const token = adminSessionToken;
+    if (!token) return;
     setLoadingKeys(true);
     try {
       const res = await fetch("/api/subscription/admin/keys", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ adminCode: code })
+        body: JSON.stringify({ sessionToken: token })
       });
       const data = await res.json();
       if (res.ok) {
@@ -182,8 +182,8 @@ export default function App() {
       const data = await res.json();
       if (res.ok && data.success) {
         setIsAdminLoggedIn(true);
-        setAdminCode(adminInput);
-        localStorage.setItem("admin_code", adminInput);
+        setAdminSessionToken(data.sessionToken);
+        localStorage.setItem("admin_session", data.sessionToken);
         // Refresh with delay to let state write
         setTimeout(() => {
           fetchAdminKeys();
@@ -257,14 +257,14 @@ export default function App() {
   };
 
   const handleGenerateKeys = async () => {
-    const code = adminCode || adminInput;
-    if (!code) return;
+    const token = adminSessionToken;
+    if (!token) return;
     try {
       const res = await fetch("/api/subscription/admin/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          adminCode: code,
+          sessionToken: token,
           count: genCount,
           duration: genDuration,
           note: genNote,
@@ -281,15 +281,15 @@ export default function App() {
   };
 
   const handleDeleteKey = async (keyToDelete: string) => {
-    const code = adminCode || adminInput;
-    if (!code) return;
+    const token = adminSessionToken;
+    if (!token) return;
     if (!confirm("هل أنت متأكد من رغبتك في حذف وإلغاء كود الاشتراك هذا تماماً؟")) return;
     try {
       const res = await fetch("/api/subscription/admin/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          adminCode: code,
+          sessionToken: token,
           keyToDelete: keyToDelete
         })
       });
@@ -310,8 +310,8 @@ export default function App() {
   };
 
   const handleAdminLogout = () => {
-    localStorage.removeItem("admin_code");
-    setAdminCode("");
+    localStorage.removeItem("admin_session");
+    setAdminSessionToken("");
     setIsAdminLoggedIn(false);
     setAdminInput("");
     setKeysList([]);
@@ -1071,7 +1071,7 @@ export default function App() {
       id: crypto.randomUUID(),
       timestamp: new Date().toLocaleTimeString(),
       type: "system",
-      message: `🌐 ${forceRefresh ? 'تحديث' : 'تم اختيار'} السيرفر: ${guild.name} - جاري جلب الرومات...`
+      message: `[SERVER] ${forceRefresh ? 'تحديث' : 'تم اختيار'} السيرفر: ${guild.name} - جاري جلب الرومات...`
     });
 
     // Fetch guild channels and update the channels state
@@ -1099,7 +1099,7 @@ export default function App() {
           id: crypto.randomUUID(),
           timestamp: new Date().toLocaleTimeString(),
           type: "system",
-          message: `✅ تم جلب ${mapped.length + cats.length} روم من السيرفر ${guild.name}`
+          message: `[OK] تم جلب ${mapped.length + cats.length} روم من السيرفر ${guild.name}`
         });
 
         // Try to load saved config for this guild
@@ -1129,7 +1129,7 @@ export default function App() {
               id: crypto.randomUUID(),
               timestamp: new Date().toLocaleTimeString(),
               type: "system",
-              message: `📂 تم تحميل الإعدادات المحفوظة للسيرفر ${guild.name}`
+              message: `[LOAD] تم تحميل الإعدادات المحفوظة للسيرفر ${guild.name}`
             });
           }
         }
@@ -1153,7 +1153,7 @@ export default function App() {
           id: crypto.randomUUID(),
           timestamp: new Date().toLocaleTimeString(),
           type: "system",
-          message: `❌ فشل جلب الرومات: ${errData.error || 'خطأ غير معروف'}`
+          message: `[ERROR] فشل جلب الرومات: ${errData.error || 'خطأ غير معروف'}`
         });
         setGuildRoles([]);
       }
@@ -1166,7 +1166,7 @@ export default function App() {
         id: crypto.randomUUID(),
         timestamp: new Date().toLocaleTimeString(),
         type: "system",
-        message: `❌ خطأ في جلب الرومات: ${err instanceof Error ? err.message : 'خطأ غير معروف'}`
+        message: `[ERROR] خطأ في جلب الرومات: ${err instanceof Error ? err.message : 'خطأ غير معروف'}`
       });
       setGuildRoles([]);
     } finally {
@@ -1462,7 +1462,7 @@ export default function App() {
           id: crypto.randomUUID(),
           timestamp: new Date().toLocaleTimeString(),
           type: "system",
-          message: "⚡ [تحديث سحابي فوري] تم إرسال وتطبيق التغييرات لجميع المودلات على البوت بنجاح دون انقطاع!"
+          message: "[SYNC] تم إرسال وتطبيق التغييرات لجميع المودلات على البوت بنجاح دون انقطاع!"
         });
       } else {
         const errData = await response.json();
@@ -1484,7 +1484,7 @@ export default function App() {
         id: crypto.randomUUID(),
         timestamp: new Date().toLocaleTimeString(),
         type: "system",
-        message: `📁 تم تحميل بروفايل السيرفر: "${found.name}" بنجاح وتطبيق كامل الإعدادات والإنظمة.`
+        message: `[PROFILE] تم تحميل بروفايل السيرفر: "${found.name}" بنجاح وتطبيق كامل الإعدادات والإنظمة.`
       });
     }
   };
@@ -1523,7 +1523,7 @@ export default function App() {
       id: crypto.randomUUID(),
       timestamp: new Date().toLocaleTimeString(),
       type: "system",
-      message: `💾 تم حفظ وتحديث الإعدادات الحالية لبروفايل: "${profiles.find(p => p.id === activeProfileId)?.name}" بنجاح في ذاكرة المتصفح الفورية.`
+      message: `[SAVE] تم حفظ وتحديث الإعدادات الحالية لبروفايل: "${profiles.find(p => p.id === activeProfileId)?.name}" بنجاح في ذاكرة المتصفح الفورية.`
     });
   };
 
@@ -1563,7 +1563,7 @@ export default function App() {
       id: crypto.randomUUID(),
       timestamp: new Date().toLocaleTimeString(),
       type: "system",
-      message: `✨ تم إنشاء بروفايل سيرفر جديد باسم: "${newProfileName}" وتم الانتقال إليه تلقائياً.`
+      message: `[CREATE] تم إنشاء بروفايل سيرفر جديد باسم: "${newProfileName}" وتم الانتقال إليه تلقائياً.`
     });
   };
 
@@ -1573,7 +1573,7 @@ export default function App() {
         id: crypto.randomUUID(),
         timestamp: new Date().toLocaleTimeString(),
         type: "system",
-        message: `⚠️ لا يمكن حذف بروفايل السيرفر الأخير النشط. يجب وجود بروفايل واحد على الأقل.`
+        message: `[WARN] لا يمكن حذف بروفايل السيرفر الأخير النشط. يجب وجود بروفايل واحد على الأقل.`
       });
       return;
     }
@@ -1589,7 +1589,7 @@ export default function App() {
       id: crypto.randomUUID(),
       timestamp: new Date().toLocaleTimeString(),
       type: "info",
-      message: `🗑️ تم حذف بروفايل السيرفر المحدد من الذاكرة.`
+      message: `[DELETE] تم حذف بروفايل السيرفر المحدد من الذاكرة.`
     });
   };
 
@@ -1599,19 +1599,19 @@ export default function App() {
       id: "l-init-1",
       timestamp: new Date().toLocaleTimeString(),
       type: "info",
-      message: "🚀 Initiating Discord Bot Builder VM environment..."
+      message: "[BUILD] Initiating Discord Bot Builder VM environment..."
     },
     {
       id: "l-init-2",
       timestamp: new Date().toLocaleTimeString(),
       type: "system",
-      message: `✅ Loaded custom bot configuration for: ${config?.name || "SystemAI"}`
+      message: `[LOAD] Loaded custom bot configuration for: ${config?.name || "SystemAI"}`
     },
     {
       id: "l-init-3",
       timestamp: new Date().toLocaleTimeString(),
       type: "command",
-      message: `⚙️ Registered custom command triggers into active memory cache.`
+      message: `[CONFIG] Registered custom command triggers into active memory cache.`
     }
   ]);
 
@@ -1626,7 +1626,7 @@ export default function App() {
         id: crypto.randomUUID(),
         timestamp: new Date().toLocaleTimeString(),
         type: "system",
-        message: `🔄 Reconfigured profile parameters: [${key}] changed to "${val}"`
+        message: `[UPDATE] Reconfigured profile parameters: [${key}] changed to "${val}"`
       });
       return updated;
     });
@@ -2005,7 +2005,7 @@ export default function App() {
     { section: 'TOOLS', items: [
       { id: 'command-studio', label: 'Command Studio', icon: Puzzle },
       { id: 'modules', label: 'Advanced Modules', icon: Layers },
-      { id: 'exporter', label: 'Code Exporter', icon: FileCode },
+      ...(isAdminLoggedIn ? [{ id: 'exporter', label: 'Code Exporter', icon: FileCode }] : []),
     ]},
     { section: 'ACCOUNT', items: [
       { id: 'subscription', label: 'Subscription', icon: CreditCard },
@@ -2239,12 +2239,22 @@ export default function App() {
                   <p className="text-[10px] text-text-muted">Sync your config to the live bot in Hosting</p>
                 </div>
               </div>
-              <button
-                onClick={() => navigateTo('hosting')}
-                className="shrink-0 px-3 py-1.5 bg-warning/10 border border-warning/20 text-warning rounded-lg text-[10px] font-semibold transition cursor-pointer hover:bg-warning/20"
-              >
-                Go to Hosting
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleQuickRestartBot}
+                  disabled={restartingBot}
+                  className="shrink-0 px-3 py-1.5 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1.5"
+                >
+                  {restartingBot ? <RefreshCw className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+                  <span>{restartingBot ? 'Syncing...' : 'Sync Now'}</span>
+                </button>
+                <button
+                  onClick={() => navigateTo('hosting')}
+                  className="shrink-0 px-2.5 py-1.5 text-text-muted hover:text-white rounded-lg text-[10px] font-medium transition cursor-pointer"
+                >
+                  Open Hosting
+                </button>
+              </div>
             </motion.div>
           )}
 
@@ -2406,61 +2416,7 @@ export default function App() {
                 </div>
               )}
             </div>
-          ) : isAdminLoggedIn && showAdminTab ? (
-            <div className="max-w-2xl mx-auto mt-8 space-y-6">
-              <div className="bg-card border border-border rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-sm font-semibold text-white">Admin Key Management</h2>
-                  <div className="flex gap-2">
-                    <button onClick={handleAdminLogout} className="text-xs text-text-dim hover:text-text-muted px-3 py-1.5 rounded-lg hover:bg-border/50 transition cursor-pointer">Logout Admin</button>
-                    <button onClick={handleLogout} className="text-xs text-text-dim hover:text-text-muted px-3 py-1.5 rounded-lg hover:bg-border/50 transition cursor-pointer">Logout Subscription</button>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-text-dim">Count</label><input type="number" value={genCount} onChange={(e) => setGenCount(Number(e.target.value))} min={1} max={50} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-text-dim">Duration</label>
-                      <select value={genDuration} onChange={(e) => setGenDuration(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white">
-                        <option>7 Days</option><option>15 Days</option><option>30 Days</option><option>60 Days</option><option>90 Days</option><option>Lifetime</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-text-dim">Note</label><input type="text" value={genNote} onChange={(e) => setGenNote(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" placeholder="Optional" />
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] text-text-dim">Allowed Modules</label>
-                    <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto">
-                      {SYSTEM_MODULES_LIST.map(m => (
-                        <label key={m.id} className="flex items-center gap-1.5 text-[10px] text-text-muted cursor-pointer">
-                          <input type="checkbox" checked={genModules.includes(m.id)} onChange={() => genModules.includes(m.id) ? setGenModules(genModules.filter(x => x !== m.id)) : setGenModules([...genModules, m.id])} className="rounded border-border bg-[#080B12]" />
-                          {m.label}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <button onClick={handleGenerateKeys} className="px-6 py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg text-xs transition cursor-pointer">Generate Keys</button>
-                </div>
-                {loadingKeys ? <p className="text-xs text-text-dim mt-4">Loading...</p> : keysList.length > 0 && (
-                  <div className="mt-4 space-y-1.5 max-h-48 overflow-y-auto">
-                    {keysList.map((k, i) => (
-                      <div key={i} className="flex items-center justify-between p-2 bg-[#080B12] border border-border rounded-lg text-[10px]">
-                        <div className="flex items-center gap-2 text-left" style={{ direction: 'ltr' }}>
-                          <span className="font-mono text-text-muted">{k.key || k.code}</span>
-                          <span className="text-text-dim">{k.duration}</span>
-                          {k.usedBy ? <span className="text-primary">Used</span> : <span className="text-success">New</span>}
-                        </div>
-                        <button onClick={() => handleDeleteKey(k.key || k.code)} className="p-1 text-danger hover:bg-danger/10 rounded cursor-pointer transition"><Trash2 className="w-3 h-3" /></button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : showOAuthSetup ? (
+          ) : showOAuthSetup && isAdminLoggedIn ? (
             <div className="max-w-md mx-auto mt-8">
               <div className="bg-card border border-border rounded-xl p-6 space-y-4">
                 <h2 className="text-sm font-semibold text-white">Discord OAuth Setup</h2>
@@ -2533,6 +2489,7 @@ export default function App() {
                   suggestion={suggestion} report={report} warning={warning}
                   autoResponse={autoResponse} giveaway={giveaway}
                   levelConfig={levelConfig} reactionRoles={reactionRoles} voiceStats={voiceStats}
+                  autoRoles={autoRoles} embedFormatter={embedFormatter} modLogs={modLogs}
                 />
               )}
 
@@ -2572,7 +2529,7 @@ export default function App() {
               )}
 
               {/* Exporter Tab */}
-              {activeTab === 'exporter' && (
+              {activeTab === 'exporter' && isAdminLoggedIn && (
                 <CodeExporter
                   config={config} commands={commands}
                   welcome={welcome} ticket={ticket} staffApp={staffApp}
