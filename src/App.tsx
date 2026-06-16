@@ -2011,6 +2011,7 @@ export default function App() {
       { id: 'subscription', label: 'Subscription', icon: CreditCard },
       { id: 'settings', label: 'Settings', icon: Settings },
       { id: 'profile', label: 'Profile', icon: User },
+      ...(isAdminLoggedIn ? [{ id: 'admin-panel', label: 'Admin Panel', icon: Shield }] : []),
     ]},
   ];
 
@@ -2850,6 +2851,67 @@ export default function App() {
                       )}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Admin Panel Tab */}
+              {activeTab === 'admin-panel' && isAdminLoggedIn && (
+                <div className="max-w-2xl space-y-6">
+                  <div className="bg-card border border-border rounded-xl p-5">
+                    <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                          <Shield className="w-4 h-4" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-white">Admin Panel</h3>
+                      </div>
+                      <button onClick={handleAdminLogout} className="text-xs text-text-dim hover:text-text-muted px-3 py-1.5 rounded-lg hover:bg-border/50 transition cursor-pointer">Logout Admin</button>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[10px] text-text-dim">Count</label>
+                          <input type="number" value={genCount} onChange={(e) => setGenCount(Number(e.target.value))} min={1} max={50} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] text-text-dim">Duration</label>
+                          <select value={genDuration} onChange={(e) => setGenDuration(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white">
+                            <option>7 Days</option><option>15 Days</option><option>30 Days</option><option>60 Days</option><option>90 Days</option><option>Lifetime</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] text-text-dim">Note</label>
+                          <input type="text" value={genNote} onChange={(e) => setGenNote(e.target.value)} className="w-full px-2 py-1.5 bg-[#080B12] border border-border rounded text-xs text-white" placeholder="Optional" />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] text-text-dim">Allowed Modules</label>
+                        <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto">
+                          {SYSTEM_MODULES_LIST.map(m => (
+                            <label key={m.id} className="flex items-center gap-1.5 text-[10px] text-text-muted cursor-pointer">
+                              <input type="checkbox" checked={genModules.includes(m.id)} onChange={() => genModules.includes(m.id) ? setGenModules(genModules.filter(x => x !== m.id)) : setGenModules([...genModules, m.id])} className="rounded border-border bg-[#080B12]" />
+                              {m.label}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <button onClick={handleGenerateKeys} className="px-6 py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg text-xs transition cursor-pointer">Generate Keys</button>
+                    </div>
+                    {loadingKeys ? <p className="text-xs text-text-dim mt-4">Loading...</p> : keysList.length > 0 && (
+                      <div className="mt-4 space-y-1.5 max-h-48 overflow-y-auto">
+                        {keysList.map((k, i) => (
+                          <div key={i} className="flex items-center justify-between p-2 bg-[#080B12] border border-border rounded-lg text-[10px]">
+                            <div className="flex items-center gap-2 text-left" style={{ direction: 'ltr' }}>
+                              <span className="font-mono text-text-muted">{k.key || k.code}</span>
+                              <span className="text-text-dim">{k.duration}</span>
+                              {k.usedBy ? <span className="text-primary">Used</span> : <span className="text-success">New</span>}
+                            </div>
+                            <button onClick={() => handleDeleteKey(k.key || k.code)} className="p-1 text-danger hover:bg-danger/10 rounded cursor-pointer transition"><Trash2 className="w-3 h-3" /></button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
