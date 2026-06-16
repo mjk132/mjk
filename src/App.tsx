@@ -878,7 +878,7 @@ export default function App() {
       const res = await fetch('/api/discord/setup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clientId: oauthClientId.trim(), clientSecret: oauthClientSecret.trim(), botToken: oauthBotToken.trim() }),
+        body: JSON.stringify({ clientId: oauthClientId.trim(), clientSecret: oauthClientSecret.trim(), botToken: oauthBotToken.trim(), sessionToken: adminSessionToken }),
       });
       const data = await res.json();
       if (data.success) {
@@ -2830,8 +2830,8 @@ export default function App() {
                       </button>
                     )}
                   </div>
-                  {/* Admin Section (login form - only for Lifetime subscribers; admin panel - only when admin logged in) */}
-                  {subDetails?.duration === "Lifetime" && !isAdminLoggedIn && (
+                  {/* Admin Section (login form - always accessible via toggle; admin panel - only when admin logged in) */}
+                  {!isAdminLoggedIn && showAdminTab && (
                     <div className="bg-card border border-border rounded-xl p-5">
                       <div className="flex items-center gap-2 border-b border-border pb-3 mb-4">
                         <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
@@ -2860,6 +2860,11 @@ export default function App() {
                         </button>
                       </form>
                     </div>
+                  )}
+                  {!isAdminLoggedIn && (
+                    <button onClick={() => setShowAdminTab(!showAdminTab)} className="text-xs text-text-dim hover:text-text-muted transition cursor-pointer">
+                      {showAdminTab ? 'إخفاء' : 'تسجيل دخول الإدارة'}
+                    </button>
                   )}
                   {isAdminLoggedIn && (
                     <div className="bg-card border border-border rounded-xl p-5">

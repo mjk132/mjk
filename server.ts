@@ -3374,7 +3374,7 @@ const ALL_SYSTEM_MODULES = [
   // 1. Validate key
   app.get("/api/subscription/validate", (req, res) => {
     const ip = req.ip || req.socket.remoteAddress || "unknown";
-    if (!rateLimit(`validate_${ip}`, 10, 60000)) {
+    if (!rateLimit(`validate_${ip}`, 30, 60000)) {
       return res.status(429).json({ valid: false, message: "محاولات كثيرة جداً! انتظر دقيقة." });
     }
     const { key } = req.query;
