@@ -2798,8 +2798,37 @@ export default function App() {
                       </button>
                     )}
                   </div>
-                  {/* Admin Section (only visible when admin is logged in) */}
-                  {isAdminLoggedIn && (
+                  {/* Admin Section (login form or admin panel) */}
+                  {!isAdminLoggedIn ? (
+                    <div className="bg-card border border-border rounded-xl p-5">
+                      <div className="flex items-center gap-2 border-b border-border pb-3 mb-4">
+                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                          <Shield className="w-4 h-4" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-white">Admin Login</h3>
+                      </div>
+                      <form onSubmit={handleAdminLogin} className="space-y-3" style={{ direction: 'rtl' }}>
+                        <div className="space-y-1.5">
+                          <label className="block text-xs font-medium text-text-muted">رمز الإدارة (Admin Secret Key)</label>
+                          <input
+                            type="password"
+                            value={adminInput}
+                            onChange={(e) => setAdminInput(e.target.value)}
+                            className="w-full px-3 py-2 bg-[#080B12] border border-border rounded-lg text-sm text-white focus:border-primary/50 focus:outline-none"
+                            placeholder="أدخل رمز الإدارة"
+                          />
+                        </div>
+                        {adminError && <p className="text-xs text-danger">{adminError}</p>}
+                        <button
+                          type="submit"
+                          disabled={isLoggingAdmin}
+                          className="w-full py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-semibold rounded-lg text-xs transition cursor-pointer"
+                        >
+                          {isLoggingAdmin ? 'جاري تسجيل الدخول...' : 'تسجيل دخول الإدارة'}
+                        </button>
+                      </form>
+                    </div>
+                  ) : (
                     <div className="bg-card border border-border rounded-xl p-5">
                       <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
                         <div className="flex items-center gap-2">
