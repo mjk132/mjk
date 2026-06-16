@@ -2798,8 +2798,8 @@ export default function App() {
                       </button>
                     )}
                   </div>
-                  {/* Admin Section (login form or admin panel) */}
-                  {!isAdminLoggedIn ? (
+                  {/* Admin Section (login form - only for Lifetime subscribers; admin panel - only when admin logged in) */}
+                  {subDetails?.duration === "Lifetime" && !isAdminLoggedIn && (
                     <div className="bg-card border border-border rounded-xl p-5">
                       <div className="flex items-center gap-2 border-b border-border pb-3 mb-4">
                         <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
@@ -2828,7 +2828,8 @@ export default function App() {
                         </button>
                       </form>
                     </div>
-                  ) : (
+                  )}
+                  {isAdminLoggedIn && (
                     <div className="bg-card border border-border rounded-xl p-5">
                       <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
                         <div className="flex items-center gap-2">
