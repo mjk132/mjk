@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Data files (generated on server, must not be overwritten by git)
+subscriptions.json
+guild_configs.json
